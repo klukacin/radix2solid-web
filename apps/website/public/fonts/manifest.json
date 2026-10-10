@@ -1,0 +1,36 @@
+{
+  "license": {
+    "file": "LICENSES.txt",
+    "sha256": "307835044fe5d56997059df7cfcc3eb30d8ad54aac2059db5502ec098fda740d"
+  },
+  "fonts": [
+    {
+      "file": "Inter-Regular.woff2",
+      "family": "Inter",
+      "weight": 400,
+      "release": "https://github.com/rsms/inter/releases/tag/v4.1",
+      "sha256": "e06f6b1bc553aaea4e4668023ed0ab0a147129c3107f511bc7d03d361b0ae085"
+    },
+    {
+      "file": "Inter-Medium.woff2",
+      "family": "Inter",
+      "weight": 500,
+      "release": "https://github.com/rsms/inter/releases/tag/v4.1",
+      "sha256": "0ff3e94614e1493eb556314fd247ae6c4a85a7783b4cc86be539940cf83f2a48"
+    },
+    {
+      "file": "SourceSerif4-Regular.ttf.woff2",
+      "family": "Source Serif 4",
+      "weight": 400,
+      "release": "https://github.com/adobe-fonts/source-serif/releases/tag/4.005R",
+      "sha256": "6b053e98f0838afe81f3e784727be4583a7c13bb42f198dc5202ecffee0aaee0"
+    },
+    {
+      "file": "JetBrainsMono-Regular.woff2",
+      "family": "JetBrains Mono",
+      "weight": 400,
+      "release": "https://github.com/JetBrains/JetBrainsMono/releases/tag/v2.304",
+      "sha256": "a9cb1cd82332b23a47e3a1239d25d13c86d16c4220695e34b243effa999f45f2"
+    }
+  ]
+}

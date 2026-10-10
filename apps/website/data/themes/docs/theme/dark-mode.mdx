@@ -1,0 +1,80 @@
+---
+metaTitle: Dark mode
+metaDescription: Using appearance to manage and integrate dark mode.
+---
+
+
+> Native Solid 2 fork. Original documentation and designs © WorkOS; historical posts retain their original context.
+
+
+# Dark mode
+
+<Description>Using appearance to manage and integrate dark mode.</Description>
+
+## Overview
+
+Light and dark modes are supported out of the box, allowing you to easily switch appearance without additional design or styling.
+
+<Box my="5">
+	<ThemesDarkModeExample />
+</Box>
+
+## Basic usage
+
+By default, the root `Theme` appearance is `light`. To set a different appearance pass it via the `appearance` prop. This will force the theme to use the specified setting.
+
+```tsx
+import type { Element } from "solid-js";
+export default (props: { children: Element }) => <Theme appearance="dark">
+	{props.children}
+</Theme>;
+```
+
+## Inheriting system appearance
+
+A common requirement is to inherit the appearance setting from a user’s system preferences.
+
+Use the browser's `matchMedia` API and pass the resolved appearance to `Theme`. This example renders light during SSR and initial hydration, then follows the system preference:
+
+```tsx
+import { createSignal, onSettled, onCleanup, type Element } from "solid-js";
+import { isServer } from "@solidjs/web";
+import { Theme } from "@radix-solid/themes";
+
+export default function SystemTheme(props: { children: Element }) {
+  const [dark, setDark] = createSignal(false);
+  if (!isServer) onSettled(() => {
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const update = () => setDark(media.matches);
+    update();
+    media.addEventListener("change", update);
+    onCleanup(() => media.removeEventListener("change", update));
+  });
+  return <Theme appearance={dark() ? "dark" : "light"}>{props.children}</Theme>;
+}
+```
+
+{
+
+<Callout.Root my="5" color="gray">
+	<Callout.Icon>
+		<InfoCircledIcon />
+	</Callout.Icon>
+	<Callout.Text>
+		For a flash-free initial appearance, resolve it before the first paint:
+		use a server-provided preference or a pre-paint script that sets the
+		document's appearance class. Keep the server render and initial
+		hydration appearance consistent.
+	</Callout.Text>
+</Callout.Root>
+
+}
+
+### With other libraries
+
+Class-switching integrations must support Solid and match the class names understood by Radix Themes. React-only providers such as `next-themes` cannot wrap native Solid components.
+
+- `class="light"`
+- `class="light-theme"`
+- `class="dark"`
+- `class="dark-theme"`

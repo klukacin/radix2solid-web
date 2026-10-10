@@ -1,0 +1,589 @@
+---
+metaTitle: Reset
+metaDescription: Removes default browser styles from any component.
+sourcePath: components/reset
+---
+
+
+> Native Solid 2 fork. Original documentation and designs © WorkOS; historical posts retain their original context.
+
+
+## API Reference
+
+Reset component is used to aggressively reset browser styles on a specific element.
+
+It renders a [Slot primitive](/primitives/docs/utilities/slot) that:
+
+- Accepts a single-target factory and resets its chosen host
+- Removes opinionated browser styles
+- Sets idiomatic layout defaults, like `display: block` for images or `width: stretch` for inputs
+- Sets the [cursor](/themes/docs/theme/cursors) style according to your theme settings
+- Adds `box-sizing: border-box`
+
+## Examples
+
+### Anchor
+
+```jsx live="true"
+<Reset>{target => target("a", {
+      "href": "#",
+      children: <>Anchor</>
+    })}</Reset>
+```
+
+### Abbreviation
+
+```jsx live="true"
+<Reset>{target => target("abbr", {
+      "title": "Abbreviation",
+      children: <>ABR</>
+    })}</Reset>
+```
+
+### Address
+
+```jsx live="true"
+<Reset>{target => target("address", {
+      children: <>Address</>
+    })}</Reset>
+```
+
+### Article
+
+```jsx live="true"
+<Reset>{target => target("article", {
+      children: <>Article</>
+    })}</Reset>
+```
+
+### Aside
+
+```jsx live="true"
+<Reset>{target => target("aside", {
+      children: <>Aside content</>
+    })}</Reset>
+```
+
+### Bold
+
+```jsx live="true"
+<Reset>{target => target("b", {
+      children: <>Bold text</>
+    })}</Reset>
+```
+
+### Bi-directional isolation
+
+```jsx live="true"
+<Reset>{target => target("bdi", {
+      children: <>Bi-directional isolation</>
+    })}</Reset>
+```
+
+### Bi-directional override
+
+```jsx live="true"
+<Reset>{target => target("bdo", {
+      children: <>Bi-directional override</>
+    })}</Reset>
+```
+
+### Block quote
+
+```jsx live="true"
+<Reset>{target => target("blockquote", {
+      children: <>Block quote</>
+    })}</Reset>
+```
+
+### Button
+
+```jsx live="true"
+<Reset>{target => target("button", {
+      children: <>Button</>
+    })}</Reset>
+```
+
+### Citation
+
+```jsx live="true"
+<Reset>{target => target("cite", {
+      children: <>Citation</>
+    })}</Reset>
+```
+
+### Code
+
+```jsx live="true"
+<Reset>{target => target("code", {
+      children: <>Computer code</>
+    })}</Reset>
+```
+
+### Data
+
+```jsx live="true"
+<Reset>{target => target("data", {
+      children: <>Machine-readable equivalent</>
+    })}</Reset>
+```
+
+### Deleted text
+
+```jsx live="true"
+<Reset>{target => target("del", {
+      children: <>Deleted text</>
+    })}</Reset>
+```
+
+### Details
+
+```jsx live="true"
+<Reset>{target => target("details", {
+      children: <>
+		<summary>Summary for a details element</summary>
+		Additional details
+	</>
+    })}</Reset>
+```
+
+### Definition
+
+```jsx live="true"
+<Reset>{target => target("dfn", {
+      children: <>Definition</>
+    })}</Reset>
+```
+
+### Div
+
+```jsx live="true"
+<Reset>{target => target("div", {
+      children: <>Div</>
+    })}</Reset>
+```
+
+### Emphasized text
+
+```jsx live="true"
+<Reset>{target => target("em", {
+      children: <>Emphasized text</>
+    })}</Reset>
+```
+
+### Fieldset
+
+```jsx live="true"
+<Reset>{target => target("fieldset", {
+      children: <>Fieldset</>
+    })}</Reset>
+```
+
+### Figure
+
+```jsx live="true"
+<Reset>{target => target("figure", {
+      children: <>Figure</>
+    })}</Reset>
+```
+
+### Figure caption
+
+```jsx live="true"
+<Reset>{target => target("figcaption", {
+      children: <>Figure caption</>
+    })}</Reset>
+```
+
+### Footer
+
+```jsx live="true"
+<Reset>{target => target("footer", {
+      children: <>Footer</>
+    })}</Reset>
+```
+
+### Form
+
+```jsx live="true"
+<Reset>{target => target("form", {
+      children: <>Form</>
+    })}</Reset>
+```
+
+### Heading
+
+```jsx live="true"
+<Reset>{target => target("h1", {
+      children: <>Heading</>
+    })}</Reset>
+```
+
+### Header
+
+```jsx live="true"
+<Reset>{target => target("header", {
+      children: <>Header</>
+    })}</Reset>
+```
+
+### Italic text
+
+```jsx live="true"
+<Reset>{target => target("i", {
+      children: <>Italic text</>
+    })}</Reset>
+```
+
+### Inline frame
+
+When reset, `<iframe>` elements get `display: block` and `width: stretch`.
+
+```jsx live="true"
+<Reset>{target => target("iframe", {
+      "src": "https://example.com"
+    })}</Reset>
+```
+
+### Image
+
+When reset, `<img>` elements get `display: block` and `max-width: 100%`.
+
+```jsx live="true"
+<Reset>{target => target("img", {
+      "src": "https://images.unsplash.com/photo-1556825578-5813abf36e34?q=80&w=3864&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+    })}</Reset>
+```
+
+### Input
+
+When reset, textual `<input>` types get `display: block` and `width: stretch`.
+
+```jsx live="true"
+<Reset>{target => target("input", {
+      "placeholder": "Input control"
+    })}</Reset>
+```
+
+### Inserted text
+
+```jsx live="true"
+<Reset>{target => target("ins", {
+      children: <>Inserted text</>
+    })}</Reset>
+```
+
+### Keyboard input
+
+```jsx live="true"
+<Reset>{target => target("kbd", {
+      children: <>Keyboard input</>
+    })}</Reset>
+```
+
+### Label
+
+```jsx live="true"
+<Reset>{target => target("label", {
+      children: <>Label</>
+    })}</Reset>
+```
+
+### Legend
+
+```jsx live="true"
+<Reset>{target => target("legend", {
+      children: <>Legend</>
+    })}</Reset>
+```
+
+### List item
+
+```jsx live="true"
+<Reset>{target => target("li", {
+      children: <>List item</>
+    })}</Reset>
+```
+
+### Main
+
+```jsx live="true"
+<Reset>{target => target("main", {
+      children: <>Main</>
+    })}</Reset>
+```
+
+### Marked text
+
+```jsx live="true"
+<Reset>{target => target("mark", {
+      children: <>Marked text</>
+    })}</Reset>
+```
+
+### Navigation
+
+```jsx live="true"
+<Reset>{target => target("nav", {
+      children: <>Navigation</>
+    })}</Reset>
+```
+
+### Ordered list
+
+```jsx live="true"
+<Reset>{target => target("ol", {
+      children: <>
+		<li>Coffee</li>
+		<li>Tea</li>
+		<li>Milk</li>
+	</>
+    })}</Reset>
+```
+
+### Output
+
+```jsx live="true"
+<Reset>{target => target("output", {
+      children: <>Output</>
+    })}</Reset>
+```
+
+### Paragraph
+
+```jsx live="true"
+<Reset>{target => target("p", {
+      children: <>Paragraph</>
+    })}</Reset>
+```
+
+### Preformatted text
+
+```jsx live="true"
+<Reset>{target => target("pre", {
+      children: <>{'Preformatted text: "    "'}</>
+    })}</Reset>
+```
+
+### Quote
+
+```jsx live="true"
+<Reset>{target => target("q", {
+      children: <>Quote</>
+    })}</Reset>
+```
+
+### Strikethrough text
+
+```jsx live="true"
+<Reset>{target => target("s", {
+      children: <>Strikethrough text</>
+    })}</Reset>
+```
+
+### Sample output
+
+```jsx live="true"
+<Reset>{target => target("samp", {
+      children: <>Sample output</>
+    })}</Reset>
+```
+
+### Section
+
+```jsx live="true"
+<Reset>{target => target("section", {
+      children: <>Section</>
+    })}</Reset>
+```
+
+### Select
+
+```jsx live="true"
+<Reset>{target => target("select", {
+      children: <>
+		<option value="1">Option 1</option>
+		<option value="2">Option 2</option>
+		<option value="3">Option 3</option>
+		<option value="4">Option 4</option>
+	</>
+    })}</Reset>
+```
+
+### Small text
+
+```jsx live="true"
+<Reset>{target => target("small", {
+      children: <>Small text</>
+    })}</Reset>
+```
+
+### Span
+
+```jsx live="true"
+<Reset>{target => target("span", {
+      children: <>Span</>
+    })}</Reset>
+```
+
+### Strong text
+
+```jsx live="true"
+<Reset>{target => target("strong", {
+      children: <>Strong text</>
+    })}</Reset>
+```
+
+### Subscript text
+
+```jsx live="true"
+<Reset>{target => target("sub", {
+      children: <>Subscript text</>
+    })}</Reset>
+```
+
+### Superscript text
+
+```jsx live="true"
+<Reset>{target => target("sup", {
+      children: <>Superscript text</>
+    })}</Reset>
+```
+
+### SVG
+
+When reset, `<svg>` elements get `display: block`, `max-width: 100%`, and `flex-shrink: 0`.
+
+```jsx live="true"
+<Reset>{target => target("svg", {
+      "width": "76",
+      "height": "24",
+      "viewBox": "0 0 76 24",
+      "fill": "currentcolor",
+      "xmlns": "http://www.w3.org/2000/svg",
+      children: <>
+		<path d="M43.9022 20.0061H46.4499C46.2647 19.0375 46.17 18.1161 46.17 17.0058V12.3753C46.17 9.25687 44.3893 7.72127 41.1943 7.72127C38.3003 7.72127 36.3324 9.23324 36.0777 11.8083H38.9254C39.0181 10.698 39.8052 9.96561 41.1017 9.96561C42.4446 9.96561 43.3243 10.6743 43.3243 12.1391V12.7061L39.8052 13.1077C37.4206 13.3912 35.5684 14.3834 35.5684 16.7931C35.5684 18.9666 37.2353 20.2659 39.5274 20.2659C41.4027 20.2659 42.9845 19.4863 43.6401 18.1161C43.6689 18.937 43.9022 20.0061 43.9022 20.0061ZM40.3377 18.1634C39.157 18.1634 38.5087 17.5727 38.5087 16.6278C38.5087 15.3757 39.4579 15.0922 40.7082 14.9268L43.3243 14.6197V15.352C43.3243 17.242 41.8658 18.1634 40.3377 18.1634ZM56.2588 20.0061H59.176V3H56.2125V9.96561C55.6569 8.76075 54.3141 7.72127 52.4851 7.72127C49.3058 7.72127 47.099 10.2963 47.099 14.0054C47.099 17.7381 49.3058 20.2896 52.4851 20.2896C54.2678 20.2896 55.68 19.2973 56.2588 18.0925V20.0061ZM56.282 14.218C56.282 16.5569 55.1938 18.0689 53.3185 18.0689C51.3969 18.0689 50.1856 16.486 50.1856 14.0054C50.1856 11.5485 51.3969 9.94198 53.3185 9.94198C55.1938 9.94198 56.282 11.454 56.282 13.7928V14.218ZM60.9066 5.97304H64.0553V3.01996H60.9066V5.97304ZM60.9992 20.0061H63.9627V8.00476H60.9992V20.0061ZM67.6638 20.0061L70.6041 15.8954L73.5212 20.0061H76.9246L72.3636 13.7219L76.5542 8.00476H73.3823L70.7661 11.7138L68.1731 8.00476H64.7697L69.0066 13.8637L64.4919 20.0061H67.6638Z" />
+		<path fill-rule="evenodd" clip-rule="evenodd" d="M24.9132 20V14.0168H28.7986L32.4513 20H35.7006L31.6894 13.5686C33.5045 12.986 35.0955 11.507 35.0955 9.01961C35.0955 5.7479 32.7994 4 28.9571 4H22V20H24.9132ZM24.9132 6.35294V11.6863H28.821C31.0395 11.6863 32.1599 10.7675 32.1599 9.01961C32.1599 7.27171 30.9395 6.35294 28.621 6.35294H24.9132Z" />
+		<path d="M7 23C3.13401 23 0 19.6422 0 15.5C0 11.3578 3.13401 8 7 8V23Z" />
+		<path d="M7 0H0V7H7V0Z" />
+		<path d="M11.5 7C13.433 7 15 5.433 15 3.5C15 1.567 13.433 0 11.5 0C9.56704 0 8 1.567 8 3.5C8 5.433 9.56704 7 11.5 7Z" />
+	</>
+    })}</Reset>
+```
+
+### Table
+
+```jsx live="true"
+<Reset>{target => target("table", {
+      children: <>
+		<Reset>{target => target("caption", {
+            children: <>Table caption</>
+          })}</Reset>
+
+		<Reset>{target => target("thead", {
+            children: <>
+				<Reset>{target => target("tr", {
+                  children: <>
+						<Reset>{target => target("th", {
+                        "scope": "col",
+                        children: <>Column header</>
+                      })}</Reset>
+						<Reset>{target => target("th", {
+                        "scope": "col",
+                        children: <>Column header</>
+                      })}</Reset>
+					</>
+                })}</Reset>
+			</>
+          })}</Reset>
+
+		<Reset>{target => target("tbody", {
+            children: <>
+				<Reset>{target => target("tr", {
+                  children: <>
+						<Reset>{target => target("th", {
+                        "scope": "row",
+                        children: <>Row header</>
+                      })}</Reset>
+						<Reset>{target => target("td", {
+                        children: <>Cell data</>
+                      })}</Reset>
+					</>
+                })}</Reset>
+				<Reset>{target => target("tr", {
+                  children: <>
+						<Reset>{target => target("th", {
+                        "scope": "row",
+                        children: <>Row header</>
+                      })}</Reset>
+						<Reset>{target => target("td", {
+                        children: <>Cell data</>
+                      })}</Reset>
+					</>
+                })}</Reset>
+			</>
+          })}</Reset>
+
+		<Reset>{target => target("tfoot", {
+            children: <>
+				<Reset>{target => target("tr", {
+                  children: <>
+						<Reset>{target => target("th", {
+                        "scope": "row",
+                        children: <>Row header</>
+                      })}</Reset>
+						<Reset>{target => target("td", {
+                        children: <>Cell data</>
+                      })}</Reset>
+					</>
+                })}</Reset>
+			</>
+          })}</Reset>
+	</>
+    })}</Reset>
+```
+
+### Text area
+
+```jsx live="true"
+<Reset>{target => target("textarea", {
+      "placeholder": "Text area"
+    })}</Reset>
+```
+
+### Time
+
+```jsx live="true"
+<Reset>{target => target("time", {
+      "datetime": "2021-01-01",
+      children: <>Time</>
+    })}</Reset>
+```
+
+### Unarticulated annotation
+
+```jsx live="true"
+<Reset>{target => target("u", {
+      children: <>Unarticulated annotation</>
+    })}</Reset>
+```
+
+### Unordered list
+
+```jsx live="true"
+<Reset>{target => target("ul", {
+      children: <>
+		<li>Coffee</li>
+		<li>Tea</li>
+		<li>Milk</li>
+	</>
+    })}</Reset>
+```
+
+### Variable
+
+```jsx live="true"
+<Reset>{target => target("var", {
+      children: <>Variable</>
+    })}</Reset>
+```

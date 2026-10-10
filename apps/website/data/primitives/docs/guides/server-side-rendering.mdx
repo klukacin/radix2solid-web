@@ -1,0 +1,76 @@
+---
+metaTitle: Server-side rendering
+metaDescription: Render native Solid 2 primitives on the server and hydrate them with matching identities on the client.
+---
+
+> Native Solid 2 fork. Original documentation and designs © WorkOS; historical posts retain their original context.
+
+# Server-side rendering
+
+<Description>
+Render native Solid 2 primitives on the server and hydrate the same component tree on the client.
+</Description>
+
+## Overview
+
+Server-side rendering produces HTML for each request. Static rendering uses the same server renderer at build time. These native components use `solid-js` and `@solidjs/web` version `2.0.0-rc.13`, not React or a React framework. Compile the server and browser entries with the native Solid 2 compiler, and let your bundler select the packages’ default server exports and browser exports respectively.
+
+Use the same application, initial props, and `renderId` for server rendering and hydration. Native identity generation then keeps IDs and ARIA relationships consistent; the old React-before-18 ID workaround does not apply.
+
+## A shared application
+
+The following application is shared by both entries:
+
+```tsx
+// your-app.tsx
+import { Dialog } from '@radix-solid/primitives';
+
+export default function MyApp() {
+  return <Dialog.Root>
+    <Dialog.Trigger>Edit profile</Dialog.Trigger>
+    <Dialog.Portal>
+      <Dialog.Overlay />
+      <Dialog.Content>
+        <Dialog.Title>Profile</Dialog.Title>
+        <Dialog.Description>Change your profile.</Dialog.Description>
+        <Dialog.Close>Close</Dialog.Close>
+      </Dialog.Content>
+    </Dialog.Portal>
+  </Dialog.Root>;
+}
+```
+
+## Server entry
+
+Render the shared tree, include the native hydration script before the application markup, and load the built browser entry. `clientEntry` is the URL of that entry supplied by your bundler; escape it before inserting it into HTML.
+
+```tsx
+import { escape, generateHydrationScript, renderToString } from '@solidjs/web';
+import MyApp from './your-app.js';
+
+export function renderHtml(clientEntry: string) {
+  const body = renderToString(() => <MyApp />, { renderId: 'app-' });
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8">${generateHydrationScript()}</head><body><div id="app">${body}</div><script type="module" src="${escape(clientEntry, true)}"></script></body></html>`;
+}
+```
+
+Import any required stylesheet through your bundler and include its emitted stylesheet links in the HTML shell, as you would for a client-rendered application.
+
+## Browser entry
+
+Hydrate the existing mount instead of rendering a second application. Keep the identity prefix and initial component tree identical to the server entry.
+
+```tsx
+import { hydrate } from '@solidjs/web';
+import MyApp from './your-app.js';
+
+const root = document.getElementById('app');
+if (!root) throw new Error('Missing application mount.');
+hydrate(() => <MyApp />, root, { renderId: 'app-' });
+```
+
+## Portals and browser-only work
+
+Native portals intentionally render no portal content on the server and mount it after the client settles. In this example, the dialog trigger is server-rendered, while the portal’s overlay and content are mounted on the client when the dialog opens. Do not invent server portal markup or use a legacy portal implementation to force a match.
+
+Put browser-only work such as measuring elements or subscribing to browser events in native `onSettled` callbacks. Register its teardown with `onCleanup` in that owned callback so navigation or unmounting removes the subscription. Do not read `window`, `document`, or storage while rendering on the server.

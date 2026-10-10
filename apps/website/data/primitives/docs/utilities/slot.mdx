@@ -1,0 +1,117 @@
+---
+metaTitle: Slot
+metaDescription: Merges native props onto one explicitly requested Solid target.
+name: slot
+---
+
+# Slot
+
+<Description>Merges native props onto one explicitly requested target.</Description>
+
+> Native Solid 2 fork. Original documentation and designs © WorkOS. Native Slot uses target factories, not React element cloning.
+
+<Highlights features={["Supports your own asChild API.", "Composes events, classes, styles, ARIA IDs and DOM refs.", "Rejects zero, multiple and incorrectly returned targets."]} />
+
+## Anatomy
+
+Import the namespace and request one host inside its render function:
+
+```tsx
+import { Slot } from '@radix-solid/primitives';
+
+export default () => <Slot.Root class="message">{target => target('div', {
+  children: 'Hello',
+})}</Slot.Root>;
+```
+
+`Slot.Root` requires a `SlotRender`: `(target: SlotTarget) => Element`. Call `target(component, props)` exactly once and return its exact result. Returning JSX created earlier or unrelated output is a runtime error. Target-specific props are inferred from the component or native host.
+
+## Basic example
+
+A custom button can expose the same discriminated `asChild` contract:
+
+```tsx
+// your-button.tsx
+import { omit, type Element } from 'solid-js';
+import type { JSX } from '@solidjs/web';
+import { Slot } from '@radix-solid/primitives';
+
+type ButtonProps =
+  | (Omit<JSX.HTMLAttributes<HTMLElement>, 'children'> & { asChild: true; children: Slot.SlotRender })
+  | (Omit<JSX.IntrinsicElements['button'], 'children'> & { asChild?: false; children?: Element });
+
+export function Button(props: ButtonProps) {
+  if (props.asChild) return <Slot.Root {...omit(props, 'asChild')} />;
+  return <button {...omit(props, 'asChild')} />;
+}
+```
+
+### Multiple children
+
+`Slot.Slottable` decorates the selected target's content without adding a second target. Pass the original target factory in `child`; `leading` and `trailing` stay inside the chosen host:
+
+```tsx
+import { Slot } from '@radix-solid/primitives';
+
+export default () => <Slot.Root>{Slot.Slottable({
+  child: target => target('a', { href: '/contact', children: 'Contact' }),
+  leading: '← ',
+  trailing: ' →',
+})}</Slot.Root>;
+```
+
+### Wrapping the slotted element
+
+The optional `children` callback wraps the target's content, not its host. The outer link or button still receives the merged attributes, events and refs:
+
+```tsx
+import { Slot } from '@radix-solid/primitives';
+
+export default () => <Slot.Root>{Slot.Slottable({
+  child: target => target('a', { href: '/contact', children: 'Contact' }),
+  children: content => <span class="ButtonInner">{content}</span>,
+})}</Slot.Root>;
+```
+
+### Usage
+
+Pass a factory through your button's `asChild` branch:
+
+```tsx
+import { Button } from './your-button';
+
+export default () => <Button asChild>{target => target('a', {
+  href: '/contact', children: 'Contact',
+})}</Button>;
+```
+
+### Event handlers
+
+Child handlers run before slot handlers. The slot handler still runs; check `event.defaultPrevented` when cancellation matters:
+
+```tsx
+import { Slot } from '@radix-solid/primitives';
+
+export default () => <Slot.Root onClick={event => {
+  if (!event.defaultPrevented) console.log('Not logged when the child cancels.');
+}}>{target => target('button', {
+  onClick: event => event.preventDefault(), children: 'Cancel the action',
+})}</Slot.Root>;
+```
+
+Classes concatenate, child style values override overlapping parent values, `aria-labelledby` and `aria-describedby` IDs are deduplicated, and both refs receive the same native host. Other child props take precedence over parent props.
+
+### Typed slots
+
+`Slot.createSlot(name)` creates an owner-named boundary with the same generic `SlotTarget` inference. Its name appears in structural-contract errors; it does not accept React element/ref type arguments:
+
+```tsx
+import { Slot } from '@radix-solid/primitives';
+
+const ButtonSlot = Slot.createSlot('Button.Slot');
+export default () => <ButtonSlot>{target => target('button', {
+  type: 'submit', children: 'Save',
+})}</ButtonSlot>;
+```
+
+`Slot.createSlottable(name)` similarly creates a named content decorator. Native types are exported as `Slot.SlotProps`, `Slot.SlotTarget`, `Slot.SlotRender` and `Slot.SlottableProps`. See [Composition](/primitives/docs/guides/composition) for custom refs and nested primitive factories.

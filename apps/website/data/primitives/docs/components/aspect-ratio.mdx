@@ -1,0 +1,63 @@
+---
+metaTitle: Aspect Ratio
+metaDescription: Displays content within a desired ratio.
+name: aspect-ratio
+---
+
+
+> Native Solid 2 fork. Original documentation and designs © WorkOS; historical posts retain their original context.
+
+
+# Aspect Ratio
+
+<Description>Displays content within a desired ratio.</Description>
+
+<HeroContainer>
+	<AspectRatioDemo />
+</HeroContainer>
+
+<HeroCodeBlock folder="AspectRatio" />
+
+<Highlights features={["Accepts any custom ratio."]} />
+
+## Anatomy
+
+Import the component.
+
+```jsx
+import { AspectRatio } from "@radix-solid/primitives";
+export default () => <AspectRatio.Root />;
+```
+
+## API Reference
+
+### Root
+
+Contains the content you want to constrain to a given ratio.
+
+<PropsTable
+	data={[
+		{
+			name: "asChild",
+			required: false,
+			type: "boolean",
+			default: "false",
+			description: (
+				<>
+					Render through a single-target factory, merging props and behavior
+					with the chosen host.
+					<br />
+					<br />
+					Read our <a href="../guides/composition">Composition</a> guide for
+					more details.
+				</>
+			),
+		},
+		{
+			name: "ratio",
+			type: "number",
+			default: "1",
+			description: "The desired ratio",
+		},
+	]}
+/>

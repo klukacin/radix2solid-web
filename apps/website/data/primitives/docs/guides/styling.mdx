@@ -1,0 +1,99 @@
+---
+metaTitle: Styling
+metaDescription: Radix Primitives are unstyled—and compatible with any styling solution—giving you complete control over styling.
+---
+
+
+> Native Solid 2 fork. Original documentation and designs © WorkOS; historical posts retain their original context.
+
+
+# Styling
+
+<Description>
+	Radix Primitives are unstyled—and compatible with any styling solution—giving
+	you complete control over styling.
+</Description>
+
+## Styling overview
+
+### Functional styles
+
+You are in control of all aspects of styling, including functional styles. For example—by default—a [Dialog Overlay](../components/dialog) won't cover the entire viewport. You're responsible for adding those styles, plus any presentation styles.
+
+### Classes
+
+All components and their DOM-rendering parts accept a `class` prop. This class is passed through to the DOM element.
+
+### Data attributes
+
+When components are stateful, their state will be exposed in a `data-state` attribute. For example, when an [Accordion Item](../components/accordion) is opened, it includes a `data-state="open"` attribute.
+
+## Styling with CSS
+
+### Styling a part
+
+You can style a component part by targeting the `class` that you provide.
+
+```jsx line=2,4
+import { Accordion } from "@radix-solid/primitives";
+import "./styles.css";
+export const AccordionDemo = () => <Accordion.Root type="single">
+		<Accordion.Item __class__="AccordionItem" value="item-1" />
+		{/* … */}
+	</Accordion.Root>;
+```
+
+### Styling a state
+
+You can style a component state by targeting its `data-state` attribute.
+
+```css
+.AccordionItem {
+	border-bottom: 1px solid gainsboro;
+}
+
+.AccordionItem[__data-state__="open"] {
+	border-bottom-width: 2px;
+}
+```
+
+## Styling with JavaScript
+
+Native Solid supports style objects. Use them for dynamic values and CSS classes for selectors or state-dependent rules; React-only styling wrappers cannot render native Solid primitives.
+
+### Styling a part
+
+```jsx line=3
+import { Accordion } from "@radix-solid/primitives";
+export const AccordionDemo = () => <Accordion.Root type="single">
+		<Accordion.Item __class__="AccordionItem" value="item-1" style={{ "border-bottom": "var(--accordion-border-width, 1px) solid gainsboro" }} />
+	</Accordion.Root>;
+```
+
+### Styling a state
+
+You can style a component state by targeting its `data-state` attribute.
+
+```css
+.AccordionItem[__data-state__="open"] {
+	--accordion-border-width: 2px;
+}
+```
+
+## Extending a primitive
+
+Extend a primitive with a native Solid component. Preserve its reactive props and forward them to the semantic host:
+
+```tsx
+import { type ComponentProps } from "solid-js";
+import { Accordion as AccordionPrimitive } from "@radix-solid/primitives";
+const AccordionItem = (p: Extract<ComponentProps<typeof AccordionPrimitive.Item>, {
+  asChild?: false;
+}>) => <AccordionPrimitive.Item {...p} ref={p.ref} />;
+```
+
+## Summary
+
+Radix Primitives were designed to encapsulate accessibility concerns and other complex functionalities, while ensuring you retain complete control over styling.
+
+For convenience, stateful components include a `data-state` attribute.

@@ -1,0 +1,10 @@
+import { Switch as SwitchPrimitive } from "@radix-solid/primitives";
+import { styled } from "../../utils/css";
+import styles from "./primitives-hero-switch.module.css";
+const Switch = styled(SwitchPrimitive.Root, styles.Switch);
+const SwitchThumb = styled(SwitchPrimitive.Thumb, styles.Thumb);
+export function PrimitivesHeroSwitch() {
+  return <Switch defaultChecked aria-label="Demo switch">
+			<SwitchThumb />
+		</Switch>;
+}

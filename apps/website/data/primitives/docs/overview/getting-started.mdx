@@ -1,0 +1,118 @@
+---
+metaTitle: Getting started
+metaDescription: A quick tutorial to get you up and running with Radix Primitives.
+name: popover
+---
+
+
+> Native Solid 2 fork. Original documentation and designs © WorkOS; historical posts retain their original context.
+
+
+# Getting started
+
+<Description>
+	A quick tutorial to get you up and running with Radix Primitives.
+</Description>
+
+## Implementing a Popover
+
+In this quick tutorial, we will install and style the [Popover](../components/popover) component.
+
+### 1. Install the primitive
+
+Use the local packed native package; this fork is private and is not published as `radix-ui` or `@radix-solid/primitives` on npm. Build and pack `packages/primitives`, then install its generated tarball:
+
+```bash
+npm install ./radix-solid-primitives-0.0.0-local.tgz
+```
+
+### 2. Import the parts
+
+Import and structure the parts.
+
+```jsx line=3,4,5,6,7,8,9,10,11,12
+// index.tsx
+
+import { Popover } from "@radix-solid/primitives";
+const PopoverDemo = () => <Popover.Root>
+		<Popover.Trigger>More info</Popover.Trigger>
+		<Popover.Portal>
+			<Popover.Content>
+				Some more info…
+				<Popover.Arrow />
+			</Popover.Content>
+		</Popover.Portal>
+	</Popover.Root>;
+export default PopoverDemo;
+```
+
+Each primitive is also available from its own entrypoint. Importing from the subpath can help some bundlers tree-shake more effectively:
+
+```jsx
+import * as Popover from "@radix-solid/primitives/popover";
+```
+
+### 3. Add your styles
+
+Add styles where desired.
+
+```jsx line=4,6,8,10
+// index.tsx
+
+import { Popover } from "@radix-solid/primitives";
+import "./styles.css";
+const PopoverDemo = () => <Popover.Root>
+		<Popover.Trigger __class__="PopoverTrigger">Show info</Popover.Trigger>
+		<Popover.Portal>
+			<Popover.Content __class__="PopoverContent">
+				Some content
+				<Popover.Arrow __class__="PopoverArrow" />
+			</Popover.Content>
+		</Popover.Portal>
+	</Popover.Root>;
+export default PopoverDemo;
+```
+
+```css
+/* styles.css */
+.PopoverTrigger {
+	background-color: white;
+	border-radius: 4px;
+}
+
+.PopoverContent {
+	border-radius: 4px;
+	padding: 20px;
+	width: 260px;
+	background-color: white;
+}
+
+.PopoverArrow {
+	fill: white;
+}
+```
+
+### Demo
+
+Here's a complete demo.
+
+<HeroContainer>
+	<GettingStartedDemo />
+</HeroContainer>
+
+<HeroCodeBlock folder="GettingStarted" cssLib="css" />
+
+## Summary
+
+The steps above outline briefly what's involved in using a Radix Primitive in your application.
+
+These components are low-level enough to give you control over how you want to wrap them. You're free to introduce your own high-level API to better suit the needs of your team and product.
+
+In a few simple steps, we've implemented a fully accessible Popover component, without having to worry about many of its complexities.
+
+- Adheres to [WAI-ARIA](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal) design pattern.
+- Can be controlled or uncontrolled.
+- Customize side, alignment, offsets, collision handling.
+- Optionally render a pointing arrow.
+- Focus is fully managed and customizable.
+- Dismissing and layering behavior is highly customizable.

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#19152b"/>
+  <g fill="none" stroke="#b6a2ff" stroke-width="12"><path d="M90 165h150v150H90zM165 240h150v150H165z"/></g>
+  <g fill="#ffffff" font-family="DejaVu Sans, sans-serif"><text x="365" y="290" font-size="72" font-weight="bold">Radix2Solid</text><text x="365" y="350" font-size="28">Unofficial native Solid 2 fork</text><text x="365" y="400" font-size="24" fill="#c9c1dd">Primitives · Icons · Themes · Documentation</text></g>
+</svg>

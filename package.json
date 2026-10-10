@@ -1,0 +1,29 @@
+{
+  "name": "radix2solid-web",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.5.0",
+  "engines": { "node": ">=24 <25" },
+  "scripts": {
+    "bootstrap": "node scripts/prepare-library.ts",
+    "build": "pnpm bootstrap && pnpm --filter @radix-solid/primitives build && pnpm --filter @radix-solid/icons build && pnpm --filter @radix-solid/themes build && pnpm --filter @radix-solid/website build",
+    "typecheck": "tsc --noEmit",
+    "check": "pnpm build && pnpm typecheck && pnpm --filter @radix-solid/website check:export && pnpm --filter @radix-solid/website check:snippets && pnpm --filter @radix-solid/website check:examples && pnpm --filter @radix-solid/website check:sandboxes && pnpm test",
+    "test": "node --test tests/bootstrap.test.ts && pnpm --filter @radix-solid/website test && playwright test",
+    "dev": "pnpm --filter @radix-solid/website preview"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.0",
+    "@radix-solid/icons": "workspace:*",
+    "@radix-solid/primitives": "workspace:*",
+    "@radix-solid/themes": "workspace:*",
+    "@radix-ui/colors": "3.0.0",
+    "@solidjs/vite-plugin": "3.0.0-next.35",
+    "@solidjs/web": "2.0.0-rc.13",
+    "@types/node": "24.19.1",
+    "axe-core": "4.11.0",
+    "solid-js": "2.0.0-rc.13",
+    "typescript": "6.0.2",
+    "vite": "8.3.3"
+  }
+}

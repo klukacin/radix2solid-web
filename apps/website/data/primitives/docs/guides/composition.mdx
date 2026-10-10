@@ -1,0 +1,95 @@
+---
+metaTitle: Composition
+metaDescription: Compose native Solid primitives with explicit single-target factories, DOM refs and your own components.
+---
+
+# Composition
+
+<Description>Compose native Solid primitives onto alternative element types or your own components.</Description>
+
+> Native Solid 2 fork. Original documentation and designs © WorkOS. The native composition contract below replaces React element cloning; it is deliberately not source-compatible with React `asChild` children.
+
+DOM-rendering primitive parts accept `asChild`. Supply a function that calls its `target` exactly once and returns that result. The target merges primitive behavior with the chosen host or component before native Solid renders it. Do not return pre-rendered JSX, spread injected props yourself or call the target more than once.
+
+## Changing the element type
+
+Keep the default element unless a different semantic host is appropriate. A tooltip can decorate a focusable link instead of its default button:
+
+```tsx line=4-6
+import { Tooltip } from '@radix-solid/primitives';
+
+export default () => <Tooltip.Provider><Tooltip.Root>
+  <Tooltip.Trigger __asChild__>{target => target('a', {
+    href: 'https://www.radix-ui.com/', children: 'Radix UI',
+  })}</Tooltip.Trigger>
+  <Tooltip.Portal><Tooltip.Content>Visit the original Radix project.<Tooltip.Arrow /></Tooltip.Content></Tooltip.Portal>
+</Tooltip.Root></Tooltip.Provider>;
+```
+
+The chosen host must remain accessible and functional. A trigger must support keyboard and pointer interaction; a non-focusable `div` is not a substitute for a button or link.
+
+## Composing with your own components
+
+Pass your component and its native props to `target`. Component props must reach the actual semantic host, including event handlers, ARIA attributes and refs.
+
+### Your component must spread props
+
+Do not destructure reactive props into snapshots. Spread the live props object onto the native host:
+
+```tsx line=4
+// my-button.tsx
+import type { JSX } from '@solidjs/web';
+
+export const MyButton = (props: JSX.IntrinsicElements['button']) => <button {__...props__} />;
+```
+
+Native DOM props use `class`, `for` and `tabindex`, not React's `className`, `htmlFor` or `tabIndex`.
+
+### Your component must forward ref
+
+A native ref is a normal prop; spreading the complete props object forwards it. There is no `forwardRef` wrapper. For a caller-owned ref, assign the real host:
+
+```tsx line=7-9
+import { Dialog } from '@radix-solid/primitives';
+import { MyButton } from './my-button';
+
+export default () => {
+  let trigger!: HTMLButtonElement;
+  return <Dialog.Root>
+    <Dialog.Trigger asChild>{target => target(MyButton, {
+      __ref:__ element => { trigger = element; }, children: 'Edit profile',
+    })}</Dialog.Trigger>
+    <Dialog.Portal><Dialog.Overlay /><Dialog.Content>
+      <Dialog.Title>Edit profile</Dialog.Title>
+      <Dialog.Description>Update your profile and close when finished.</Dialog.Description>
+      <Dialog.Close onClick={() => trigger.focus()}>Done</Dialog.Close>
+    </Dialog.Content></Dialog.Portal>
+  </Dialog.Root>;
+};
+```
+
+The primitive's own ref and your component's ref are composed onto the same host. Do not replace the host with an extra wrapper: focus restoration and measurement require that actual element.
+
+## Composing multiple primitives
+
+Nest target factories, not pre-rendered children. Every boundary must still request and return exactly one target:
+
+```tsx line=5-8
+import { Dialog, Tooltip } from '@radix-solid/primitives';
+import { MyButton } from './my-button';
+
+export default () => <Dialog.Root><Tooltip.Provider><Tooltip.Root>
+  <Tooltip.Trigger __asChild__>{tooltip => tooltip(Dialog.Trigger, {
+    __asChild__: true,
+    children: dialog => dialog(MyButton, { children: 'Open dialog' }),
+  })}</Tooltip.Trigger>
+  <Tooltip.Portal><Tooltip.Content>Edit your profile.<Tooltip.Arrow /></Tooltip.Content></Tooltip.Portal>
+  <Dialog.Portal><Dialog.Overlay /><Dialog.Content>
+    <Dialog.Title>Edit profile</Dialog.Title>
+    <Dialog.Description>Both triggers share one native button.</Dialog.Description>
+    <Dialog.Close>Close</Dialog.Close>
+  </Dialog.Content></Dialog.Portal>
+</Tooltip.Root></Tooltip.Provider></Dialog.Root>;
+```
+
+Child event handlers run before primitive handlers. `preventDefault()` can cancel behavior whose primitive handler checks cancellation. Classes and styles compose; ARIA ID references are deduplicated and refs share the final native host. See [Slot](/primitives/docs/utilities/slot) for your own `asChild` API.

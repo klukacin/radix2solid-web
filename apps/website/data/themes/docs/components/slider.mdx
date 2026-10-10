@@ -1,0 +1,97 @@
+---
+metaTitle: Slider
+metaDescription: Provides user selection from a range of values.
+sourcePath: components/slider
+---
+
+
+> Native Solid 2 fork. Original documentation and designs © WorkOS; historical posts retain their original context.
+
+
+```jsx live=true
+<Slider aria-label="Value" defaultValue={[50]} />
+```
+
+## API Reference
+
+This component inherits props from the [Slider primitive](/primitives/docs/components/slider) and supports [common margin props](/themes/docs/overview/layout#margin-props).
+
+<ThemesPropsTable defs="sliderPropDefs" />
+
+## Examples
+
+### Size
+
+Use the `size` prop to control the size.
+
+```jsx live=true
+<Flex direction="column" gap="4" maxWidth="300px">
+	<Slider aria-label="Size 1 value" defaultValue={[25]} size="1" />
+	<Slider aria-label="Size 2 value" defaultValue={[50]} size="2" />
+	<Slider aria-label="Size 3 value" defaultValue={[75]} size="3" />
+</Flex>
+```
+
+### Variant
+
+Use the `variant` prop to control the visual style.
+
+```jsx live=true
+<Flex direction="column" gap="4" maxWidth="300px">
+	<Slider aria-label="Surface value" defaultValue={[25]} variant="surface" />
+	<Slider aria-label="Classic value" defaultValue={[50]} variant="classic" />
+	<Slider aria-label="Soft value" defaultValue={[75]} variant="soft" />
+</Flex>
+```
+
+### Color
+
+Use the `color` prop to assign a specific [color](/themes/docs/theme/color).
+
+```jsx live=true
+<Flex direction="column" gap="4" maxWidth="300px">
+	<Slider aria-label="Indigo value" defaultValue={[20]} color="indigo" />
+	<Slider aria-label="Cyan value" defaultValue={[40]} color="cyan" />
+	<Slider aria-label="Orange value" defaultValue={[60]} color="orange" />
+	<Slider aria-label="Crimson value" defaultValue={[80]} color="crimson" />
+</Flex>
+```
+
+### High-contrast
+
+Use the `highContrast` prop to increase color contrast in light mode.
+
+```jsx live=true
+<Grid columns="2" gap="4">
+	<Slider aria-label="Indigo value" defaultValue={[10]} color="indigo" />
+	<Slider aria-label="High contrast indigo value" defaultValue={[10]} color="indigo" highContrast />
+	<Slider aria-label="Cyan value" defaultValue={[30]} color="cyan" />
+	<Slider aria-label="High contrast cyan value" defaultValue={[30]} color="cyan" highContrast />
+	<Slider aria-label="Orange value" defaultValue={[50]} color="orange" />
+	<Slider aria-label="High contrast orange value" defaultValue={[50]} color="orange" highContrast />
+	<Slider aria-label="Crimson value" defaultValue={[70]} color="crimson" />
+	<Slider aria-label="High contrast crimson value" defaultValue={[70]} color="crimson" highContrast />
+	<Slider aria-label="Gray value" defaultValue={[90]} color="gray" />
+	<Slider aria-label="High contrast gray value" defaultValue={[90]} color="gray" highContrast />
+</Grid>
+```
+
+### Radius
+
+Use the `radius` prop to assign a specific radius value.
+
+```jsx live=true
+<Flex direction="column" gap="4" maxWidth="300px">
+	<Slider aria-label="No radius value" defaultValue={[25]} radius="none" />
+	<Slider aria-label="Small radius value" defaultValue={[50]} radius="small" />
+	<Slider aria-label="Full radius value" defaultValue={[75]} radius="full" />
+</Flex>
+```
+
+### Range
+
+Provide multiple values to create a range slider.
+
+```jsx live=true
+<Slider defaultValue={[25, 75]} />
+```

@@ -1,0 +1,125 @@
+---
+metaTitle: How to use Radix Colors
+metaDescription: How to use Radix Colors.
+---
+
+
+> Native Solid 2 fork. Original documentation and designs © WorkOS; historical posts retain their original context.
+
+
+# Usage
+
+<Description>
+	How to use Radix Colors with various styling solutions.
+</Description>
+
+Radix Colors scales are just simple JavaScript objects, so you can use them with your preferred styling solution easily. Below you can find usage examples for popular styling solutions.
+
+## Vanilla CSS
+
+Radix Colors provides the colors bundled as raw CSS files. You can import them directly in your files when using a bundler, such as Parcel or Webpack.
+
+```css
+/* Import only the scales you need */
+@import "@radix-ui/colors/gray.css";
+@import "@radix-ui/colors/blue.css";
+@import "@radix-ui/colors/green.css";
+@import "@radix-ui/colors/red.css";
+@import "@radix-ui/colors/gray-dark.css";
+@import "@radix-ui/colors/blue-dark.css";
+@import "@radix-ui/colors/green-dark.css";
+@import "@radix-ui/colors/red-dark.css";
+
+/* Use the colors as CSS variables */
+.button {
+	background-color: var(--blue-4);
+	color: var(--blue-11);
+	border-color: var(--blue-7);
+}
+.button:hover {
+	background-color: var(--blue-5);
+	border-color: var(--blue-8);
+}
+```
+
+```html
+<!-- For dark mode, apply a `.dark` class to <body> or a parent. -->
+<body class="dark">
+	<button class="button">Button</button>
+</body>
+```
+
+<Note>
+	Light scales apply their CSS variables to the `:root` element and to the
+	`.light` and `.light-theme` classes. Dark scales apply their CSS variables to
+	the `.dark` and `.dark-theme` classes.
+</Note>
+
+## Native Solid JSX
+
+The JavaScript scales are framework-independent. Use them directly in Solid style objects; React-only `styled-components` and Emotion providers are not native Solid integrations.
+
+```tsx
+import { createMemo, createSignal } from "solid-js";
+import { blue, blueDark } from "@radix-ui/colors";
+
+export default function App() {
+  const [dark, setDark] = createSignal(false);
+  const colors = createMemo(() => dark() ? blueDark : blue);
+  return (
+    <button
+      style={{
+        "background-color": colors().blue4,
+        color: colors().blue11,
+        "border-color": colors().blue7,
+      }}
+      onClick={() => setDark(value => !value)}
+    >
+      Switch to {dark() ? "light" : "dark"} colors
+    </button>
+  );
+}
+```
+
+## vanilla-extract
+
+```tsx
+import { gray, blue, red, green, grayDark, blueDark, redDark, greenDark } from "@radix-ui/colors";
+import { createTheme, style } from "@vanilla-extract/css";
+export const [theme, vars] = createTheme({
+  colors: {
+    ...gray,
+    ...blue,
+    ...red,
+    ...green
+  }
+});
+export const darkTheme = createTheme(vars, {
+  colors: {
+    ...grayDark,
+    ...blueDark,
+    ...redDark,
+    ...greenDark
+  }
+});
+
+// Use the colors in your styles
+export const styles = {
+  button: style({
+    backgroundColor: vars.colors.blue4,
+    color: vars.colors.blue11,
+    borderColor: vars.colors.blue7,
+    ":hover": {
+      backgroundColor: vars.colors.blue5,
+      borderColor: vars.colors.blue8
+    }
+  })
+};
+
+// Apply your theme to it
+export default function App() {
+  return <body class={theme}>
+			<button class={styles.button}>Radix Colors</button>
+		</body>;
+}
+```

@@ -1,0 +1,72 @@
+---
+metaTitle: Visually Hidden
+metaDescription: Hides content from the screen in an accessible way.
+name: visually-hidden
+---
+
+
+> Native Solid 2 fork. Original documentation and designs © WorkOS; historical posts retain their original context.
+
+
+# Visually Hidden
+
+<Description>Hides content from the screen in an accessible way.</Description>
+
+<Highlights
+	features={[
+		"Visually hides content while preserving it for assistive technology.",
+	]}
+/>
+
+## Anatomy
+
+Import the component.
+
+```jsx
+import { VisuallyHidden } from "@radix-solid/primitives";
+export default () => <VisuallyHidden.Root />;
+```
+
+## Basic example
+
+Use the visually hidden primitive.
+
+```jsx
+import { VisuallyHidden } from "@radix-solid/primitives";
+import { GearIcon } from "@radix-solid/icons";
+export default () => <button>
+		<GearIcon />
+		<VisuallyHidden.Root>Settings</VisuallyHidden.Root>
+	</button>;
+```
+
+## API Reference
+
+### Root
+
+Anything you put inside this component will be hidden from the screen but will be announced by screen readers.
+
+<PropsTable
+	data={[
+		{
+			name: "asChild",
+			required: false,
+			type: "boolean",
+			default: "false",
+			description: (
+				<>
+					Render through a single-target factory, merging props and behavior
+					with the chosen host.
+					<br />
+					<br />
+					Read our <a href="../guides/composition">Composition</a> guide for
+					more details.
+				</>
+			),
+		},
+	]}
+/>
+
+## Accessibility
+
+This is useful in certain scenarios as an alternative to traditional labelling with `aria-label` or `aria-labelledby`.
