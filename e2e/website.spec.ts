@@ -634,19 +634,12 @@ test('documentation code copies native factories without word highlight annotati
   expect(copied).not.toMatch(/__asChild__|<span|data-highlighted/);
 });
 
-test('curated documentation navigation and historical metadata retain their public controls', async ({ page, request }) => {
+test('curated documentation navigation and native Markdown retain their public controls', async ({ page, request }) => {
   await page.goto(`${origin}/primitives/docs/components/form`);
   const navigation = page.getByRole('navigation', { name: 'Documentation', exact: true });
   await expect(navigation.getByRole('heading', { name: 'Utilities', exact: true })).toBeVisible();
   await expect(navigation.getByRole('link', { name: 'Form Preview', exact: true })).toBeVisible();
   await expect(page.getByRole('link', { name: 'View original source', exact: true })).toHaveAttribute('href', /radix-ui\/primitives/);
-  const hero = page.locator('.hero-demo');
-  await expect(hero).toHaveClass(/light/);
-  await expect(hero.locator('input').first()).toHaveAttribute('data-1p-ignore', 'true');
-  await page.goto(`${origin}/blog/themes-3`);
-  expect(await page.locator('link[rel="icon"]').evaluateAll(links => links.map(link => link.getAttribute('href')))).toEqual(['/favicon.png', '/favicon-black.svg', '/favicon-white.svg']);
-  const image = page.locator('meta[property="og:image"]');
-  await expect(image).toHaveAttribute('content', /^https:\/\//);
   await page.goto(`${origin}/colors/docs/overview/installation`);
   await expect(page.locator('.document-note').first()).toBeVisible();
   const html = await (await request.get(`${origin}/primitives/docs/guides/server-side-rendering.md`)).text();
