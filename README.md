@@ -9,14 +9,14 @@ The site preserves 137 MDX documents, 151 routes plus 404, 215 demo source files
 Use Node **24.21.0** and pnpm **11.5.0**, matching `.node-version` and `packageManager`.
 
 ```sh
-pnpm bootstrap
+node scripts/prepare-library.ts
 pnpm install --frozen-lockfile
 pnpm exec playwright install chromium firefox webkit
 pnpm check
 pnpm dev
 ```
 
-`bootstrap` reads the fixed public repository and full commit from `library-source.json`, then prepares ignored `.library/` before installation. That exact library commit must be published for the default HTTPS fetch to succeed. It does not fall back to a branch, npm or copied source. An existing checkout must have the pinned HEAD and no staged, unstaged or nonignored untracked changes; wrong HEAD, dirt, symlinks, non-Git directories and invalid/replaced pins fail without resetting or overwriting existing data. Ignored `dist/` and `node_modules/` outputs are allowed.
+The dependency-free Node bootstrap reads the fixed public repository and full commit from `library-source.json`, then prepares ignored `.library/` before installation. Run it directly, before any pnpm command: pnpm can automatically install workspace dependencies before running a package script. That exact library commit must be published for the default HTTPS fetch to succeed. It does not fall back to a branch, npm or copied source. An existing checkout must have the pinned HEAD and no staged, unstaged or nonignored untracked changes; wrong HEAD, dirt, symlinks, non-Git directories and invalid/replaced pins fail without resetting or overwriting existing data. Ignored `dist/` and `node_modules/` outputs are allowed.
 
 Install **once at this web root**, not inside `.library`. The workspace contains `apps/website` and the three actual `.library/packages/*` producers. Build validates the checkout again, then builds real primitives → icons → themes distributions before the site. There are no library source aliases, React bridge, Solid 1 runtime or second library-root dependency installation. The web lock retains the accepted producer dependency resolutions and native RC.13 overrides.
 
@@ -27,7 +27,7 @@ If the pinned source has not been published yet, a real local sibling clone is a
 ```sh
 git clone --no-hardlinks ../radix2solid .library
 git -C .library checkout --detach 85c98e99aea025a7ce20c3ab3c77f3269c680e94
-pnpm bootstrap
+node scripts/prepare-library.ts
 pnpm install --frozen-lockfile
 pnpm check
 ```

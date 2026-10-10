@@ -4,6 +4,8 @@
 
 - Native Solid 2 static rendering/hydration for all 137 MDX documents and 151 routes plus 404, including both component indexes; no React/Next runtime or bespoke client router.
 - Use native Radix2Solid branding while retaining navigation and native Markdown acceptance independently of incidental asset filenames, presentation defaults and password-manager attribute wiring.
+- Prepare the pinned native workspace with the dependency-free Node bootstrap before pnpm installation; builds validate the same checkout directly.
+- Keep the shared document header's primary controls inside the initial mobile viewport by allowing its search label to ellipsize without changing its accessible name or functionality.
 - Preserve original marketing, historical posts/case studies, complete Themes playground and dashboard/ecommerce/music layouts with attribution.
 - Native live snippets, API metadata, code/style controls, 92 independent runnable sandbox downloads and licensed icon SVG/package downloads.
 - Native desktop/mobile navigation, stored/system appearance, retryable heading-aware MiniSearch and static Markdown negotiation.

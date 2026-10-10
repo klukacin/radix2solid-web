@@ -5,8 +5,7 @@
   "packageManager": "pnpm@11.5.0",
   "engines": { "node": ">=24 <25" },
   "scripts": {
-    "bootstrap": "node scripts/prepare-library.ts",
-    "build": "pnpm bootstrap && pnpm --filter @radix-solid/primitives build && pnpm --filter @radix-solid/icons build && pnpm --filter @radix-solid/themes build && pnpm --filter @radix-solid/website build",
+    "build": "node scripts/prepare-library.ts && pnpm --filter @radix-solid/primitives build && pnpm --filter @radix-solid/icons build && pnpm --filter @radix-solid/themes build && pnpm --filter @radix-solid/website build",
     "typecheck": "tsc --noEmit",
     "check": "pnpm build && pnpm typecheck && pnpm --filter @radix-solid/website check:export && pnpm --filter @radix-solid/website check:snippets && pnpm --filter @radix-solid/website check:examples && pnpm --filter @radix-solid/website check:sandboxes && pnpm test",
     "test": "node --test tests/bootstrap.test.ts && pnpm --filter @radix-solid/website test && playwright test",

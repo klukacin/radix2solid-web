@@ -7,7 +7,7 @@ The exact preserved inventory is owned by [`coverage-manifest.json`](coverage-ma
 ## Commands from the web root
 
 ```sh
-pnpm bootstrap
+node scripts/prepare-library.ts
 pnpm install --frozen-lockfile
 pnpm build
 pnpm typecheck

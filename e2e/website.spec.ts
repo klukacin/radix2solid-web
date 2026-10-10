@@ -6,11 +6,17 @@ const origin = 'http://127.0.0.1:4149';
 for (const viewport of [{ width: 1365, height: 900 }, { width: 390, height: 844 }]) {
   test(`primary GitHub control links to the native library at ${viewport.width}px`, async ({ page }) => {
     await page.setViewportSize(viewport);
-    for (const path of ['/', '/primitives', '/icons', '/colors', '/primitives/docs/components/dialog']) {
+    for (const path of ['/', '/primitives', '/icons', '/colors', '/themes/playground', '/primitives/docs/components/dialog', '/themes/docs/components/dialog', '/colors/docs/palette-composition/scales', '/blog/themes-3', '/primitives/case-studies/vercel']) {
       await page.goto(`${origin}${path}`);
       const github = page.getByRole('link', { name: 'View GitHub', exact: true }).filter({ visible: true });
       await expect(github).toHaveCount(1);
       await expect(github).toHaveAttribute('href', 'https://github.com/klukacin/radix2solid');
+      for (const control of [github, page.getByRole('link', { name: 'Radix2Solid homepage', exact: true }).first(), page.getByRole('button', { name: 'Toggle theme', exact: true }).filter({ visible: true }).first()]) {
+        const bounds = await control.boundingBox();
+        expect(bounds, `${path}: primary control has bounds`).not.toBeNull();
+        expect(bounds!.x, `${path}: primary control is inside the initial viewport`).toBeGreaterThanOrEqual(0);
+        expect(bounds!.x + bounds!.width, `${path}: primary control is inside the initial viewport`).toBeLessThanOrEqual(viewport.width);
+      }
     }
   });
 
@@ -114,6 +120,27 @@ test('native search retries a failed index load and keyboard-selects the real do
 
 test('mobile documentation navigation and styling controls keep the native demo runnable', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
+  for (const path of ['/primitives/docs/components/dialog', '/themes/docs/components/dialog', '/colors/docs/palette-composition/scales', '/blog/themes-3', '/primitives/case-studies/vercel']) {
+    await page.goto(`${origin}${path}`);
+    const menu = page.getByRole('button', { name: 'Open navigation', exact: true });
+    const searchTrigger = page.getByRole('button', { name: 'Search documentation', exact: true });
+    for (const control of [menu, searchTrigger]) {
+      await expect(control).toBeVisible();
+      const bounds = await control.boundingBox();
+      expect(bounds, `${path}: header control has bounds`).not.toBeNull();
+      expect(bounds!.x, `${path}: header control is inside the initial viewport`).toBeGreaterThanOrEqual(0);
+      expect(bounds!.x + bounds!.width, `${path}: header control is inside the initial viewport`).toBeLessThanOrEqual(390);
+      await page.mouse.click(bounds!.x + bounds!.width / 2, bounds!.y + bounds!.height / 2);
+      const dialog = page.getByRole('dialog', { name: control === menu ? 'Navigation' : 'Search documentation', exact: true });
+      await expect(dialog).toBeVisible();
+      if (control === menu) await expect(dialog.getByRole('navigation', { name: 'Products', exact: true })).toBeVisible();
+      else await expect(dialog.getByRole('combobox', { name: 'Search documentation', exact: true })).toBeFocused();
+      await page.keyboard.press('Escape');
+      await expect(dialog).not.toBeVisible();
+      await expect(control).toBeFocused();
+    }
+    expect(await page.evaluate(() => window.scrollX)).toBe(0);
+  }
   await page.goto(`${origin}/primitives/docs/components/dialog`);
   await page.getByRole('button', { name: 'Open navigation', exact: true }).click();
   const navigation = page.getByRole('dialog', { name: 'Navigation', exact: true });
