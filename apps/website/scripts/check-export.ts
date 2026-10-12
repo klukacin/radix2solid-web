@@ -70,13 +70,13 @@ for (const file of [...expected, '_headers', 'search-index.json']) {
   if (!existsSync(resolve(output, file))) errors.add(`missing out/${file}`);
 }
 if (existsSync(resolve(output, '_redirects'))) errors.add('out/_redirects exists; redirects belong in worker/redirects.ts');
+if (existsSync(resolve(output, '_headers')) && /noindex/i.test(readFileSync(resolve(output, '_headers'), 'utf8'))) errors.add('out/_headers sends noindex');
 for (const file of files) {
   if (!expected.has(file)) errors.add(`unregistered page out/${file}`);
   if (file !== '404.html' && !existsSync(resolve(output, file.replace(/\.html$/, '.md')))) errors.add(`missing Markdown twin out/${file}`);
   const tree = parser.parse(readFileSync(resolve(output, file), 'utf8'));
   ids.set(file, new Set(selectAll('[id]', tree).map(node => String(node.properties.id))));
-  const robots = select('meta[name="robots"]', tree);
-  if (!String(robots?.properties.content).split(/[\s,]+/).includes('noindex')) errors.add(`${file}: preview is not noindex`);
+  if (selectAll('meta[name="robots"]', tree).some(meta => /noindex/i.test(String(meta.properties.content)))) errors.add(`${file}: page is noindex`);
   for (const node of selectAll('[href], [src]', tree)) {
     for (const property of ['href', 'src']) {
       const url = node.properties[property];
@@ -124,5 +124,5 @@ if (errors.size) {
   for (const error of errors) console.error(`  - ${error}`);
   process.exitCode = 1;
 } else {
-  console.log(`Static export check passed (${routePaths.length} registered routes + 404, ${links.length} page/asset/search references, Markdown twins and noindex).`);
+  console.log(`Static export check passed (${routePaths.length} registered routes + 404, ${links.length} page/asset/search references, Markdown twins and indexable pages).`);
 }

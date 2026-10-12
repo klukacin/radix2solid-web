@@ -71,7 +71,7 @@ export const IconsPanel = () => {
 
 							<Flex align="center" gap="2" asChild>{target => target(Link, {
                 "size": "2",
-                "href": "https://github.com/klukacin/radix2solid",
+                "href": "https://github.com/wsagency/radix2solid",
                 "target": "_blank",
                 "highContrast": true,
                 "color": "gray",
@@ -141,7 +141,7 @@ function MyComponent () {
 
 						<Text as="p" size="2" mt="2">
 							Licensed under the{" "}
-							<Link size="2" href="https://github.com/klukacin/radix2solid/blob/main/packages/icons/LICENSE" highContrast color="gray">
+							<Link size="2" href="https://github.com/wsagency/radix2solid/blob/main/packages/icons/LICENSE" highContrast color="gray">
 								MIT License
 							</Link>
 							.

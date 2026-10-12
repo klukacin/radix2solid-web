@@ -17,7 +17,7 @@ export function MarketingMobileMenu(props: { header?: Element; children?: Elemen
           </nav>
           <DocumentNavigation path={site.path} onNavigate={() => site.setMobileOpen(false)} />
         </>}
-        <a href={props.githubLink ?? 'https://github.com/klukacin/radix2solid'}>Native source on GitHub</a>
+        <a href={props.githubLink ?? 'https://github.com/wsagency/radix2solid'}>Native source on GitHub</a>
         <Dialog.Close>{target => target(Button, { color: 'gray', variant: 'soft', 'aria-label': 'Close navigation', children: 'Close' })}</Dialog.Close>
       </Box></ScrollArea>
     </Dialog.Content>

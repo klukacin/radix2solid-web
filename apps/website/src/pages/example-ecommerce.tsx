@@ -4,7 +4,8 @@ import { ExampleThemesEcommerce } from '../components/example-themes-ecommerce';
 
 export default function ExamplePage() {
   return <Theme accentColor="gray" grayColor="gray" class="radix-themes-default-fonts">
-    <Box p="9" minWidth="fit-content">
+    {/* Surface Cards blur their backdrop by 64px, which costs seconds per frame in software-rendered WebKit; turned off on this standalone page only (a small visual tradeoff). */}
+    <Box p="9" minWidth="fit-content" style={{ "--backdrop-filter-panel": "none" }}>
       <Box mx="auto" width="fit-content">
         <Flex align="center" direction="column">
           <Heading align="center" mb="2">Example layout built with Radix Themes</Heading>

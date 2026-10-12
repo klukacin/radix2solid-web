@@ -10,7 +10,7 @@ for (const viewport of [{ width: 1365, height: 900 }, { width: 390, height: 844 
       await page.goto(`${origin}${path}`);
       const github = page.getByRole('link', { name: 'View GitHub', exact: true }).filter({ visible: true });
       await expect(github).toHaveCount(1);
-      await expect(github).toHaveAttribute('href', 'https://github.com/klukacin/radix2solid');
+      await expect(github).toHaveAttribute('href', 'https://github.com/wsagency/radix2solid');
       for (const control of [github, page.getByRole('link', { name: 'Radix2Solid homepage', exact: true }).first(), page.getByRole('button', { name: 'Toggle theme', exact: true }).filter({ visible: true }).first()]) {
         const bounds = await control.boundingBox();
         expect(bounds, `${path}: primary control has bounds`).not.toBeNull();
@@ -25,9 +25,9 @@ for (const viewport of [{ width: 1365, height: 900 }, { width: 390, height: 844 
     await page.goto(`${origin}/primitives/docs/components/dialog`);
     const references = page.getByRole('navigation', { name: 'Document references', exact: true });
     const file = 'apps/website/data/primitives/docs/components/dialog.mdx';
-    await expect(references.getByRole('link', { name: 'View documentation source', exact: true })).toHaveAttribute('href', `https://github.com/klukacin/radix2solid-web/blob/main/${file}`);
-    await expect(references.getByRole('link', { name: 'Edit documentation', exact: true })).toHaveAttribute('href', `https://github.com/klukacin/radix2solid-web/edit/main/${file}`);
-    await expect(references.getByRole('link', { name: 'Report native issue', exact: true })).toHaveAttribute('href', 'https://github.com/klukacin/radix2solid/issues/new');
+    await expect(references.getByRole('link', { name: 'View documentation source', exact: true })).toHaveAttribute('href', `https://github.com/wsagency/radix2solid-web/blob/main/${file}`);
+    await expect(references.getByRole('link', { name: 'Edit documentation', exact: true })).toHaveAttribute('href', `https://github.com/wsagency/radix2solid-web/edit/main/${file}`);
+    await expect(references.getByRole('link', { name: 'Report native issue', exact: true })).toHaveAttribute('href', 'https://github.com/wsagency/radix2solid/issues/new');
   });
 }
 
@@ -39,8 +39,6 @@ test('rendered document and not-found metadata identify the native fork without 
     await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute('content', 'Radix2Solid');
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', '/social/radix2solid.png');
     await expect(page.locator('meta[name="twitter:image"]')).toHaveAttribute('content', '/social/radix2solid.png');
-    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
-    await expect(page.locator('link[rel="canonical"], meta[property="og:url"], meta[name="twitter:site"]')).toHaveCount(0);
     const image = await page.request.get(`${origin}/social/radix2solid.png`);
     expect(image.ok()).toBe(true);
     expect(image.headers()['content-type']).toContain('image/png');
@@ -329,6 +327,18 @@ test('ecommerce examples keep single selection and independent multiple selectio
   await expect(small).toHaveAttribute('aria-pressed', 'false');
   await expect(medium).toHaveAttribute('aria-pressed', 'true');
   await expect(later).toBeChecked();
+  const bookmarks = page.getByRole('button', { name: 'Bookmark', exact: true });
+  const [sneakers, jeans] = [bookmarks.nth(0), bookmarks.nth(1)];
+  await expect(sneakers).toHaveAttribute('aria-pressed', /^(true|false)$/);
+  await expect(jeans).toHaveAttribute('aria-pressed', /^(true|false)$/);
+  const [sneakersInitial, jeansInitial] = [await sneakers.getAttribute('aria-pressed'), await jeans.getAttribute('aria-pressed')];
+  const inverse = (value: string | null) => value === 'true' ? 'false' : 'true';
+  await sneakers.click();
+  await expect(sneakers).toHaveAttribute('aria-pressed', inverse(sneakersInitial));
+  await expect(jeans).toHaveAttribute('aria-pressed', jeansInitial!);
+  await jeans.click();
+  await expect(jeans).toHaveAttribute('aria-pressed', inverse(jeansInitial));
+  await expect(sneakers).toHaveAttribute('aria-pressed', inverse(sneakersInitial));
   expect(errors).toEqual([]);
 });
 
@@ -476,14 +486,16 @@ test('document metadata supplies a primary heading only when the source has none
   }
 });
 
-test('settled documentation, palette navigation and Music controls remain accessible', async ({ page }) => {
+test('settled documentation, palette navigation and example controls remain accessible', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
   page.on('console', message => { if (['warning', 'error'].includes(message.type())) errors.push(message.text()); });
-  for (const path of ['/primitives/docs/components/dialog', '/themes/docs/components/select', '/themes/docs/components/slider', '/colors/custom', '/themes/example-music-app']) {
+  for (const path of ['/primitives/docs/components/dialog', '/themes/docs/components/select', '/themes/docs/components/slider', '/colors/custom', '/themes/example-music-app', '/themes/example-dashboard', '/themes/example-ecommerce']) {
     await page.goto(`${origin}${path}`);
     await page.evaluate(() => document.fonts.ready);
     if (path.endsWith('example-music-app')) await page.getByRole('switch', { name: 'Equalizer', exact: true }).click();
+    else if (path.endsWith('example-dashboard')) await expect(page.getByRole('checkbox', { name: /Respond to comment/ })).toBeEnabled();
+    else if (path.endsWith('example-ecommerce')) await expect(page.getByRole('button', { name: 'XS', exact: true })).toBeEnabled();
     else await expect(page.getByRole('button', { name: 'Toggle theme', exact: true })).toBeEnabled();
     expect(await accessibilityViolations(page), path).toEqual([]);
     if (path === '/primitives/docs/components/dialog') {

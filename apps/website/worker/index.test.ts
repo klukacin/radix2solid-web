@@ -46,5 +46,4 @@ test('real Markdown and HTML cache variants, HEAD and hashed assets preserve hea
   assert.equal(asset.status, 200);
   assert.equal(asset.headers.get('Cache-Control'), 'public, max-age=31536000, immutable');
   assert.equal(asset.headers.get('X-Content-Type-Options'), 'nosniff');
-  assert.equal(asset.headers.get('X-Robots-Tag'), 'noindex');
 });

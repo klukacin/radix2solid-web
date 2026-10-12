@@ -78,7 +78,7 @@ const NavigationMenuDemo = () => {
 								Use CSS keyframes or any animation library of your choice.
 							</ListItem>
 							<ListItem title="Accessibility" href="/primitives/docs/overview/accessibility">
-								Tested in a range of browsers and assistive technologies.
+								Follows the WAI-ARIA authoring practices.
 							</ListItem>
 							<ListItem title="Releases" href="/primitives/docs/overview/releases">
 								Radix Primitives releases and their changelogs.

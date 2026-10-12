@@ -1097,21 +1097,21 @@ interface ToDoList {
 const itemsContent: Record<string, () => Element> = {
   a: () => <span>
 			Respond to comment{" "}
-			<Link href="#" underline="hover" onClick={event => event.preventDefault()}>
+			<Link href="#" underline="always" onClick={event => event.preventDefault()}>
 				#384
 			</Link>{" "}
 			from Travis
 		</span>,
   b: () => <span>
 			Invite{" "}
-			<Link href="#" underline="hover" onClick={event => event.preventDefault()}>
+			<Link href="#" underline="always" onClick={event => event.preventDefault()}>
 				Acme Co.
 			</Link>{" "}
 			team to Slack
 		</span>,
   c: () => <span>
 			Create a report{" "}
-			<Link href="#" underline="hover" onClick={event => event.preventDefault()}>
+			<Link href="#" underline="always" onClick={event => event.preventDefault()}>
 				requested
 			</Link>{" "}
 			by Danilo
@@ -1119,7 +1119,7 @@ const itemsContent: Record<string, () => Element> = {
   d: () => <span>Close Q2 finances</span>,
   e: () => <span>
 			Review invoice{" "}
-			<Link href="#" underline="hover" onClick={event => event.preventDefault()}>
+			<Link href="#" underline="always" onClick={event => event.preventDefault()}>
 				#3456
 			</Link>
 		</span>

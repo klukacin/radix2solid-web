@@ -1,8 +1,8 @@
 # Radix2Solid website
 
-The independent, unofficial native **Solid 2** documentation website for [Radix2Solid](https://github.com/klukacin/radix2solid). This is not a WorkOS product. Original Radix documentation, designs, blog posts and case studies keep their attribution and historical context; they do not endorse this fork.
+The independent, unofficial native **Solid 2** documentation website for [Radix2Solid](https://github.com/wsagency/radix2solid). This is not a WorkOS product. Original Radix documentation, designs, blog posts and case studies keep their attribution and historical context; they do not endorse this fork.
 
-The site preserves 137 MDX documents, 151 routes plus 404, 215 demo source files and 92 downloadable runnable sandboxes. It includes native interactive examples, API tables, Markdown negotiation, heading-aware search, redirects, the Themes playground and historical marketing/example layouts. Website source and issues belong to [klukacin/radix2solid-web](https://github.com/klukacin/radix2solid-web); native package issues belong to [klukacin/radix2solid](https://github.com/klukacin/radix2solid).
+The site preserves 137 MDX documents, 151 routes plus 404, 215 demo source files and 92 downloadable runnable sandboxes. It includes native interactive examples, API tables, Markdown negotiation, heading-aware search, redirects, the Themes playground and historical marketing/example layouts. Website source and issues belong to [wsagency/radix2solid-web](https://github.com/wsagency/radix2solid-web); native package issues belong to [wsagency/radix2solid](https://github.com/wsagency/radix2solid).
 
 ## Created for WS Agency
 
@@ -14,7 +14,7 @@ The WS Agency logo is trademark/brand artwork excluded from the software MIT lic
 
 ### Contributing and credit
 
-Website issues and pull requests belong in [radix2solid-web](https://github.com/klukacin/radix2solid-web); native package contributions belong in [radix2solid](https://github.com/klukacin/radix2solid). GitHub credits real accepted commits merged into the default branch when their author email is associated with the author's account; use your own verified account email or GitHub-provided noreply address. Add `Co-authored-by` only for someone who actually contributed, using their real identity.
+Website issues and pull requests belong in [radix2solid-web](https://github.com/wsagency/radix2solid-web); native package contributions belong in [radix2solid](https://github.com/wsagency/radix2solid). GitHub credits real accepted commits merged into the default branch when their author email is associated with the author's account; use your own verified account email or GitHub-provided noreply address. Add `Co-authored-by` only for someone who actually contributed, using their real identity.
 
 Repository owners can invite collaborators through repository Settings to grant access. That invitation is separate from contributor credit and is not required to submit a fork pull request.
 
@@ -40,7 +40,7 @@ If the pinned source has not been published yet, a real local sibling clone is a
 
 ```sh
 git clone --no-hardlinks ../radix2solid .library
-git -C .library checkout --detach 85c98e99aea025a7ce20c3ab3c77f3269c680e94
+git -C .library checkout --detach c03ce3dfa5f72cee7b1e9fbc842f0580f417887c
 node scripts/prepare-library.ts
 pnpm install --frozen-lockfile
 pnpm check
@@ -62,4 +62,4 @@ Preview binds only to `http://127.0.0.1:4149/`. Playwright owns its preview proc
 
 Native fork changes: MIT, Copyright (c) 2026 Radix2Solid contributors; see [LICENSE](LICENSE). Original website software keeps its full WorkOS MIT text in [WEBSITE-LICENSE.txt](apps/website/public/WEBSITE-LICENSE.txt). Package tarballs preserve the library's complete original and contributor notices, including reused released Colors CSS. Font copyright/OFL texts and provenance hashes are in `apps/website/public/fonts/`.
 
-[NOTICE.txt](apps/website/public/NOTICE.txt) discloses historical trademarks, portraits, endorsements and externally hosted images. Software licensing does not grant trademark/likeness/deployment rights. The static site remains `noindex`; no production domain, analytics, account, deployment, npm publication or GitHub Release upload is configured or claimed. Generated exports, downloads, dependencies, the ignored library checkout and private build artifacts are not committed.
+[NOTICE.txt](apps/website/public/NOTICE.txt) discloses historical trademarks, portraits, endorsements and externally hosted images. Software licensing does not grant trademark/likeness/deployment rights. The site is indexable. The `radix2solid.com` hostname and a `www` redirect to it are configured in Cloudflare, not in this repository; this repository does not claim the site is published. GitHub Actions deploys the `out/` that `pnpm check` validated to a Cloudflare Worker, only for pushes to `main` that are still the branch head, so publication waits for a green `pnpm check`. No analytics, npm publication or GitHub Release upload is configured or claimed. Generated exports, downloads, dependencies, the ignored library checkout and private build artifacts are not committed.

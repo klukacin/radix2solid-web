@@ -2,6 +2,14 @@
 
 ## 0.0.0-local
 
+- Make the site indexable: remove the `noindex` meta tag and `X-Robots-Tag` header from rendered pages, `_headers` and the preview server, and make `check:export` fail if either returns.
+- Underline the inline todo-list links on the Colors custom palette page and the dashboard example, so they are distinguishable from surrounding text without relying on color (axe `link-in-text-block`, which flagged the Colors page in CI).
+- Fix axe violations on the dashboard and ecommerce example pages and gate both in the settled accessibility test: decorative `alt=""` on the dashboard avatars (the person's name is always visible beside them); section headings now follow the page `h1` (`h2`, with `h3` sub-sections) at unchanged visual sizes; accessible names for the ecommerce icon buttons and select triggers; and underlined inline links that sat in heading or gray body text.
+- Remove the costly 64px surface-Card backdrop blur on the standalone ecommerce example page only, because it made software-rendered WebKit take seconds per frame and stalled browser interactions. This is a localized, deliberate visual tradeoff (the backdrop behind those cards is no longer blurred); other pages are unchanged.
+- Expose the ecommerce example's two Bookmark icon buttons' on/off state to assistive technology with `aria-pressed="true"|"false"` bound to the existing sneakers/jeans state (the icon and emphasis already changed visually, but the buttons were announced identically before and after toggling); the existing ecommerce end-to-end scenario now asserts both buttons toggle independently in Chromium, Firefox and WebKit.
+- Filter hidden build paths relative to `dist/client` instead of the absolute path, so a checkout under a hidden directory copies its CSS and JavaScript; covered by a real build test.
+- Point source, edit, issue, native-library and bootstrap URLs at the `wsagency` GitHub organization.
+- Replace the Primitives accessibility overview's and Navigation Menu demos' claim of testing in "a wide selection"/"a range" of browsers and assistive technologies with the actual scope: automated axe and interaction checks on selected pages in Chromium, Firefox and WebKit, plus scoped Orca checks on Linux for Announce, Toast and Dialog.
 - Add the authentic WS Agency sign, “Made with love by WS” creator/community credit and real project contact link to the shared footer and repository README, preserving original WorkOS/MIT notices and documenting the logo's separate brand-artwork license and provenance.
 - Keep fixed homepage live-example controls inside their existing hero paint boundary, so the footer's agency link, sign and credit stay readable and clickable after keyboard scrolling without moving the primary header.
 - Use actionable mobile header clicks after animated modal closes, retaining the initial viewport bounds, dialog and focus assertions.
@@ -12,7 +20,7 @@
 - Preserve original marketing, historical posts/case studies, complete Themes playground and dashboard/ecommerce/music layouts with attribution.
 - Native live snippets, API metadata, code/style controls, 92 independent runnable sandbox downloads and licensed icon SVG/package downloads.
 - Native desktop/mobile navigation, stored/system appearance, retryable heading-aware MiniSearch and static Markdown negotiation.
-- Retain original Colors generation math, six palette query keys, cookies, URL precedence, copy/download and native validation. Preview keeps noindex, local-only configuration and no upstream analytics.
+- Retain original Colors generation math, six palette query keys, cookies, URL precedence, copy/download and native validation, with no upstream analytics.
 - Real export/link validation and copied animation/system-appearance CSR/SSR browser checks; native animation handles interruption/disposal/reduced motion.
 - Tailwind sandbox entries import their generated stylesheet. Demo-local leaf-card composition retains Music App's original backdrop blur while restoring WebKit painting.
 - Supply document metadata titles when Markdown has no primary heading, without duplicating existing source headings.

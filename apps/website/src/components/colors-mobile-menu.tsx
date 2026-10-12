@@ -7,7 +7,7 @@ import { useSiteContext } from './site-context';
 
 export function ColorsMobileMenu() {
   const site = useSiteContext();
-  return <MarketingMobileMenu header={<ColorsHeader />} githubLink="https://github.com/klukacin/radix2solid">
+  return <MarketingMobileMenu header={<ColorsHeader />} githubLink="https://github.com/wsagency/radix2solid">
     <Box mb="4"><SearchTrigger /></Box>
     <nav class="document-navigation" aria-label="Resources" onClick={event => { if ((event.target as Element).closest('a')) site.setMobileOpen(false); }}>
       <a href="/colors">Homepage</a><a href="/colors/custom">Custom palette</a><a href="/blog">Blog</a>

@@ -21,7 +21,7 @@ export async function assets(request: Request): Promise<Response> {
   }
   return new Response(request.method === 'HEAD' ? null : content as Buffer<ArrayBuffer>, { status, headers: {
     'Content-Type': status === 404 ? types['.html'] : types[extname(file)] ?? 'application/octet-stream',
-    'X-Content-Type-Options': 'nosniff', 'X-Robots-Tag': 'noindex', 'Strict-Transport-Security': 'max-age=63072000',
+    'X-Content-Type-Options': 'nosniff', 'Strict-Transport-Security': 'max-age=63072000',
     'Cache-Control': path.startsWith('/assets/') ? 'public, max-age=31536000, immutable' : 'no-cache'
   } });
 }
@@ -30,7 +30,7 @@ if (import.meta.main) createServer(async (incoming, outgoing) => {
     const headers = new Headers();
     for (const [name, value] of Object.entries(incoming.headers)) if (value !== undefined) headers.set(name, Array.isArray(value) ? value.join(', ') : value);
     const response = await worker.fetch(new Request(new URL(incoming.url ?? '/', 'http://127.0.0.1:4149'), { method: incoming.method ?? 'GET', headers }), { ASSETS: { fetch: assets } });
-    outgoing.writeHead(response.status, { ...Object.fromEntries(response.headers), 'X-Robots-Tag': 'noindex' });
+    outgoing.writeHead(response.status, Object.fromEntries(response.headers));
     outgoing.end(incoming.method === 'HEAD' ? undefined : Buffer.from(await response.arrayBuffer()));
-  } catch (error) { console.error(error); outgoing.writeHead(error instanceof URIError ? 400 : 500, { 'X-Robots-Tag': 'noindex' }).end(); }
+  } catch (error) { console.error(error); outgoing.writeHead(error instanceof URIError ? 400 : 500).end(); }
 }).listen(4149, '127.0.0.1', () => console.log('Native static website http://127.0.0.1:4149'));

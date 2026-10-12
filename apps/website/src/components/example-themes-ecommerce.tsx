@@ -72,7 +72,7 @@ export const ExampleThemesEcommerce = (p: ExampleLayoutProps) => {
               },
               "m": "2",
               children: <>
-								<IconButton size="2" tabindex={tabIndex} color="gray" variant="ghost" highContrast={state().sneakersBookmarked} onClick={() => setState(currentState => ({
+								<IconButton size="2" tabindex={tabIndex} color="gray" variant="ghost" aria-label="Bookmark" aria-pressed={state().sneakersBookmarked ? 'true' : 'false'} highContrast={state().sneakersBookmarked} onClick={() => setState(currentState => ({
                   ...currentState,
                   sneakersBookmarked: !currentState.sneakersBookmarked
                 }))}>
@@ -90,7 +90,7 @@ export const ExampleThemesEcommerce = (p: ExampleLayoutProps) => {
 								</Link>
 							</Flex>
 
-							<Heading as="h3" size="3">
+							<Heading as="h2" size="3">
 								Sneakers #12
 							</Heading>
 						</Box>
@@ -120,7 +120,7 @@ export const ExampleThemesEcommerce = (p: ExampleLayoutProps) => {
               })}</Label.Root>
 
 							<Select.Root defaultValue="Pastel" size="2">
-								<Select.Trigger tabindex={tabIndex} variant="soft" />
+								<Select.Trigger tabindex={tabIndex} variant="soft" aria-label="Color" />
 								<Select.Content variant="soft" container={portalContainer()} position="popper">
 									<Select.Item value="Pastel">Pastel</Select.Item>
 									<Select.Item value="Bright">Bright</Select.Item>
@@ -138,7 +138,7 @@ export const ExampleThemesEcommerce = (p: ExampleLayoutProps) => {
 								</>
               })}</Label.Root>
 							<Select.Root defaultValue="8" size="2">
-								<Select.Trigger tabindex={tabIndex} variant="soft" />
+								<Select.Trigger tabindex={tabIndex} variant="soft" aria-label="Size" />
 								<Select.Content variant="soft" container={portalContainer()} position="popper">
 									{Array.from({
                   length: 12
@@ -244,7 +244,7 @@ export const ExampleThemesEcommerce = (p: ExampleLayoutProps) => {
 				</Card>
 
 				<Card size="1">
-					<Heading as="h3" size="3" mb="3">
+					<Heading as="h2" size="3" mb="3">
 						Shopping cart
 					</Heading>
 
@@ -286,7 +286,7 @@ export const ExampleThemesEcommerce = (p: ExampleLayoutProps) => {
 
 								<Flex direction="column" width="48px">
 									<Select.Root defaultValue={item.count} size="1">
-										<Select.Trigger tabindex={tabIndex} />
+										<Select.Trigger tabindex={tabIndex} aria-label="Quantity" />
 										<Select.Content variant="soft" container={portalContainer()} position="popper">
 											{Array.from({
                     length: 9
@@ -341,7 +341,7 @@ export const ExampleThemesEcommerce = (p: ExampleLayoutProps) => {
               },
               "m": "2",
               children: <>
-								<IconButton size="2" tabindex={tabIndex} color="gray" variant="ghost" highContrast={state().jeansBookmarked} onClick={() => setState(currentState => ({
+								<IconButton size="2" tabindex={tabIndex} color="gray" variant="ghost" aria-label="Bookmark" aria-pressed={state().jeansBookmarked ? 'true' : 'false'} highContrast={state().jeansBookmarked} onClick={() => setState(currentState => ({
                   ...currentState,
                   jeansBookmarked: !currentState.jeansBookmarked
                 }))}>
@@ -359,7 +359,7 @@ export const ExampleThemesEcommerce = (p: ExampleLayoutProps) => {
 								</Link>
 							</Flex>
 
-							<Heading as="h3" size="3">
+							<Heading as="h2" size="3">
 								Jeans #7
 							</Heading>
 						</Box>
@@ -389,7 +389,7 @@ export const ExampleThemesEcommerce = (p: ExampleLayoutProps) => {
               })}</Label.Root>
 
 							<Select.Root defaultValue="Lighter" size="2">
-								<Select.Trigger tabindex={tabIndex} variant="soft" />
+								<Select.Trigger tabindex={tabIndex} variant="soft" aria-label="Color" />
 								<Select.Content variant="soft" container={portalContainer()} position="popper">
 									<Select.Item value="Lighter">Lighter</Select.Item>
 									<Select.Item value="Darker">Darker</Select.Item>
@@ -408,7 +408,7 @@ export const ExampleThemesEcommerce = (p: ExampleLayoutProps) => {
               })}</Label.Root>
 
 							<Select.Root defaultValue="30" size="2">
-								<Select.Trigger tabindex={tabIndex} variant="soft" />
+								<Select.Trigger tabindex={tabIndex} variant="soft" aria-label="Size" />
 								<Select.Content variant="soft" container={portalContainer()} position="popper">
 									{Array.from({
                   length: 17
@@ -452,7 +452,7 @@ export const ExampleThemesEcommerce = (p: ExampleLayoutProps) => {
 
 				<Card size="1">
 					<Flex mb="3">
-						<Heading as="h3" size="3">
+						<Heading as="h2" size="3">
 							Delivery
 						</Heading>
 					</Flex>
@@ -502,7 +502,7 @@ export const ExampleThemesEcommerce = (p: ExampleLayoutProps) => {
 
 				<Card size="1">
 					<Flex align="center" justify="between" mb="2">
-						<Heading as="h3" size="3">
+						<Heading as="h2" size="3">
 							Bookmarks
 						</Heading>
 						<Button tabindex={tabIndex} size="1" variant="ghost">
@@ -551,12 +551,12 @@ export const ExampleThemesEcommerce = (p: ExampleLayoutProps) => {
 						<Box mb="2">
 							<CrumpledPaperIcon width="24" height="24" />
 						</Box>
-						<Heading as="h3" mb="1" size="4">
+						<Heading as="h2" mb="1" size="4">
 							Product discarded
 						</Heading>
 						<Text size="2" color="gray" mb="4">
 							It’s still available in the{" "}
-							<Link href="#" tabindex={tabIndex} underline="hover" onClick={e => e.preventDefault()}>
+							<Link href="#" tabindex={tabIndex} underline="always" onClick={e => e.preventDefault()}>
 								archive
 							</Link>
 							.
@@ -574,7 +574,7 @@ export const ExampleThemesEcommerce = (p: ExampleLayoutProps) => {
 				</Card>
 
 				<Card size="2">
-					<Heading as="h3" size="4" mb="4">
+					<Heading as="h2" size="4" mb="4">
 						Edit product
 					</Heading>
 
@@ -632,16 +632,16 @@ export const ExampleThemesEcommerce = (p: ExampleLayoutProps) => {
               "border-radius": "var(--radius-2)"
             }}>
 								<Grid columns="2" gap="2">
-									<IconButton tabindex={tabIndex} highContrast variant="soft" size="2">
+									<IconButton tabindex={tabIndex} aria-label="Image" highContrast variant="soft" size="2">
 										<ImageIcon />
 									</IconButton>
-									<IconButton tabindex={tabIndex} highContrast variant="soft" size="2">
+									<IconButton tabindex={tabIndex} aria-label="Video" highContrast variant="soft" size="2">
 										<VideoIcon />
 									</IconButton>
-									<IconButton tabindex={tabIndex} highContrast variant="soft" size="2">
+									<IconButton tabindex={tabIndex} aria-label="Instagram" highContrast variant="soft" size="2">
 										<InstagramLogoIcon />
 									</IconButton>
-									<IconButton tabindex={tabIndex} highContrast variant="soft" size="2">
+									<IconButton tabindex={tabIndex} aria-label="Ruler" highContrast variant="soft" size="2">
 										<RulerHorizontalIcon />
 									</IconButton>
 								</Grid>
@@ -663,43 +663,43 @@ export const ExampleThemesEcommerce = (p: ExampleLayoutProps) => {
 							<Box position="absolute" m="2" top="0" left="0" right="0">
 								<Flex gap="4">
 									<Flex gap="1">
-										<IconButton tabindex={tabIndex} variant="soft" highContrast>
+										<IconButton tabindex={tabIndex} aria-label="Italic" variant="soft" highContrast>
 											<FontItalicIcon />
 										</IconButton>
 
-										<IconButton tabindex={tabIndex} variant="soft" highContrast>
+										<IconButton tabindex={tabIndex} aria-label="Bold" variant="soft" highContrast>
 											<FontBoldIcon />
 										</IconButton>
 
-										<IconButton tabindex={tabIndex} variant="soft" highContrast>
+										<IconButton tabindex={tabIndex} aria-label="Strikethrough" variant="soft" highContrast>
 											<StrikethroughIcon />
 										</IconButton>
 									</Flex>
 
 									<Flex gap="1">
-										<IconButton tabindex={tabIndex} variant="soft" highContrast>
+										<IconButton tabindex={tabIndex} aria-label="Align left" variant="soft" highContrast>
 											<TextAlignLeftIcon />
 										</IconButton>
 
-										<IconButton tabindex={tabIndex} variant="soft" highContrast>
+										<IconButton tabindex={tabIndex} aria-label="Align center" variant="soft" highContrast>
 											<TextAlignCenterIcon />
 										</IconButton>
 
-										<IconButton tabindex={tabIndex} variant="soft" highContrast>
+										<IconButton tabindex={tabIndex} aria-label="Align right" variant="soft" highContrast>
 											<TextAlignRightIcon />
 										</IconButton>
 									</Flex>
 
 									<Flex gap="1">
-										<IconButton tabindex={tabIndex} variant="soft" highContrast>
+										<IconButton tabindex={tabIndex} aria-label="Magic wand" variant="soft" highContrast>
 											<MagicWandIcon />
 										</IconButton>
 
-										<IconButton tabindex={tabIndex} variant="soft" highContrast>
+										<IconButton tabindex={tabIndex} aria-label="Image" variant="soft" highContrast>
 											<ImageIcon />
 										</IconButton>
 
-										<IconButton tabindex={tabIndex} variant="soft" highContrast>
+										<IconButton tabindex={tabIndex} aria-label="Crumpled paper" variant="soft" highContrast>
 											<CrumpledPaperIcon />
 										</IconButton>
 									</Flex>
@@ -783,7 +783,7 @@ export const ExampleThemesEcommerce = (p: ExampleLayoutProps) => {
 
 				<Card size="2">
 					<Flex align="center" justify="between" mb="4">
-						<Heading as="h3" size="4">
+						<Heading as="h2" size="4">
 							Orders
 						</Heading>
 						<Button tabindex={tabIndex} variant="ghost" size="1" mr="-2">
@@ -886,7 +886,7 @@ export const ExampleThemesEcommerce = (p: ExampleLayoutProps) => {
 
 			<Flex flexShrink="0" gap="6" direction="column" width="640px">
 				<Card size="2">
-					<Heading as="h3" size="4" mb="4">
+					<Heading as="h2" size="4" mb="4">
 						Shipment tracking
 					</Heading>
 
@@ -1023,7 +1023,7 @@ export const ExampleThemesEcommerce = (p: ExampleLayoutProps) => {
 					<Inset clip="padding-box">
 						<Grid rows="256px 256px" columns="3">
 							<Box p="4">
-								<Heading as="h3" size="8" mb="2">
+								<Heading as="h2" size="8" mb="2">
 									Dare to stand out
 								</Heading>
 								<Text as="p" mb="3" size="3">
@@ -1097,7 +1097,7 @@ export const ExampleThemesEcommerce = (p: ExampleLayoutProps) => {
 				</Card>
 
 				<Card size="2">
-					<Heading as="h3" size="4" mb="4">
+					<Heading as="h2" size="4" mb="4">
 						Top customers
 					</Heading>
 
@@ -1111,7 +1111,7 @@ export const ExampleThemesEcommerce = (p: ExampleLayoutProps) => {
 						</Box>
 						<Flex direction="column" minWidth="140px">
 							<Select.Root defaultValue="All customers">
-								<Select.Trigger variant="soft" tabindex={tabIndex} />
+								<Select.Trigger variant="soft" tabindex={tabIndex} aria-label="Customer period" />
 								<Select.Content variant="soft" container={portalContainer()} position="popper">
 									<Select.Item value="All customers">All customers</Select.Item>
 									<Select.Item value={new Date().getFullYear().toString()}>

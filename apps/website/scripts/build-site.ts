@@ -1,5 +1,5 @@
 import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
-import { resolve, dirname } from 'node:path';
+import { resolve, dirname, relative } from 'node:path';
 
 const root = resolve(import.meta.dirname, '..');
 const output = resolve(root, 'out');
@@ -13,7 +13,8 @@ function stylesheets(key: string, visited = new Set<string>()): string[] {
 const { renderPage, routePaths, routeManifestKeys } = await import(new URL('../dist/server/entry-server.js', import.meta.url).href) as typeof import('../src/entry-server.js');
 await rm(output, { recursive: true, force: true });
 await mkdir(output, { recursive: true });
-await cp(resolve(root, 'dist/client'), output, { recursive: true, filter: source => !source.split(/[\\/]/).some(part => part.startsWith('.')) });
+const client = resolve(root, 'dist/client');
+await cp(client, output, { recursive: true, filter: source => !relative(client, source).split(/[\\/]/).some(part => part.startsWith('.')) });
 for (const path of [...routePaths, '/404']) {
   const file = resolve(output, `${path.slice(1) || 'index'}.html`);
   await mkdir(dirname(file), { recursive: true });

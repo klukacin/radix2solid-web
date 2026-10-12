@@ -1,6 +1,6 @@
 ---
 metaTitle: Accessibility
-metaDescription: Radix Primitives follow the WAI-ARIA authoring practices guidelines and are tested in a wide selection of modern browsers and commonly used assistive technologies.
+metaDescription: Radix Primitives follow the WAI-ARIA authoring practices guidelines. This native port is checked with automated axe and interaction tests on selected pages in Chromium, Firefox and WebKit, with scoped Orca screen-reader checks on Linux.
 ---
 
 
@@ -10,9 +10,11 @@ metaDescription: Radix Primitives follow the WAI-ARIA authoring practices guidel
 # Accessibility
 
 <Description>
-	Radix Primitives follow the WAI-ARIA authoring practices guidelines and are
-	tested in a wide selection of modern browsers and commonly used assistive
-	technologies.
+	Radix Primitives follow the WAI-ARIA authoring practices guidelines. This
+	native port is checked with automated axe and interaction tests on selected
+	pages in Chromium, Firefox and WebKit. Native speech was observed with Orca on
+	Linux for Announce, Toast and Dialog only. This is not certification of every
+	component, platform, browser or screen reader.
 </Description>
 
 We take care of many of the difficult implementation details related to accessibility, including `aria` and `role` attributes, focus management, and keyboard navigation. That means that users should be able to use our components as-is in most contexts and rely on functionality to follow the expected accessibility design patterns.

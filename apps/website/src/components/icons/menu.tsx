@@ -54,7 +54,7 @@ export const Menu = () => {
 				<Flex align="center" gap="2" asChild>{target => target(Link, {
           "size": "2",
           "underline": "hover",
-          "href": "https://github.com/klukacin/radix2solid",
+          "href": "https://github.com/wsagency/radix2solid",
           "target": "_blank",
           "highContrast": true,
           "color": "gray",

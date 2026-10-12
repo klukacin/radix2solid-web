@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 
 const root = resolve(import.meta.dirname, '..');
 const target = resolve(root, '.library');
-const repository = 'https://github.com/klukacin/radix2solid.git';
+const repository = 'https://github.com/wsagency/radix2solid.git';
 const pin: unknown = JSON.parse(await readFile(resolve(root, 'library-source.json'), 'utf8'));
 if (!pin || typeof pin !== 'object' || !('repository' in pin) || pin.repository !== repository ||
     !('commit' in pin) || typeof pin.commit !== 'string' || !/^[0-9a-f]{40}$/.test(pin.commit) ||

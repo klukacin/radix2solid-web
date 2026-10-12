@@ -43,7 +43,7 @@ export const ExampleThemesDashboard = (p: ExampleLayoutProps) => {
   return <Flex align="center" gap="6" ref={setPortalContainer} {...omit(p, "focusable")}>
 			<Flex flexShrink="0" gap="6" direction="column" width="640px">
 				<Card size="4">
-					<Heading as="h3" size="6" trim="start" mb="2">
+					<Heading as="h2" size="6" trim="start" mb="2">
 						Your team
 					</Heading>
 
@@ -64,7 +64,7 @@ export const ExampleThemesDashboard = (p: ExampleLayoutProps) => {
 						{[4, 2, 12, 20, 16].map((number, i) => <Box>
 								<Flex gap="4" align="center">
 									<Flex gap="3" align="center" width="200px">
-										<Avatar src={allPeople[number]?.image} fallback={allPeople[number]?.name[0].toUpperCase()} />
+										<Avatar src={allPeople[number]?.image} alt="" fallback={allPeople[number]?.name[0].toUpperCase()} />
 										<Link href="#" tabindex={tabIndex} size="2" wrap="nowrap" onClick={e => e.preventDefault()}>
 											{allPeople[number]?.name}
 										</Link>
@@ -103,7 +103,7 @@ export const ExampleThemesDashboard = (p: ExampleLayoutProps) => {
 				</Card>
 
 				<Card size="4">
-					<Heading as="h3" size="6" trim="start" mb="2">
+					<Heading as="h2" size="6" trim="start" mb="2">
 						Notifications
 					</Heading>
 
@@ -118,7 +118,7 @@ export const ExampleThemesDashboard = (p: ExampleLayoutProps) => {
 					<Flex direction="column">
 						<Flex gap="9" align="start" justify="between">
 							<Box>
-								<Heading as="h4" size="3" mb="1">
+								<Heading as="h3" size="3" mb="1">
 									Comments
 								</Heading>
 								<Text as="p" size="2" color="gray">
@@ -164,7 +164,7 @@ export const ExampleThemesDashboard = (p: ExampleLayoutProps) => {
 
 						<Flex gap="9" align="start" justify="between">
 							<Box>
-								<Heading as="h4" size="3" mb="1">
+								<Heading as="h3" size="3" mb="1">
 									Favorites
 								</Heading>
 								<Text as="p" size="2" color="gray">
@@ -210,7 +210,7 @@ export const ExampleThemesDashboard = (p: ExampleLayoutProps) => {
 
 						<Flex gap="9" align="start" justify="between">
 							<Box>
-								<Heading as="h4" size="3" mb="1">
+								<Heading as="h3" size="3" mb="1">
 									New documents
 								</Heading>
 								<Text as="p" size="2" color="gray">
@@ -253,7 +253,7 @@ export const ExampleThemesDashboard = (p: ExampleLayoutProps) => {
 				</Card>
 
 				<Card size="4">
-					<Heading as="h3" size="6" trim="start" mb="2">
+					<Heading as="h2" size="6" trim="start" mb="2">
 						Pricing
 					</Heading>
 
@@ -444,7 +444,7 @@ export const ExampleThemesDashboard = (p: ExampleLayoutProps) => {
 
 			<Flex flexShrink="0" gap="6" direction="column" width="416px">
 				<Card size="4">
-					<Heading as="h3" size="6" trim="start" mb="5">
+					<Heading as="h2" size="6" trim="start" mb="5">
 						Sign up
 					</Heading>
 
@@ -484,7 +484,7 @@ export const ExampleThemesDashboard = (p: ExampleLayoutProps) => {
 						</IconButton>
 					</Box>
 
-					<Heading as="h3" size="6" trim="start" mb="2">
+					<Heading as="h2" size="6" trim="start" mb="2">
 						Your company card
 					</Heading>
 
@@ -551,7 +551,7 @@ export const ExampleThemesDashboard = (p: ExampleLayoutProps) => {
 							<CheckIcon width="32" height="32" />
 						</Marker>
 
-						<Heading as="h3" size="6" mb="2">
+						<Heading as="h2" size="6" mb="2">
 							Invoice paid
 						</Heading>
 					</Flex>
@@ -576,9 +576,9 @@ export const ExampleThemesDashboard = (p: ExampleLayoutProps) => {
 						</IconButton>
 					</Box>
 
-					<Heading as="h3" size="6" trim="start" mb="5">
+					<Heading as="h2" size="6" trim="start" mb="5">
 						Invoice{" "}
-						<Link href="#" tabindex={tabIndex} weight="bold" onClick={e => e.preventDefault()}>
+						<Link href="#" underline="always" tabindex={tabIndex} weight="bold" onClick={e => e.preventDefault()}>
 							#3463
 						</Link>
 					</Heading>
@@ -668,7 +668,7 @@ export const ExampleThemesDashboard = (p: ExampleLayoutProps) => {
 
 			<Flex flexShrink="0" gap="6" direction="column" width="640px">
 				<Card size="4">
-					<Heading as="h3" size="6" trim="start" mb="2">
+					<Heading as="h2" size="6" trim="start" mb="2">
 						Financial performance
 					</Heading>
 
@@ -847,7 +847,7 @@ export const ExampleThemesDashboard = (p: ExampleLayoutProps) => {
 				</Card>
 
 				<Card size="4">
-					<Heading as="h3" size="6" trim="start" mb="2">
+					<Heading as="h2" size="6" trim="start" mb="2">
 						Recent activity
 					</Heading>
 
@@ -876,7 +876,7 @@ export const ExampleThemesDashboard = (p: ExampleLayoutProps) => {
 						<Flex direction="column" gap="3" mb="5">
 							<Flex justify="between" align="center">
 								<Flex gap="3" align="center">
-									<Avatar size="3" src={allPeople[6].image} fallback={allPeople[6]?.name[0].toUpperCase()} />
+									<Avatar size="3" src={allPeople[6].image} alt="" fallback={allPeople[6]?.name[0].toUpperCase()} />
 									<Box>
 										<Text as="div" size="2" weight="bold">
 											{allPeople[6].name}
@@ -903,7 +903,7 @@ export const ExampleThemesDashboard = (p: ExampleLayoutProps) => {
 						<Flex direction="column" gap="3" my="5">
 							<Flex justify="between" align="center">
 								<Flex gap="3" align="center">
-									<Avatar size="3" src={allPeople[8].image} fallback={allPeople[8]?.name[0].toUpperCase()} />
+									<Avatar size="3" src={allPeople[8].image} alt="" fallback={allPeople[8]?.name[0].toUpperCase()} />
 									<Box>
 										<Text as="div" size="2" weight="bold">
 											{allPeople[8].name}
@@ -934,7 +934,7 @@ export const ExampleThemesDashboard = (p: ExampleLayoutProps) => {
 						<Flex direction="column" gap="3" my="5">
 							<Flex justify="between" align="center">
 								<Flex gap="3" align="center">
-									<Avatar size="3" src={allPeople[8].image} fallback={allPeople[8]?.name[0].toUpperCase()} />
+									<Avatar size="3" src={allPeople[8].image} alt="" fallback={allPeople[8]?.name[0].toUpperCase()} />
 									<Box>
 										<Text as="div" size="2" weight="bold">
 											{allPeople[8].name}
@@ -961,7 +961,7 @@ export const ExampleThemesDashboard = (p: ExampleLayoutProps) => {
 						<Flex direction="column" gap="3" my="5">
 							<Flex justify="between" align="center">
 								<Flex gap="3" align="center">
-									<Avatar size="3" src={allPeople[28].image} fallback={allPeople[28]?.name[0].toUpperCase()} />
+									<Avatar size="3" src={allPeople[28].image} alt="" fallback={allPeople[28]?.name[0].toUpperCase()} />
 									<Box>
 										<Text as="div" size="2" weight="bold">
 											{allPeople[28].name}
@@ -988,7 +988,7 @@ export const ExampleThemesDashboard = (p: ExampleLayoutProps) => {
 						<Flex direction="column" gap="3" my="5">
 							<Flex justify="between" align="center">
 								<Flex gap="3" align="center">
-									<Avatar size="3" src={allPeople[26].image} fallback={allPeople[26]?.name[0].toUpperCase()} />
+									<Avatar size="3" src={allPeople[26].image} alt="" fallback={allPeople[26]?.name[0].toUpperCase()} />
 									<Box>
 										<Text as="div" size="2" weight="bold">
 											{allPeople[26].name}
@@ -1015,7 +1015,7 @@ export const ExampleThemesDashboard = (p: ExampleLayoutProps) => {
 						<Flex direction="column" gap="3" my="5">
 							<Flex justify="between" align="center">
 								<Flex gap="3" align="center">
-									<Avatar size="3" src={allPeople[25].image} fallback={allPeople[25]?.name[0].toUpperCase()} />
+									<Avatar size="3" src={allPeople[25].image} alt="" fallback={allPeople[25]?.name[0].toUpperCase()} />
 									<Box>
 										<Text as="div" size="2" weight="bold">
 											{allPeople[25].name}
@@ -1042,7 +1042,7 @@ export const ExampleThemesDashboard = (p: ExampleLayoutProps) => {
 						<Flex direction="column" gap="3" my="5">
 							<Flex justify="between" align="center">
 								<Flex gap="3" align="center">
-									<Avatar size="3" src={allPeople[25].image} fallback={allPeople[25]?.name[0].toUpperCase()} />
+									<Avatar size="3" src={allPeople[25].image} alt="" fallback={allPeople[25]?.name[0].toUpperCase()} />
 									<Box>
 										<Text as="div" size="2" weight="bold">
 											{allPeople[25].name}
@@ -1069,7 +1069,7 @@ export const ExampleThemesDashboard = (p: ExampleLayoutProps) => {
 						<Flex direction="column" gap="3" mt="5">
 							<Flex justify="between" align="center">
 								<Flex gap="3" align="center">
-									<Avatar size="3" src={allPeople[20].image} fallback={allPeople[20]?.name[0].toUpperCase()} />
+									<Avatar size="3" src={allPeople[20].image} alt="" fallback={allPeople[20]?.name[0].toUpperCase()} />
 									<Box>
 										<Text as="div" size="2" weight="bold">
 											{allPeople[20].name}
@@ -1089,7 +1089,7 @@ export const ExampleThemesDashboard = (p: ExampleLayoutProps) => {
 				</Card>
 
 				<Card size="4">
-					<Heading as="h3" size="6" trim="start" mb="2">
+					<Heading as="h2" size="6" trim="start" mb="2">
 						To-do
 					</Heading>
 
@@ -1128,35 +1128,35 @@ const ToDoList = (p: ToDoList) => {
   const itemsContent: Record<string, Element> = {
     a: <span>
 				Respond to comment{" "}
-				<Link href="#" underline="hover" tabindex={tabIndex} onClick={e => e.preventDefault()}>
+				<Link href="#" underline="always" tabindex={tabIndex} onClick={e => e.preventDefault()}>
 					#384
 				</Link>{" "}
 				from Travis Ross
 			</span>,
     b: <span>
 				Invite{" "}
-				<Link href="#" underline="hover" tabindex={tabIndex} onClick={e => e.preventDefault()}>
+				<Link href="#" underline="always" tabindex={tabIndex} onClick={e => e.preventDefault()}>
 					Acme Co.
 				</Link>{" "}
 				team to Slack
 			</span>,
     c: <span>
 				Create a report{" "}
-				<Link href="#" underline="hover" tabindex={tabIndex} onClick={e => e.preventDefault()}>
+				<Link href="#" underline="always" tabindex={tabIndex} onClick={e => e.preventDefault()}>
 					requested
 				</Link>{" "}
 				by Danilo Sousa
 			</span>,
     d: <span>
 				Review support request{" "}
-				<Link href="#" underline="hover" tabindex={tabIndex} onClick={e => e.preventDefault()}>
+				<Link href="#" underline="always" tabindex={tabIndex} onClick={e => e.preventDefault()}>
 					#85
 				</Link>
 			</span>,
     e: <span>Close Q2 finances</span>,
     f: <span>
 				Review invoice{" "}
-				<Link href="#" underline="hover" tabindex={tabIndex} onClick={e => e.preventDefault()}>
+				<Link href="#" underline="always" tabindex={tabIndex} onClick={e => e.preventDefault()}>
 					#3456
 				</Link>
 			</span>
