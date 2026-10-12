@@ -130,7 +130,7 @@ test('mobile documentation navigation and styling controls keep the native demo 
       expect(bounds, `${path}: header control has bounds`).not.toBeNull();
       expect(bounds!.x, `${path}: header control is inside the initial viewport`).toBeGreaterThanOrEqual(0);
       expect(bounds!.x + bounds!.width, `${path}: header control is inside the initial viewport`).toBeLessThanOrEqual(390);
-      await page.mouse.click(bounds!.x + bounds!.width / 2, bounds!.y + bounds!.height / 2);
+      await control.click();
       const dialog = page.getByRole('dialog', { name: control === menu ? 'Navigation' : 'Search documentation', exact: true });
       await expect(dialog).toBeVisible();
       if (control === menu) await expect(dialog.getByRole('navigation', { name: 'Products', exact: true })).toBeVisible();

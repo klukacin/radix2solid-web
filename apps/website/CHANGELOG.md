@@ -2,6 +2,8 @@
 
 ## 0.0.0-local
 
+- Add the community credit and ws.agency link once in the shared site footer, preserving the original WorkOS/MIT attribution and asset notices.
+- Use actionable mobile header clicks after animated modal closes, retaining the initial viewport bounds, dialog and focus assertions.
 - Native Solid 2 static rendering/hydration for all 137 MDX documents and 151 routes plus 404, including both component indexes; no React/Next runtime or bespoke client router.
 - Use native Radix2Solid branding while retaining navigation and native Markdown acceptance independently of incidental asset filenames, presentation defaults and password-manager attribute wiring.
 - Prepare the pinned native workspace with the dependency-free Node bootstrap before pnpm installation; builds validate the same checkout directly.
