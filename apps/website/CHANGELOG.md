@@ -2,7 +2,8 @@
 
 ## 0.0.0-local
 
-- Add the community credit and ws.agency link once in the shared site footer, preserving the original WorkOS/MIT attribution and asset notices.
+- Add the authentic WS Agency sign, “Made with love by WS” creator/community credit and real project contact link to the shared footer and repository README, preserving original WorkOS/MIT notices and documenting the logo's separate brand-artwork license and provenance.
+- Keep fixed homepage live-example controls inside their existing hero paint boundary, so the footer's agency link, sign and credit stay readable and clickable after keyboard scrolling without moving the primary header.
 - Use actionable mobile header clicks after animated modal closes, retaining the initial viewport bounds, dialog and focus assertions.
 - Native Solid 2 static rendering/hydration for all 137 MDX documents and 151 routes plus 404, including both component indexes; no React/Next runtime or bespoke client router.
 - Use native Radix2Solid branding while retaining navigation and native Markdown acceptance independently of incidental asset filenames, presentation defaults and password-manager attribute wiring.

@@ -1,6 +1,7 @@
 .ThemesHeroLayoutRoot {
 	display: flex;
 	position: relative;
+	contain: paint;
 	flex-direction: column;
 	min-height: 100vh;
 

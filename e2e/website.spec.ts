@@ -256,6 +256,36 @@ test('marketing examples switch through queued animations and mobile navigation 
   expect(errors).toEqual([]);
 });
 
+test('desktop homepage footer credit remains clickable after keyboard scrolling past live examples', async ({ page }, testInfo) => {
+  await page.setViewportSize({ width: 1365, height: 900 });
+  for (const appearance of ['light', 'dark'] as const) {
+    await page.emulateMedia({ colorScheme: appearance });
+    await page.goto(`${origin}/`);
+    await page.evaluate(() => document.fonts.ready);
+    const first = page.getByRole('button', { name: 'Example 1', exact: true });
+    const second = page.getByRole('button', { name: 'Example 2', exact: true });
+    await second.click();
+    await expect(second).toHaveAttribute('data-visibility', 'visible');
+    await expect(first).toHaveAttribute('data-visibility', 'hidden');
+
+    const footer = page.locator('footer').last();
+    const credit = footer.locator('a[href="https://ws.agency"]');
+    await footer.locator('a[href="/NOTICE.txt"]').focus();
+    await page.keyboard.press('Tab');
+    await expect(credit).toBeFocused();
+    await expect(page.getByRole('link', { name: 'Radix2Solid homepage', exact: true }).filter({ visible: true }).first()).toBeInViewport();
+    await page.screenshot({ path: testInfo.outputPath(`hero-footer-${appearance}.png`) });
+    await expect.poll(() => credit.evaluate(link => {
+      const nodes = [link, link.querySelector('img')!, link.querySelector('span')!];
+      return nodes.map(node => {
+        const bounds = node.getBoundingClientRect();
+        const hit = document.elementFromPoint(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
+        return node.contains(hit);
+      });
+    }), { message: `${appearance}: footer link, logo and text own their visible hit targets` }).toEqual([true, true, true]);
+  }
+});
+
 test('playground theme changes retain the hydrated root and native dialog interaction', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));

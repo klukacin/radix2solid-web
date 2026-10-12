@@ -4,6 +4,20 @@ The independent, unofficial native **Solid 2** documentation website for [Radix2
 
 The site preserves 137 MDX documents, 151 routes plus 404, 215 demo source files and 92 downloadable runnable sandboxes. It includes native interactive examples, API tables, Markdown negotiation, heading-aware search, redirects, the Themes playground and historical marketing/example layouts. Website source and issues belong to [klukacin/radix2solid-web](https://github.com/klukacin/radix2solid-web); native package issues belong to [klukacin/radix2solid](https://github.com/klukacin/radix2solid).
 
+## Created for WS Agency
+
+<a href="https://ws.agency"><picture><source media="(prefers-color-scheme: dark)" srcset="https://design.ws.agency/assets/logos/original/sign-white.svg"><img src="https://design.ws.agency/assets/logos/original/sign-color.svg" height="32" alt="WS Agency"></picture></a>
+
+**Made with love by WS.** Created by [Kristijan Lukačin (@klukacin)](https://github.com/klukacin) for [WS Agency](https://ws.agency). We love open source, enterprise development and AI. Have a project in mind? [Let’s build it together.](https://ws.agency/contact)
+
+The WS Agency logo is trademark/brand artwork excluded from the software MIT license; the local Original color sign's public provenance and exact asset hash are in [NOTICE.txt](apps/website/public/NOTICE.txt). The README also uses the official [white sign](https://design.ws.agency/assets/logos/original/sign-white.svg), SHA-256 `f3e960eafbd9202aacc216dc3a4995fddc14e109d7e6d8ffc5c0f45c28fda72c`, from the same observed public design version; no brand artwork is relicensed. Original WorkOS attribution and the unofficial-fork status above remain unchanged.
+
+### Contributing and credit
+
+Website issues and pull requests belong in [radix2solid-web](https://github.com/klukacin/radix2solid-web); native package contributions belong in [radix2solid](https://github.com/klukacin/radix2solid). GitHub credits real accepted commits merged into the default branch when their author email is associated with the author's account; use your own verified account email or GitHub-provided noreply address. Add `Co-authored-by` only for someone who actually contributed, using their real identity.
+
+Repository owners can invite collaborators through repository Settings to grant access. That invitation is separate from contributor credit and is not required to submit a fork pull request.
+
 ## Build and check
 
 Use Node **24.21.0** and pnpm **11.5.0**, matching `.node-version` and `packageManager`.
