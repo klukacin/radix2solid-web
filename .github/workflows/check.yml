@@ -7,6 +7,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   check:
     runs-on: ubuntu-24.04
@@ -23,3 +27,12 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium firefox webkit
       - run: pnpm check
+      # Deploys the exact out/ validated by `pnpm check` above; skips if main moved on.
+      - if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$GITHUB_SHA" \
+            || { echo "::notice::$GITHUB_SHA is no longer main HEAD; deploy skipped"; exit 0; }
+          pnpm --filter @radix-solid/website exec wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: 8b4b87eb858efaaf5e5eecf00c6d5b1d
