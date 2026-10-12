@@ -1,13 +1,11 @@
-import { createSignal, onSettled, onCleanup } from "solid-js";
+import { createSignal, onSettled } from "solid-js";
 import { Toast } from "@radix-solid/primitives";
 import "./styles.css";
 const ToastDemo = () => {
   const [open, setOpen] = createSignal(false);
   const [eventDateRef, setEventDateRef] = createSignal(new Date());
   let timerRef = 0;
-  onSettled(() => {
-    onCleanup(() => clearTimeout(timerRef));
-  });
+  onSettled(() => () => clearTimeout(timerRef));
   return <Toast.Provider swipeDirection="right">
 			<button class="Button large violet" onClick={() => {
       setOpen(false);

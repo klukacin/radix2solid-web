@@ -1,4 +1,4 @@
-import { createContext, createEffect, createSignal, onCleanup, onSettled, useContext, type Element } from 'solid-js';
+import { createContext, createEffect, createSignal, onSettled, useContext, type Element } from 'solid-js';
 import { isServer } from '@solidjs/web';
 import { useThemeContext } from '@radix-solid/themes';
 
@@ -79,11 +79,11 @@ export function SiteProvider(props: { path: string; children: Element }) {
     media.addEventListener('change', appearanceChanged);
     desktop.addEventListener('change', viewportChanged);
     window.addEventListener('storage', storageChanged);
-    onCleanup(() => {
+    return () => {
       media.removeEventListener('change', appearanceChanged);
       desktop.removeEventListener('change', viewportChanged);
       window.removeEventListener('storage', storageChanged);
-    });
+    };
   });
   return <SiteContext value={context}>{props.children}</SiteContext>;
 }

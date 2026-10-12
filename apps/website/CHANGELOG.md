@@ -2,6 +2,12 @@
 
 ## 0.0.0-local
 
+- Return native `onSettled` teardown functions instead of registering `onCleanup` from its forbidden runtime scope, including copied system-appearance and SSR guidance; retain component-root cleanup and the existing observer, timer, event-listener and hero-control disposal behavior.
+- Own the Markdown link's reactive external/target/rel memo in its component scope, so SSR and browser attribute-getter order cannot allocate different hydration owners; preserve dynamic internal/external links, native child identity and external-link security attributes without changing the native SDK, compiler or HMR configuration.
+- Add a standalone real Vite/SSR development regression check for native homepage controls and Progress-document hydration/theme interactions in all three existing Playwright engines; it leaves the root CI case inventory and website configuration unchanged.
+- Isolate known free Unsplash requests in browser checks with 29 exact original-response image fixtures and their separate copyright/license notice; fail unknown image URLs rather than fabricate a response. Unsplash+ and WorkOS requests remain live. This test boundary does not correct production image delivery or explain the earlier Firefox ORB failure.
+- Add homepage footer failure diagnostics without changing its assertions or overall deadline; the original production footer timeout's cause remains unproven.
+- Serve JPEG assets with `image/jpeg` in the local preview server.
 - Make the site indexable: remove the `noindex` meta tag and `X-Robots-Tag` header from rendered pages, `_headers` and the preview server, and make `check:export` fail if either returns.
 - Underline the inline todo-list links on the Colors custom palette page and the dashboard example, so they are distinguishable from surrounding text without relying on color (axe `link-in-text-block`, which flagged the Colors page in CI).
 - Fix axe violations on the dashboard and ecommerce example pages and gate both in the settled accessibility test: decorative `alt=""` on the dashboard avatars (the person's name is always visible beside them); section headings now follow the page `h1` (`h2`, with `h3` sub-sections) at unchanged visual sizes; accessible names for the ecommerce icon buttons and select triggers; and underlined inline links that sat in heading or gray body text.

@@ -1,4 +1,4 @@
-import { createContext, createSignal, onCleanup, onSettled, omit, useContext, type Element } from 'solid-js';
+import { createContext, createSignal, onSettled, omit, useContext, type Element } from 'solid-js';
 import { dynamic, type JSX, type ValidComponent } from '@solidjs/web';
 import { composeRefs } from '@radix-solid/primitives/internal';
 
@@ -57,11 +57,11 @@ export function Carousel(props: { children: Element }) {
     updateNavigation();
     list.addEventListener('scroll', scheduleUpdate, { passive: true });
     window.addEventListener('resize', scheduleUpdate, { passive: true });
-    onCleanup(() => {
+    return () => {
       clearTimeout(timer);
       list.removeEventListener('scroll', scheduleUpdate);
       window.removeEventListener('resize', scheduleUpdate);
-    });
+    };
   });
   return <CarouselContext value={context}><div>{props.children}</div></CarouselContext>;
 }
@@ -98,11 +98,11 @@ export function CarouselSlideList(props: JSX.IntrinsicElements['div']) {
     };
     element.addEventListener('mousedown', begin, true);
     element.addEventListener('click', suppressDraggedClick, true);
-    onCleanup(() => {
+    return () => {
       stop();
       element.removeEventListener('mousedown', begin, true);
       element.removeEventListener('click', suppressDraggedClick, true);
-    });
+    };
   });
   return <div {...omit(props, 'ref')} ref={composeRefs(props.ref, element => { list = element; context.list = element; })}
     data-state={dragging() ? 'dragging' : undefined} />;
@@ -114,7 +114,7 @@ export function CarouselSlide(props: JSX.IntrinsicElements['div']) {
   onSettled(() => {
     const observer = new IntersectionObserver(([entry]) => setRatio(entry.intersectionRatio), { root: context.list, threshold: [0, 0.5, 1] });
     if (slide) observer.observe(slide);
-    onCleanup(() => observer.disconnect());
+    return () => observer.disconnect();
   });
   return <div {...omit(props, 'ref')} ref={composeRefs(props.ref, element => { slide = element; })} data-slide-intersection-ratio={String(ratio())} />;
 }

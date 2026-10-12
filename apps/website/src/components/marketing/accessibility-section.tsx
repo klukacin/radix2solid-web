@@ -234,7 +234,7 @@ export const AccessibilitySection = () => {
     if (container) {
       observer.observe(container);
     }
-    onCleanup(() => observer.disconnect());
+    return () => observer.disconnect();
   });
   createEffect(() => [currentSequence(), isIntersecting()], () => {
     window.clearTimeout(timeoutRef!);

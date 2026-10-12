@@ -53,7 +53,7 @@ export function Search(props: { children: Element }) {
       }
     };
     document.addEventListener('keydown', shortcut);
-    onCleanup(() => document.removeEventListener('keydown', shortcut));
+    return () => document.removeEventListener('keydown', shortcut);
   });
   const search = async (value: string) => {
     const current = ++revision;

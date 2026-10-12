@@ -73,4 +73,4 @@ hydrate(() => <MyApp />, root, { renderId: 'app-' });
 
 Native portals intentionally render no portal content on the server and mount it after the client settles. In this example, the dialog trigger is server-rendered, while the portal’s overlay and content are mounted on the client when the dialog opens. Do not invent server portal markup or use a legacy portal implementation to force a match.
 
-Put browser-only work such as measuring elements or subscribing to browser events in native `onSettled` callbacks. Register its teardown with `onCleanup` in that owned callback so navigation or unmounting removes the subscription. Do not read `window`, `document`, or storage while rendering on the server.
+Put browser-only work such as measuring elements or subscribing to browser events in native `onSettled` callbacks. Return a cleanup function from that callback so navigation or unmounting removes the subscription. Do not read `window`, `document`, or storage while rendering on the server.

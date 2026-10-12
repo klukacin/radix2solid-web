@@ -37,7 +37,7 @@ A common requirement is to inherit the appearance setting from a user’s system
 Use the browser's `matchMedia` API and pass the resolved appearance to `Theme`. This example renders light during SSR and initial hydration, then follows the system preference:
 
 ```tsx
-import { createSignal, onSettled, onCleanup, type Element } from "solid-js";
+import { createSignal, onSettled, type Element } from "solid-js";
 import { isServer } from "@solidjs/web";
 import { Theme } from "@radix-solid/themes";
 
@@ -48,7 +48,7 @@ export default function SystemTheme(props: { children: Element }) {
     const update = () => setDark(media.matches);
     update();
     media.addEventListener("change", update);
-    onCleanup(() => media.removeEventListener("change", update));
+    return () => media.removeEventListener("change", update);
   });
   return <Theme appearance={dark() ? "dark" : "light"}>{props.children}</Theme>;
 }

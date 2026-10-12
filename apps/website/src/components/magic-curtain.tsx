@@ -1,4 +1,4 @@
-import { createContext, createSignal, flush, omit, onCleanup, onSettled, useContext, type Element } from 'solid-js';
+import { createContext, createSignal, flush, omit, onSettled, useContext, type Element } from 'solid-js';
 import type { JSX } from '@solidjs/web';
 import { NavigationMenu } from '@radix-solid/primitives';
 import styles from './magic-curtain.module.css';
@@ -51,7 +51,7 @@ export function Item(props: JSX.IntrinsicElements['div'] & { defaultVisibility?:
   onSettled(() => {
     const item: CurtainItem = { node, get visibility() { return visibility(); }, setVisibility };
     context.setItems(items => [...items, item].sort((a, b) => a.node.compareDocumentPosition(b.node) & 4 ? -1 : 1));
-    onCleanup(() => context.setItems(items => items.filter(value => value !== item)));
+    return () => context.setItems(items => items.filter(value => value !== item));
   });
   return <div {...omit(props, 'defaultVisibility', 'children', 'ref', 'class')} ref={element => { node = element; if (typeof props.ref === 'function') props.ref(element); }} class={[styles.MagicCurtainItem, props.class]} data-visibility={visibility()} inert={visibility() !== 'visible'} aria-hidden={visibility() !== 'visible' ? 'true' : undefined}>{visibility() === 'hidden' ? null : props.children}</div>;
 }
@@ -106,11 +106,11 @@ export function Controls(props: { images?: string[] }) {
       if (records.some(record => [...record.removedNodes].some(node => node instanceof HTMLElement && node.hasAttribute('data-viewport')))) setOffset('');
     });
     observer.observe(wrapper, { childList: true });
-    onCleanup(() => {
+    return () => {
       observer.disconnect();
       removeAnimationListener?.();
       for (const timer of timers) clearTimeout(timer);
-    });
+    };
   });
   return <NavigationMenu.Root delayDuration={40} skipDelayDuration={40} value={menuValue()} class={styles.MagicCurtainControlsRoot} style={{ position: 'absolute', 'z-index': 1, left: `${context.position.left}px`, top: `${context.position.top}px` }} onValueChange={value => { setMenuValue(value); if (value) setOffset(value); }}>
     <NavigationMenu.List aria-label="Radix Themes Examples" style={{ display: 'flex', 'list-style': 'none', margin: 0, padding: 0, 'z-index': 1, position: 'relative' }}>{context.items.map((item, index) => <NavigationMenu.Item class={styles.MagicCurtainControlsItem} value={index.toString()} onPointerMove={() => context.setHovered(index.toString())} onPointerLeave={() => deferClear('hovered', index.toString())}>
@@ -144,7 +144,7 @@ export function MirrorControls() {
     };
     position();
     addEventListener('resize', position);
-    onCleanup(() => { removeEventListener('resize', position); clearTimeout(timer); if (frame !== undefined) cancelAnimationFrame(frame); });
+    return () => { removeEventListener('resize', position); clearTimeout(timer); if (frame !== undefined) cancelAnimationFrame(frame); };
   });
   return <div ref={element => { node = element; }} class={styles.MagicCurtainControlsRoot} aria-hidden="true">{context.items.map((_, index) => <div class={styles.MagicCurtainControlsItem}><div data-focused={String(context.focused === index.toString())} data-highlighted={String(context.hovered === index.toString() || context.highlighted === index.toString())} class={styles.MagicCurtainControlsTrigger} /></div>)}</div>;
 }

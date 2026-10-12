@@ -1,7 +1,7 @@
 import { composeEventHandlers } from '@radix-solid/primitives/internal';
 
 import type { JSX } from "@solidjs/web";
-import { type Element, omit, onCleanup, onSettled } from "solid-js";
+import { type Element, omit, onSettled } from "solid-js";
 import { Box, Text, Link, Flex, Container, Heading } from "@radix-solid/themes";
 import { ArrowLeftIcon, ArrowRightIcon } from "@radix-solid/icons";
 import { Carousel, CarouselSlideList, CarouselSlide, CarouselNext, CarouselPrevious } from "./carousel";
@@ -165,7 +165,7 @@ export const PrimitivesHero = () => {
       }
     };
     document.addEventListener("keydown", tabListener);
-    onCleanup(() => document.removeEventListener("keydown", tabListener));
+    return () => document.removeEventListener("keydown", tabListener);
   });
   return <Section size={{
     initial: "2",

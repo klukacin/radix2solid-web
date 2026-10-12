@@ -1,5 +1,24 @@
-import { expect, test } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+import { expect, test as base } from '@playwright/test';
 import { accessibilityViolations } from './accessibility.js';
+
+// Test-only exact original free-license images; production URLs, Unsplash+ and WorkOS remain live.
+// Unlisted images.unsplash.com requests fail instead of silently falling back to the network.
+const unsplashDirectory = new URL('./fixtures/unsplash/', import.meta.url);
+const { items } = JSON.parse(readFileSync(new URL('manifest.json', unsplashDirectory), 'utf8')) as { items: { url: string; file: string; type: string }[] };
+const unsplashFixtures: Record<string, { url: string; file: string; type: string }> = Object.fromEntries(items.map(item => [item.url, item]));
+const test = base.extend<{ unsplash: void }>({
+  unsplash: [async ({ page }, use) => {
+    const missing: string[] = [];
+    await page.route('https://images.unsplash.com/**', route => {
+      const fixture = unsplashFixtures[route.request().url()];
+      if (!fixture) { missing.push(route.request().url()); return route.abort('failed'); }
+      return route.fulfill({ contentType: fixture.type, body: readFileSync(new URL(fixture.file, unsplashDirectory)) });
+    });
+    await use();
+    expect(missing, 'Unsplash image requests without an exact licensed fixture').toEqual([]);
+  }, { auto: true }],
+});
 
 const origin = 'http://127.0.0.1:4149';
 
@@ -255,32 +274,76 @@ test('marketing examples switch through queued animations and mobile navigation 
 });
 
 test('desktop homepage footer credit remains clickable after keyboard scrolling past live examples', async ({ page }, testInfo) => {
-  await page.setViewportSize({ width: 1365, height: 900 });
-  for (const appearance of ['light', 'dark'] as const) {
-    await page.emulateMedia({ colorScheme: appearance });
-    await page.goto(`${origin}/`);
-    await page.evaluate(() => document.fonts.ready);
-    const first = page.getByRole('button', { name: 'Example 1', exact: true });
-    const second = page.getByRole('button', { name: 'Example 2', exact: true });
-    await second.click();
-    await expect(second).toHaveAttribute('data-visibility', 'visible');
-    await expect(first).toHaveAttribute('data-visibility', 'hidden');
-
-    const footer = page.locator('footer').last();
-    const credit = footer.locator('a[href="https://ws.agency"]');
-    await footer.locator('a[href="/NOTICE.txt"]').focus();
-    await page.keyboard.press('Tab');
-    await expect(credit).toBeFocused();
-    await expect(page.getByRole('link', { name: 'Radix2Solid homepage', exact: true }).filter({ visible: true }).first()).toBeInViewport();
-    await page.screenshot({ path: testInfo.outputPath(`hero-footer-${appearance}.png`) });
-    await expect.poll(() => credit.evaluate(link => {
-      const nodes = [link, link.querySelector('img')!, link.querySelector('span')!];
-      return nodes.map(node => {
-        const bounds = node.getBoundingClientRect();
-        const hit = document.elementFromPoint(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
-        return node.contains(hit);
+  // Failure diagnostics only: phases, page/console/asset events and the Example 2 DOM/role state go to stdout, then the original error is rethrown.
+  const started = Date.now();
+  let appearance: 'light' | 'dark' = 'light';
+  const phases: { appearance: string; phase: string; elapsedMs: number }[] = [];
+  const events: Record<string, unknown>[] = [];
+  let beforeClick: unknown;
+  const phase = (name: string) => phases.push({ appearance, phase: name, elapsedMs: Date.now() - started });
+  page.on('pageerror', error => events.push({ event: 'pageerror', elapsedMs: Date.now() - started, message: error.message, stack: error.stack }));
+  page.on('console', message => { if (message.type() === 'warning' || message.type() === 'error') events.push({ event: 'console', elapsedMs: Date.now() - started, type: message.type(), text: message.text().slice(0, 300), location: message.location() }); });
+  page.on('requestfailed', request => { if (request.url().startsWith(`${origin}/assets/`)) events.push({ event: 'asset-requestfailed', elapsedMs: Date.now() - started, url: request.url(), type: request.resourceType(), failure: request.failure() }); });
+  page.on('response', response => { if (response.url().startsWith(`${origin}/assets/`) && (response.status() < 200 || response.status() >= 300)) events.push({ event: 'asset-non2xx', elapsedMs: Date.now() - started, url: response.url(), type: response.request().resourceType(), status: response.status() }); });
+  try {
+    await page.setViewportSize({ width: 1365, height: 900 });
+    for (appearance of ['light', 'dark'] as const) {
+      phase('emulate-media');
+      await page.emulateMedia({ colorScheme: appearance });
+      phase('navigation');
+      await page.goto(`${origin}/`);
+      phase('fonts-ready');
+      beforeClick = await page.evaluate(async () => {
+        await document.fonts.ready;
+        return {
+          readyState: document.readyState, documentClass: document.documentElement.className.slice(0, 120),
+          roots: [...document.querySelectorAll('[data-is-firefox]')].map(root => ({ firefox: root.getAttribute('data-is-firefox'), itemStates: [...root.querySelectorAll('[class*="MagicCurtainItem"]')].map(item => item.getAttribute('data-visibility')) })),
+          buttons: [...document.querySelectorAll('button')].map(button => ({ label: button.getAttribute('aria-label'), text: button.textContent?.slice(0, 40), role: button.getAttribute('role') })),
+          example2: [...document.querySelectorAll('button[aria-label="Example 2"]')].map(button => {
+            const ancestors = [];
+            for (let node: Element | null = button; node; node = node.parentElement) { const style = getComputedStyle(node); const bounds = node.getBoundingClientRect(); ancestors.push({ tag: node.tagName, class: String(node.className).slice(0, 80), ariaHidden: node.getAttribute('aria-hidden'), inert: node.hasAttribute('inert'), display: style.display, visibility: style.visibility, opacity: style.opacity, width: bounds.width, height: bounds.height }); }
+            return { html: button.outerHTML.slice(0, 400), ancestors };
+          }),
+        };
       });
-    }), { message: `${appearance}: footer link, logo and text own their visible hit targets` }).toEqual([true, true, true]);
+      const first = page.getByRole('button', { name: 'Example 1', exact: true });
+      const second = page.getByRole('button', { name: 'Example 2', exact: true });
+      phase('example2-role-snapshot');
+      const roles = { exact: await second.count(), includingHidden: await page.getByRole('button', { name: 'Example 2', exact: true, includeHidden: true }).count() };
+      beforeClick = { appearance, elapsedMs: Date.now() - started, dom: beforeClick, roles };
+      phase('example2-click');
+      await second.click();
+      phase('example-visibility');
+      await expect(second).toHaveAttribute('data-visibility', 'visible');
+      await expect(first).toHaveAttribute('data-visibility', 'hidden');
+
+      const footer = page.locator('footer').last();
+      const credit = footer.locator('a[href="https://ws.agency"]');
+      phase('footer-keyboard-focus');
+      await footer.locator('a[href="/NOTICE.txt"]').focus();
+      await page.keyboard.press('Tab');
+      await expect(credit).toBeFocused();
+      await expect(page.getByRole('link', { name: 'Radix2Solid homepage', exact: true }).filter({ visible: true }).first()).toBeInViewport();
+      phase('screenshot');
+      await page.screenshot({ path: testInfo.outputPath(`hero-footer-${appearance}.png`) });
+      phase('credit-hit-targets');
+      await expect.poll(() => credit.evaluate(link => {
+        const nodes = [link, link.querySelector('img')!, link.querySelector('span')!];
+        return nodes.map(node => {
+          const bounds = node.getBoundingClientRect();
+          const hit = document.elementFromPoint(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
+          return node.contains(hit);
+        });
+      }), { message: `${appearance}: footer link, logo and text own their visible hit targets` }).toEqual([true, true, true]);
+      phase('appearance-complete');
+    }
+  } catch (error) {
+    let failureDOM: unknown;
+    try {
+      failureDOM = await page.evaluate(() => ({ readyState: document.readyState, roots: [...document.querySelectorAll('[data-is-firefox]')].map(root => ({ firefox: root.getAttribute('data-is-firefox'), items: root.querySelectorAll('[class*="MagicCurtainItem"]').length })), buttons: [...document.querySelectorAll('button')].map(button => ({ label: button.getAttribute('aria-label'), text: button.textContent?.slice(0, 40), ariaHiddenAncestor: button.closest('[aria-hidden="true"]')?.outerHTML.slice(0, 400), inertAncestor: button.closest('[inert]')?.outerHTML.slice(0, 400) })) }));
+    } catch (snapshotError) { failureDOM = { unavailable: String(snapshotError) }; }
+    console.log('[footer-diagnostic] ' + JSON.stringify({ appearance, elapsedMs: Date.now() - started, phases, events, beforeClick, failureDOM, failure: String(error) }));
+    throw error;
   }
 });
 

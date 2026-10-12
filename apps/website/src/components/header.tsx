@@ -1,6 +1,6 @@
 
 import type { JSX } from "@solidjs/web";
-import { type Element, createSignal, createMemo, onCleanup, onSettled, omit, type ComponentProps } from "solid-js";
+import { type Element, createSignal, createMemo, onSettled, omit, type ComponentProps } from "solid-js";
 import { AccessibleIcon, Flex, IconButton, Link, Theme, Tooltip } from "@radix-solid/themes";
 import styles from "./header.module.css";
 import { BoxLink } from "./box-link";
@@ -49,10 +49,10 @@ export const Header = (p: HeaderProps) => {
       attributes: true,
       attributeFilter: ["style"]
     });
-    onCleanup(() => {
+    return () => {
       removeEventListener("scroll", handleScroll);
       observer.disconnect();
-    });
+    };
   });
   return <Theme asChild class="radix-themes-custom-fonts">{target => {
       const nativeProps: JSX.IntrinsicElements["div"] & {

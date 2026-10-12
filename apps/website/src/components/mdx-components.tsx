@@ -1,4 +1,4 @@
-import { omit, onCleanup, onSettled, type Element } from 'solid-js';
+import { createMemo, omit, onSettled, type Element } from 'solid-js';
 import type { JSX } from '@solidjs/web';
 import * as Themes from '@radix-solid/themes';
 import { ExternalLinkIcon, InfoCircledIcon, Link2Icon } from '@radix-solid/icons';
@@ -57,7 +57,7 @@ function HeroContainer(props: JSX.HTMLAttributes<HTMLDivElement>) {
       }
     });
     observer.observe(root, { childList: true, subtree: true, attributes: true });
-    onCleanup(() => observer.disconnect());
+    return () => observer.disconnect();
   });
   return <Themes.Theme appearance="light" asChild data-search-exclude data-md-exclude>{target => target(Themes.Flex, { ...props, ref: (element: HTMLDivElement) => { root = element; }, class: ['hero-demo', props.class], position: 'relative', align: 'start', justify: 'center', role: 'presentation' })}</Themes.Theme>;
 }
@@ -70,7 +70,14 @@ export const components = {
   h3: (props: JSX.HTMLAttributes<HTMLHeadingElement>) => <HeadingLink {...props} level="h3" />,
   h4: (props: JSX.HTMLAttributes<HTMLHeadingElement>) => <Themes.Heading as="h4" size="4" mt="6" mb="3" {...props} />,
   p: (props: JSX.HTMLAttributes<HTMLParagraphElement>) => <Themes.Text as="p" size="3" mb="4" {...props} />,
-  a: (props: JSX.AnchorHTMLAttributes<HTMLAnchorElement>) => <Themes.Link {...props} underline="always" class={['document-link', props.class]} target={typeof props.href === 'string' && props.href.startsWith('http') ? '_blank' : props.target} rel={typeof props.href === 'string' && props.href.startsWith('http') ? 'noopener noreferrer' : props.rel}>{props.children}{typeof props.href === 'string' && props.href.startsWith('http') && <ExternalLinkIcon aria-hidden="true" />}</Themes.Link>,
+  a: (props: JSX.AnchorHTMLAttributes<HTMLAnchorElement>) => {
+    // Own the memo here: SSR and DOM read attribute getters in a different order.
+    const linkProps = createMemo(() => {
+      const external = typeof props.href === 'string' && props.href.startsWith('http');
+      return { external, target: external ? '_blank' : props.target, rel: external ? 'noopener noreferrer' : props.rel };
+    });
+    return <Themes.Link {...props} underline="always" class={['document-link', props.class]} target={linkProps().target} rel={linkProps().rel}>{props.children}{linkProps().external && <ExternalLinkIcon aria-hidden="true" />}</Themes.Link>;
+  },
   hr: (props: JSX.HTMLAttributes<HTMLDivElement>) => <div {...props} class={['document-rule', props.class]}><Themes.Separator size="2" my="8" /></div>,
   ul: (props: JSX.HTMLAttributes<HTMLUListElement>) => <ul {...props} class={['document-list', props.class]} />,
   ol: (props: JSX.HTMLAttributes<HTMLOListElement>) => <ol {...props} class={['document-ordered-list', props.class]} />,

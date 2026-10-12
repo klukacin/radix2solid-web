@@ -1,5 +1,5 @@
 import Color from 'colorjs.io';
-import { createEffect, createMemo, createSignal, onCleanup, onSettled, omit, untrack, type ComponentProps } from 'solid-js';
+import { createEffect, createMemo, createSignal, onSettled, omit, untrack, type ComponentProps } from 'solid-js';
 import { TextField } from '@radix-solid/themes';
 import { composeEventHandlers, composeRefs } from '@radix-solid/primitives/internal';
 import styles from './color-field.module.css';
@@ -49,7 +49,7 @@ export function ColorField(props: ColorFieldProps) {
     const formatted = toShortFormat(value);
     if (formatted) { committed = formatted; setInputValue(formatted); }
   });
-  onSettled(() => onCleanup(() => clearTimeout(selectTimer)));
+  onSettled(() => () => clearTimeout(selectTimer));
   function selectAfterUpdate() {
     clearTimeout(selectTimer);
     selectTimer = setTimeout(() => input?.select());

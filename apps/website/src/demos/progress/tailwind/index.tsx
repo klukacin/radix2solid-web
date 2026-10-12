@@ -1,10 +1,10 @@
-import { createSignal, onSettled, onCleanup } from "solid-js";
+import { createSignal, onSettled } from "solid-js";
 import { Progress } from "@radix-solid/primitives";
 const ProgressDemo = () => {
   const [progress, setProgress] = createSignal(13);
   onSettled(() => {
     const timer = setTimeout(() => setProgress(66), 500);
-    onCleanup(() => clearTimeout(timer));
+    return () => clearTimeout(timer);
   });
   return <Progress.Root class="relative h-[25px] w-[300px] overflow-hidden rounded-full bg-blackA6" style={{
     // Fix overflow clipping in Safari
