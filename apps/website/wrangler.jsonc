@@ -2,7 +2,6 @@
   "name": "radix-solid-website",
   "compatibility_date": "2026-09-01",
   "main": "./worker/index.ts",
-  "build": { "command": "pnpm build" },
   "assets": {
     "directory": "./out",
     "binding": "ASSETS",
@@ -10,6 +9,6 @@
     "html_handling": "drop-trailing-slash",
     "run_worker_first": ["/case-studies", "/case-studies/*", "/colors/docs", "/colors/docs/*", "/docs/*", "/primitives/docs", "/primitives/docs/*", "/themes", "/themes/docs", "/themes/docs/*", "/blog/*"]
   },
-  "workers_dev": true,
-  "preview_urls": true
+  "workers_dev": false,
+  "preview_urls": false
 }
