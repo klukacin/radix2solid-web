@@ -2,6 +2,8 @@
 
 ## 0.0.0-local
 
+- Align the shared website footer in a bounded responsive grid with native theme-colored links, retained WorkOS/MIT attribution and creator/contact links. Use the official WS Agency compact credit, gold outline heart and unchanged local color/white signs for the actual selected appearance; retain a 44px keyboard-visible link target and document artwork provenance and the example-code license.
+- Cover desktop/narrow footer containment, relative credit/creator alignment and keyboard reachability; make the existing light/dark hit-target check inspect the visible logo rather than a hidden appearance variant.
 - Return native `onSettled` teardown functions instead of registering `onCleanup` from its forbidden runtime scope, including copied system-appearance and SSR guidance; retain component-root cleanup and the existing observer, timer, event-listener and hero-control disposal behavior.
 - Own the Markdown link's reactive external/target/rel memo in its component scope, so SSR and browser attribute-getter order cannot allocate different hydration owners; preserve dynamic internal/external links, native child identity and external-link security attributes without changing the native SDK, compiler or HMR configuration.
 - Add a standalone real Vite/SSR development regression check for native homepage controls and Progress-document hydration/theme interactions in all three existing Playwright engines; it leaves the root CI case inventory and website configuration unchanged.

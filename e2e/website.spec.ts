@@ -273,6 +273,36 @@ test('marketing examples switch through queued animations and mobile navigation 
   expect(errors).toEqual([]);
 });
 
+test('footer credit stays aligned, contained and keyboard reachable on desktop and narrow screens', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('theme', 'light'));
+  for (const width of [1365, 320]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const path of ['/', '/themes/docs/overview/getting-started']) {
+      await page.goto(`${origin}${path}`);
+      await page.evaluate(() => document.fonts.ready);
+      const footer = page.locator('footer').last();
+      const credit = footer.locator('a[href="https://ws.agency"]');
+      await footer.locator('a[href="/NOTICE.txt"]').focus();
+      await page.keyboard.press('Tab');
+      await expect(credit).toBeFocused();
+      const link = (await credit.boundingBox())!;
+      expect(link.height, 'agency credit retains a usable touch target').toBeGreaterThanOrEqual(44);
+      expect(await footer.evaluate(element => [...element.querySelectorAll('*')].filter(node => {
+        const bounds = node.getBoundingClientRect();
+        return bounds.width > 0 && (bounds.left < 0 || bounds.right > innerWidth + 1);
+      }).map(node => node.tagName)), 'footer content stays inside the viewport without clipping').toEqual([]);
+      if (width === 1365) {
+        const centreDifference = await footer.evaluate(element => {
+          const link = element.querySelector('a[href="https://ws.agency"]')!.getBoundingClientRect();
+          const copy = element.querySelector('a[href="https://github.com/klukacin"]')!.closest('p')!.getBoundingClientRect();
+          return Math.abs(link.y + link.height / 2 - copy.y - copy.height / 2);
+        });
+        expect(centreDifference, 'adjacent credit and creator copy share a vertical centre').toBeLessThanOrEqual(1);
+      }
+    }
+  }
+});
+
 test('desktop homepage footer credit remains clickable after keyboard scrolling past live examples', async ({ page }, testInfo) => {
   // Failure diagnostics only: phases, page/console/asset events and the Example 2 DOM/role state go to stdout, then the original error is rethrown.
   const started = Date.now();
@@ -327,8 +357,9 @@ test('desktop homepage footer credit remains clickable after keyboard scrolling 
       phase('screenshot');
       await page.screenshot({ path: testInfo.outputPath(`hero-footer-${appearance}.png`) });
       phase('credit-hit-targets');
-      await expect.poll(() => credit.evaluate(link => {
-        const nodes = [link, link.querySelector('img')!, link.querySelector('span')!];
+      await expect.poll(() => credit.locator('img').filter({ visible: true }).evaluate(image => {
+        const link = image.closest('a')!;
+        const nodes = [link, image, link.querySelector('span')!];
         return nodes.map(node => {
           const bounds = node.getBoundingClientRect();
           const hit = document.elementFromPoint(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);

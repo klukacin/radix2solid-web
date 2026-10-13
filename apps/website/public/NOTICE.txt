@@ -5,3 +5,31 @@ Company names, logos and trademarks and named-person portraits are preserved for
 This website is not self-contained or offline: historical example photographs, portraits and preview images request images.unsplash.com and the WorkOS-owned workos.imgix.net CDN; Colors examples also link cdn.jsdelivr.net CSS. Loading these resources discloses ordinary browser request information, including visitor IP addresses, to their operators. Historical articles contain upstream external preview and community links whose availability is not guaranteed. No WorkOS analytics, account configuration, owned publishing domain or registry namespace is claimed. Review these dependencies, asset rights and publishing identity before deployment; do not silently remove historical content or rehost unlicensed images.
 
 WS Agency branding: Radix2Solid was created by Kristijan Lukačin for WS Agency. The WS Agency sign in marketing/ws-agency-sign-color.svg identifies this authorized WS Agency project. This logo is trademark/brand artwork excluded from the software MIT license; it is not relicensed and implies no endorsement by WorkOS. Public source: https://design.ws.agency/assets/logos/original/sign-color.svg ; observed design version: https://design.ws.agency/version.json , commit bae8fdd23d9cf1f3e130466e6ae715cb0b1b8b83 . The unchanged asset's SHA-256 is 73e94d1706fc61329bfe11d5e00fdc0b522bbddcbf5ddbba0cd5289b4c63fd69.
+
+The unchanged dark-surface sign in marketing/ws-agency-sign-white.svg is sourced from https://design.ws.agency/assets/logos/original/sign-white.svg (WS design main acb534558e81dc00e8c0c2b7f4eef28596f16b41); SHA-256 f3e960eafbd9202aacc216dc3a4995fddc14e109d7e6d8ffc5c0f45c28fda72c. It has the same separate brand-artwork restrictions as the color sign. Both are served locally, not requested from the design site by visitors.
+
+The compact footer credit markup, outline heart and alignment styles are adapted from https://design.ws.agency/examples/footer.html and https://design.ws.agency/examples/footer.css at that revision. Example code is distributed under https://design.ws.agency/LICENSE-CODE; this permission does not license the WS Agency logo artwork or trademarks.
+
+MIT License
+
+Copyright (c) 2026 WS Agency
+
+Applies only to the example code, gallery code, token definitions and build/validation scripts. Excludes brand artwork, logos, derived logo compositions and font binaries.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

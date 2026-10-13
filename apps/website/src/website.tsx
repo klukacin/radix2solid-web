@@ -35,12 +35,22 @@ export function Website(props: { path: string; route?: DocumentModule }) {
         {caseStudy && <nav class="case-study-pagination" aria-label="Case study pagination" data-search-exclude data-md-exclude><a href={nextCase} rel="next">Next case study: {routes[nextCase].frontmatter.metaTitle}</a></nav>}
       </main>{caseStudy ? <aside class="case-study-about" aria-labelledby="company-about-heading"><a href={companyUrl} target="_blank" rel="noopener noreferrer" aria-label={`${metadata.metaTitle} homepage`}><CaseStudyLogo variant={metadata.companyLogoVariant as CaseStudyLogoVariant} aria-hidden="true" /></a><Heading as="h2" id="company-about-heading" size="4" mt="5" mb="3">About {metadata.metaTitle}</Heading><Text as="p" size="2" mb="4">{metadata.companyAbout as string}</Text><Heading as="h3" size="2" mb="2">Founded</Heading><Text as="p" size="2" color="gray" mb="4">{metadata.companyFounded as string}</Text><a href={companyUrl} target="_blank" rel="noopener noreferrer">{metadata.companyUrl as string}</a></aside> : <QuickNav />}</div>
     </>}
-    <footer>
-      <Text as="p" size="2">Radix2Solid is an unofficial native Solid 2 fork, not a WorkOS product. Original documentation and designs © WorkOS, MIT licensed. <a href="/NOTICE.txt">Attribution and asset notices</a>.</Text>
-      <Flex direction={{ initial: 'column', sm: 'row' }} align="start" gap="4" mt="4">
-        <a class="agency-credit" href="https://ws.agency" aria-label="WS Agency — Made with love by WS"><img class="agency-mark" src="/marketing/ws-agency-sign-color.svg" width="406.48" height="168.18" alt="" /><Text size="2" weight="medium">Made with love by WS</Text></a>
-        <Text as="p" size="2">Created by <a href="https://github.com/klukacin">Kristijan Lukačin (@klukacin)</a> for WS Agency. We love open source, enterprise development and AI. Have a project in mind? <a href="https://ws.agency/contact">Let’s build it together.</a></Text>
-      </Flex>
+    <footer class="site-footer">
+      <Box class="site-footer-inner">
+        <Text as="p" size="2">Radix2Solid is an unofficial native Solid 2 fork, not a WorkOS product. Original documentation and designs © WorkOS, MIT licensed. <a href="/NOTICE.txt">Attribution and asset notices</a>.</Text>
+        <Flex class="site-footer-credit-row" gap="5" mt="4">
+          <a class="agency-credit" href="https://ws.agency" aria-label="Made with love by WS Agency">
+            <span>Made with <span class="sr-only">love</span></span>
+            <span class="agency-credit-symbols">
+              <svg class="agency-heart" width="20.48" height="20" aria-hidden="true" viewBox="0.67 0.17 22.66 22.13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"><path d="M12 21C10 19 2 13 2 7a5 5 0 0 1 10-1 5 5 0 0 1 10 1c0 6-8 12-10 14Z" /></svg>
+              <span>by</span>
+              <img class="agency-mark agency-mark-light" src="/marketing/ws-agency-sign-color.svg" width="406.48" height="168.18" alt="" />
+              <img class="agency-mark agency-mark-dark" src="/marketing/ws-agency-sign-white.svg" width="406.48" height="168.18" alt="" />
+            </span>
+          </a>
+          <Text as="p" size="2">Created by <a href="https://github.com/klukacin">Kristijan Lukačin (@klukacin)</a> for WS Agency. We love open source, enterprise development and AI. Have a project in mind? <a href="https://ws.agency/contact">Let’s build it together.</a></Text>
+        </Flex>
+      </Box>
     </footer></Search>
   </Theme></SiteProvider>;
 }
