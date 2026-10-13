@@ -2,6 +2,7 @@
 
 ## 0.0.0-local
 
+- Let the shared website footer fill the available viewport width instead of a centered 1200px cap, retaining 24px side padding, the mobile single column, the aligned desktop credit/creator grid and the footer's branding, 44px target and focus outline; the existing footer end-to-end check now also covers 1920px and 2560px widths.
 - Align the shared website footer in a bounded responsive grid with native theme-colored links, retained WorkOS/MIT attribution and creator/contact links. Use the official WS Agency compact credit, gold outline heart and unchanged local color/white signs for the actual selected appearance; retain a 44px keyboard-visible link target and document artwork provenance and the example-code license.
 - Cover desktop/narrow footer containment, relative credit/creator alignment and keyboard reachability; make the existing light/dark hit-target check inspect the visible logo rather than a hidden appearance variant.
 - Return native `onSettled` teardown functions instead of registering `onCleanup` from its forbidden runtime scope, including copied system-appearance and SSR guidance; retain component-root cleanup and the existing observer, timer, event-listener and hero-control disposal behavior.

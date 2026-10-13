@@ -275,7 +275,7 @@ test('marketing examples switch through queued animations and mobile navigation 
 
 test('footer credit stays aligned, contained and keyboard reachable on desktop and narrow screens', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('theme', 'light'));
-  for (const width of [1365, 320]) {
+  for (const width of [1365, 320, 1920, 2560]) {
     await page.setViewportSize({ width, height: 900 });
     for (const path of ['/', '/themes/docs/overview/getting-started']) {
       await page.goto(`${origin}${path}`);
@@ -291,7 +291,13 @@ test('footer credit stays aligned, contained and keyboard reachable on desktop a
         const bounds = node.getBoundingClientRect();
         return bounds.width > 0 && (bounds.left < 0 || bounds.right > innerWidth + 1);
       }).map(node => node.tagName)), 'footer content stays inside the viewport without clipping').toEqual([]);
-      if (width === 1365) {
+      const fillGap = await footer.evaluate(element => {
+        const style = getComputedStyle(element);
+        const available = element.getBoundingClientRect().width - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+        return Math.abs(available - element.firstElementChild!.getBoundingClientRect().width);
+      });
+      expect(fillGap, 'footer content fills the available width inside its horizontal padding').toBeLessThanOrEqual(1);
+      if (width >= 768) {
         const centreDifference = await footer.evaluate(element => {
           const link = element.querySelector('a[href="https://ws.agency"]')!.getBoundingClientRect();
           const copy = element.querySelector('a[href="https://github.com/klukacin"]')!.closest('p')!.getBoundingClientRect();

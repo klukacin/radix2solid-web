@@ -10,10 +10,8 @@ html{scroll-behavior:smooth}body{margin:0;font-family:system-ui,sans-serif}.site
 @media(max-width:900px){.quick-nav{display:none}.case-study-about{padding:24px 16px}.hero-code-controls{gap:var(--space-3)}.hero-code-controls a{margin-left:0;flex-basis:100%}.document-highlights{margin-top:var(--space-4)}}
 .document-description p{font-size:inherit;line-height:inherit;margin:0}
 .site-footer{padding-block:var(--space-6)}
-.site-footer-inner{max-width:1200px;margin-inline:auto}
-.site-footer-inner>p{max-width:90ch}
 .site-footer .site-footer-credit-row{display:grid;grid-template-columns:1fr;align-items:center}
-.site-footer-credit-row>p{min-width:0;max-width:75ch}
+.site-footer-credit-row>p{min-width:0}
 .site-footer a{color:var(--gray-12);text-underline-offset:3px}
 .site-footer a:focus-visible{outline:3px solid var(--gray-12);outline-offset:4px}
 .agency-credit{display:inline-flex;align-items:center;flex-wrap:wrap;justify-self:start;gap:var(--space-2);min-height:44px;padding:0;font-size:var(--font-size-2);line-height:var(--line-height-2);font-weight:500;text-decoration:none}
