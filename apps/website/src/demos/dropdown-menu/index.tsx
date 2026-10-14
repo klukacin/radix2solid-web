@@ -1,6 +1,6 @@
 import { createSignal } from "solid-js";
-import { DropdownMenu } from "@radix-solid/primitives";
-import { HamburgerMenuIcon, DotFilledIcon, CheckIcon, ChevronRightIcon } from "@radix-solid/icons";
+import { DropdownMenu } from "@wsagency/radix2solid-primitives";
+import { HamburgerMenuIcon, DotFilledIcon, CheckIcon, ChevronRightIcon } from "@wsagency/radix2solid-icons";
 import styles from "./styles.module.css";
 const DropdownMenuDemo = () => {
   const [bookmarksChecked, setBookmarksChecked] = createSignal(true);

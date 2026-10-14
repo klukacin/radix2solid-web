@@ -37,7 +37,7 @@ aria: https://www.w3.org/WAI/ARIA/apg/patterns/slider-multithumb
 Import all parts and piece them together.
 
 ```jsx
-import { Slider } from "@radix-solid/primitives";
+import { Slider } from "@wsagency/radix2solid-primitives";
 export default () => <Slider.Root>
 		<Slider.Track>
 			<Slider.Range />
@@ -327,7 +327,7 @@ Use the `orientation` prop to create a vertical slider.
 
 ```jsx line=4
 // index.tsx
-import { Slider } from "@radix-solid/primitives";
+import { Slider } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 export default () => <Slider.Root class="SliderRoot" defaultValue={[50]} __orientation__="vertical">
 		<Slider.Track class="SliderTrack">
@@ -380,7 +380,7 @@ export default () => <Slider.Root class="SliderRoot" defaultValue={[50]} __orien
 Add multiple thumbs and values to create a range slider.
 
 ```jsx line=2,6,7
-import { Slider } from "@radix-solid/primitives";
+import { Slider } from "@wsagency/radix2solid-primitives";
 export default () => <Slider.Root defaultValue={__[25, 75]__}>
 		<Slider.Track>
 			<Slider.Range />
@@ -395,7 +395,7 @@ export default () => <Slider.Root defaultValue={__[25, 75]__}>
 Use the `step` prop to increase the stepping interval.
 
 ```jsx line=2
-import { Slider } from "@radix-solid/primitives";
+import { Slider } from "@wsagency/radix2solid-primitives";
 export default () => <Slider.Root defaultValue={[50]} __step__={10}>
 		<Slider.Track>
 			<Slider.Range />
@@ -409,7 +409,7 @@ export default () => <Slider.Root defaultValue={[50]} __step__={10}>
 Use `minStepsBetweenThumbs` to avoid thumbs with equal values.
 
 ```jsx line=2
-import { Slider } from "@radix-solid/primitives";
+import { Slider } from "@wsagency/radix2solid-primitives";
 export default () => <Slider.Root defaultValue={[25, 75]} step={10} __minStepsBetweenThumbs__={1}>
 		<Slider.Track>
 			<Slider.Range />
@@ -430,7 +430,7 @@ By default, `Slider.Thumb` renders a visually hidden `input` for form submission
 - `Slider.unstable_BubbleInput` is the visually hidden input that `Slider.Thumb` renders by default. Omit it when you don't need form submission.
 
 ```jsx
-import { Slider } from "@radix-solid/primitives";
+import { Slider } from "@wsagency/radix2solid-primitives";
 export default () => <Slider.Root defaultValue={[25, 75]}>
 		<Slider.Track>
 			<Slider.Range />
@@ -553,7 +553,7 @@ export default () => <Slider defaultValue={[25]} />;
 ```jsx
 import { type ComponentProps } from "solid-js";
 // your-slider.tsx
-import { Slider as SliderPrimitive } from "@radix-solid/primitives";
+import { Slider as SliderPrimitive } from "@wsagency/radix2solid-primitives";
 export const Slider = (p: Extract<ComponentProps<typeof SliderPrimitive.Root>, {
   asChild?: false;
 }>) => {

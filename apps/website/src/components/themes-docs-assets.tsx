@@ -1,16 +1,18 @@
 
-import { mergeStyles } from "@radix-solid/themes/helpers";
+import { mergeStyles } from "@wsagency/radix2solid-themes/helpers";
 import type { JSX } from "@solidjs/web";
 import { createUniqueId, type Element, type ComponentProps, omit, createSignal, onCleanup, createEffect } from "solid-js";
-import { Avatar, Badge, Box, Button, Card, Checkbox, Code, Container, DataList, Dialog, Em, Flex, Grid, Heading, IconButton, Inset, Link, Popover, Progress, ScrollArea, Section, SegmentedControl, Skeleton, Slider, Spinner, Strong, Table, Text, TextField, Theme, type ThemeProps } from "@radix-solid/themes";
-import { Label } from "@radix-solid/primitives";
+import { Avatar, Badge, Box, Button, Card, Checkbox, Code, Container, DataList, Dialog, Em, Flex, Grid, Heading, IconButton, Inset, Link, Popover, Progress, ScrollArea, Section, SegmentedControl, Skeleton, Slider, Spinner, Strong, Table, Text, TextField, Theme, type ThemeProps } from "@wsagency/radix2solid-themes";
+import { Label } from "@wsagency/radix2solid-primitives";
 import { allPeople } from "./people";
-import { CheckIcon, CopyIcon, CubeIcon, Half2Icon, PlayIcon } from "@radix-solid/icons";
+import { CheckIcon, CopyIcon, CubeIcon, Half2Icon, PlayIcon } from "@wsagency/radix2solid-icons";
 import { Marker } from "./marker";
 import { ThemesPanelBackgroundImage } from "./themes-panel-background-image";
-import { accentColors, themePropDefs } from "@radix-solid/themes/props";
+import { accentColors as themeAccentColors, themePropDefs } from "@wsagency/radix2solid-themes/props";
 import { TabNavDemo } from "./tab-nav-demo.js";
 import styles from "./themes-docs-assets.module.css";
+// "custom" needs a consumer-supplied palette, so the swatch grid shows only the built-in scales.
+const accentColors = themeAccentColors.filter(color => color !== "custom");
 export function ThemesPanelCardExample(p: {
   panelBackground: ThemeProps["panelBackground"];
 }) {
@@ -1015,7 +1017,7 @@ function ThemesZIndexExampleRecursive() {
 					<Popover.Trigger>{target => target(Button, {
             children: <>Recursive popover</>
           })}</Popover.Trigger>
-					<Popover.Content>
+					<Popover.Content aria-label="Recursive popover">
 						<Heading size="3" mb="2" trim="start">
 							Hello from the popover 👋
 						</Heading>
@@ -1029,7 +1031,7 @@ function ThemesZIndexExampleRecursive() {
 					</Popover.Content>
 				</Popover.Root>
 
-				<Dialog.Content>
+				<Dialog.Content aria-label="Recursive dialog" aria-describedby={undefined}>
 					<ThemesZIndexExampleRecursive />
 				</Dialog.Content>
 			</Dialog.Root>

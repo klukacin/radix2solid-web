@@ -1,4 +1,4 @@
-import { Text, Grid, Flex } from "@radix-solid/themes";
+import { Text, Grid, Flex } from "@wsagency/radix2solid-themes";
 const scales = [...Array(12)].map((_, i) => i + 1);
 type ColorScaleBaseProps = {
   steps: number[];

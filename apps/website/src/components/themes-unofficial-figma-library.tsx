@@ -1,5 +1,5 @@
-import { FigmaLogoIcon } from "@radix-solid/icons";
-import { Box, Card, Flex, Heading, Text } from "@radix-solid/themes";
+import { FigmaLogoIcon } from "@wsagency/radix2solid-icons";
+import { Box, Card, Flex, Heading, Text } from "@wsagency/radix2solid-themes";
 export function ThemesUnofficialFigmaLibrary() {
   return <Card asChild size="3">{target => target("a", {
       "href": "https://www.figma.com/community/file/1280428825266545105",

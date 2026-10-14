@@ -17,7 +17,7 @@ name: slot
 Import the namespace and request one host inside its render function:
 
 ```tsx
-import { Slot } from '@radix-solid/primitives';
+import { Slot } from '@wsagency/radix2solid-primitives';
 
 export default () => <Slot.Root class="message">{target => target('div', {
   children: 'Hello',
@@ -34,7 +34,7 @@ A custom button can expose the same discriminated `asChild` contract:
 // your-button.tsx
 import { omit, type Element } from 'solid-js';
 import type { JSX } from '@solidjs/web';
-import { Slot } from '@radix-solid/primitives';
+import { Slot } from '@wsagency/radix2solid-primitives';
 
 type ButtonProps =
   | (Omit<JSX.HTMLAttributes<HTMLElement>, 'children'> & { asChild: true; children: Slot.SlotRender })
@@ -51,7 +51,7 @@ export function Button(props: ButtonProps) {
 `Slot.Slottable` decorates the selected target's content without adding a second target. Pass the original target factory in `child`; `leading` and `trailing` stay inside the chosen host:
 
 ```tsx
-import { Slot } from '@radix-solid/primitives';
+import { Slot } from '@wsagency/radix2solid-primitives';
 
 export default () => <Slot.Root>{Slot.Slottable({
   child: target => target('a', { href: '/contact', children: 'Contact' }),
@@ -65,7 +65,7 @@ export default () => <Slot.Root>{Slot.Slottable({
 The optional `children` callback wraps the target's content, not its host. The outer link or button still receives the merged attributes, events and refs:
 
 ```tsx
-import { Slot } from '@radix-solid/primitives';
+import { Slot } from '@wsagency/radix2solid-primitives';
 
 export default () => <Slot.Root>{Slot.Slottable({
   child: target => target('a', { href: '/contact', children: 'Contact' }),
@@ -90,7 +90,7 @@ export default () => <Button asChild>{target => target('a', {
 Child handlers run before slot handlers. The slot handler still runs; check `event.defaultPrevented` when cancellation matters:
 
 ```tsx
-import { Slot } from '@radix-solid/primitives';
+import { Slot } from '@wsagency/radix2solid-primitives';
 
 export default () => <Slot.Root onClick={event => {
   if (!event.defaultPrevented) console.log('Not logged when the child cancels.');
@@ -106,7 +106,7 @@ Classes concatenate, child style values override overlapping parent values, `ari
 `Slot.createSlot(name)` creates an owner-named boundary with the same generic `SlotTarget` inference. Its name appears in structural-contract errors; it does not accept React element/ref type arguments:
 
 ```tsx
-import { Slot } from '@radix-solid/primitives';
+import { Slot } from '@wsagency/radix2solid-primitives';
 
 const ButtonSlot = Slot.createSlot('Button.Slot');
 export default () => <ButtonSlot>{target => target('button', {

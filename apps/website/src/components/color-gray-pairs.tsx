@@ -1,4 +1,4 @@
-import { Box, Text, Flex } from "@radix-solid/themes";
+import { Box, Text, Flex } from "@wsagency/radix2solid-themes";
 const pairings = [{
   color: "mauve",
   pairs: ["tomato", "red", "ruby", "crimson", "pink", "plum", "purple", "violet"]

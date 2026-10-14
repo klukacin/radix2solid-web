@@ -1,4 +1,4 @@
-import { Slider as SliderPrimitive } from "@radix-solid/primitives";
+import { Slider as SliderPrimitive } from "@wsagency/radix2solid-primitives";
 import { styled } from "../../utils/css";
 import styles from "./primitives-hero-slider.module.css";
 const StyledSlider = styled(SliderPrimitive.Root, styles.Slider);

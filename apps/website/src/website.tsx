@@ -1,4 +1,4 @@
-import { Avatar, Box, Flex, Heading, Text, Theme } from '@radix-solid/themes';
+import { Avatar, Box, Flex, Heading, Text, Theme } from '@wsagency/radix2solid-themes';
 import { routes, type DocumentModule } from './routes.js';
 import { components } from './components/mdx-components.js';
 import { DocumentNavigation, DocumentReferences, DocsPagination, MobileNavigation, QuickNav } from './components/navigation.js';
@@ -6,10 +6,10 @@ import { CaseStudyLogo, type CaseStudyLogoVariant } from './components/marketing
 import { Search, SearchTrigger } from './components/search.js';
 import { SiteProvider, ThemePreferenceSync } from './components/site-context.js';
 import { ThemeToggle } from './components/theme-toggle.js';
-import { GitHubLogoIcon } from '@radix-solid/icons';
+import { GitHubLogoIcon } from '@wsagency/radix2solid-icons';
 import { Radix2SolidLogo } from './components/radix-logo.js';
 import './styles.css';
-import '@radix-solid/themes/styles.css';
+import '@wsagency/radix2solid-themes/styles.css';
 import './marketing.css';
 
 export function Website(props: { path: string; route?: DocumentModule }) {
@@ -25,7 +25,7 @@ export function Website(props: { path: string; route?: DocumentModule }) {
   return <SiteProvider path={props.path}><Theme accentColor="indigo" radius="medium" class={marketing ? 'radix-themes-custom-fonts' : undefined}>
     <Search><ThemePreferenceSync />
     {marketing ? <main data-search-page-scope><Document components={components} /></main> : <>
-      <header class="site-header"><a href="/" aria-label="Radix2Solid homepage"><Radix2SolidLogo /></a><nav class="product-navigation" aria-label="Products"><a href="/">Themes</a><a href="/primitives">Primitives</a><a href="/icons">Icons</a><a href="/colors">Colors</a><a href="/blog">Blog</a></nav><a href="https://github.com/wsagency/radix2solid" aria-label="View GitHub" target="_blank" rel="noopener noreferrer"><GitHubLogoIcon width="16" height="16" /></a><SearchTrigger /><ThemeToggle /><MobileNavigation path={props.path} /></header>
+      <header class="site-header"><a href="/" aria-label="Radix2Solid homepage"><Radix2SolidLogo /></a><nav class="product-navigation" aria-label="Products"><a href="/">Themes</a><a href="/primitives">Primitives</a><a href="/icons">Icons</a><a href="/charts">Charts</a><a href="/colors">Colors</a><a href="/blog">Blog</a></nav><a href="https://github.com/wsagency/radix2solid" aria-label="View GitHub" target="_blank" rel="noopener noreferrer"><GitHubLogoIcon width="16" height="16" /></a><SearchTrigger /><ThemeToggle /><MobileNavigation path={props.path} /></header>
       <div class={`document-layout${caseStudy ? ' case-study-layout' : ''}`}><aside class="desktop-navigation" aria-label={props.path.startsWith('/blog') ? 'Blog' : caseStudy ? 'Case studies' : 'Documentation'}><DocumentNavigation path={props.path} /></aside><main class="document" data-search-page-scope>
         {typeof metadata.publishedAt === 'string' && <Text as="p" size="2" color="gray" mb="3"><time>{metadata.publishedAt}</time></Text>}
         {caseStudy && <Text as="p" size="2" color="gray" mb="1">Case study</Text>}
@@ -37,7 +37,7 @@ export function Website(props: { path: string; route?: DocumentModule }) {
     </>}
     <footer class="site-footer">
       <Box class="site-footer-inner">
-        <Text as="p" size="2">Radix2Solid is an unofficial native Solid 2 fork, not a WorkOS product. Original documentation and designs © WorkOS, MIT licensed. <a href="/NOTICE.txt">Attribution and asset notices</a>.</Text>
+        <Text as="p" size="2">Radix2Solid is an unofficial native Solid 2 fork, not a WorkOS product. Original documentation and designs © WorkOS, MIT licensed. Charts derive from solid-recharts © Thomas Guehenneux and Recharts © recharts (MIT); neither project endorses this fork. Charts use D3 © Mike Bostock (ISC). Built with Solid © Ryan Carniato, Floating UI and other open-source packages (MIT, BSD-2-Clause). <a href="/NOTICE.txt">Attribution and asset notices</a>.</Text>
         <Flex class="site-footer-credit-row" gap="5" mt="4">
           <a class="agency-credit" href="https://ws.agency" aria-label="Made with love by WS Agency">
             <span>Made with <span class="sr-only">love</span></span>

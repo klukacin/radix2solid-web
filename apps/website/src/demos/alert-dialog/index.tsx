@@ -1,4 +1,4 @@
-import { AlertDialog } from "@radix-solid/primitives";
+import { AlertDialog } from "@wsagency/radix2solid-primitives";
 import styles from "./styles.module.css";
 const AlertDialogDemo = () => <AlertDialog.Root>
 		<AlertDialog.Trigger asChild>{target => target("button", {

@@ -1,5 +1,5 @@
-import { Toolbar } from "@radix-solid/primitives";
-import { StrikethroughIcon, TextAlignLeftIcon, TextAlignCenterIcon, TextAlignRightIcon, FontBoldIcon, FontItalicIcon } from "@radix-solid/icons";
+import { Toolbar } from "@wsagency/radix2solid-primitives";
+import { StrikethroughIcon, TextAlignLeftIcon, TextAlignCenterIcon, TextAlignRightIcon, FontBoldIcon, FontItalicIcon } from "@wsagency/radix2solid-icons";
 const ToolbarDemo = () => <Toolbar.Root class="flex w-full min-w-max rounded-md bg-white p-2.5 shadow-[0_2px_10px] shadow-blackA4" aria-label="Formatting options">
 		<Toolbar.ToggleGroup type="multiple" aria-label="Text formatting">
 			<Toolbar.ToggleItem class="ml-0.5 inline-flex h-[25px] flex-shrink-0 flex-grow-0 basis-auto items-center justify-center rounded bg-white px-[5px] text-[13px] leading-none text-mauve11 outline-none first:ml-0 hover:bg-violet3 hover:text-violet11 focus:relative focus:shadow-[0_0_0_2px] focus:shadow-violet7 data-[state=on]:bg-violet5 data-[state=on]:text-violet11" value="bold" aria-label="Bold">

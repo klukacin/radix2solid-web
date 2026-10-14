@@ -1,5 +1,5 @@
-import { CubeIcon, DownloadIcon, FigmaLogoIcon, GitHubLogoIcon } from "@radix-solid/icons";
-import { Flex, Link } from "@radix-solid/themes";
+import { CubeIcon, DownloadIcon, FigmaLogoIcon, GitHubLogoIcon } from "@wsagency/radix2solid-icons";
+import { Flex, Link } from "@wsagency/radix2solid-themes";
 export const Menu = () => {
   return <Flex m="6" justify="end" display={{
     initial: "none",

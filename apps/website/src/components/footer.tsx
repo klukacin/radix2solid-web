@@ -1,9 +1,9 @@
 import { useSiteContext } from './site-context';
 
-import { Box, Grid, Text, Flex, Link, Heading, AccessibleIcon } from "@radix-solid/themes";
+import { Box, Grid, Text, Flex, Link, Heading, AccessibleIcon } from "@wsagency/radix2solid-themes";
 import { Radix2SolidLogo } from "./radix-logo";
 import { BoxLink } from "./box-link";
-import { ArrowTopRightIcon } from "@radix-solid/icons";
+import { ArrowTopRightIcon } from "@wsagency/radix2solid-icons";
 import styles from "./footer.module.css";
 export const Footer = () => {
   const pathname = useSiteContext().path;
@@ -65,6 +65,14 @@ export const Footer = () => {
 								<Link color="gray" asChild>{target => target("a", {
                     "href": "/icons",
                     children: <>Icons</>
+                  })}</Link>
+							</Text>
+						</li>
+						<li>
+							<Text as="p" size="2" mt="3">
+								<Link color="gray" asChild>{target => target("a", {
+                    "href": "/charts",
+                    children: <>Charts</>
                   })}</Link>
 							</Text>
 						</li>

@@ -27,6 +27,10 @@ Learn about the base palette composition in the [Understanding the scale](/color
 
 Feel free to remove colors from the generated CSS that you don’t need.
 
+## Using the palette as a Themes accent
+
+**Copy CSS code** copies one fragment for the current appearance. The accent and gray scales are raw Radix Colors variables on `:root`, `.light` and `.light-theme`, or `.dark` and `.dark-theme`, with wide-gamut (P3) blocks. Accent variables use the name of the closest built-in scale, or `custom` for low-saturation colors; gray variables use `gray`. The background color fragment also targets Radix Themes roots (`.radix-themes`). **Download CSS palette** combines both appearances: the accent and gray scales, both backgrounds, and a `[data-accent-color='custom']` block that maps the `--accent-*` tokens to the `--custom-*` scale. None of this output is scoped to one `Theme`. The scales work as they are for plain Radix Colors use. To use the palette in Radix Themes alongside the built-in accents, follow [Custom accent](/themes/docs/theme/color#custom-accent): rename the variables to the 28 `--custom-*` tokens, keep both appearances and the wide-gamut (P3) blocks, and scope them to the `data-custom-accent` selectors so content rendered in portals receives them too.
+
 ## Color formats
 
 You can use any common CSS color format in the input fields, or even wide-gamut color spaces, such as `color(display-p3 1 0.5 0)`. The generated CSS will provide the closest sRGB fallbacks.

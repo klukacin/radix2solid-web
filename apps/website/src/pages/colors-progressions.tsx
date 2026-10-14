@@ -1,7 +1,7 @@
 import { ColorsMobileMenu } from '../components/colors-mobile-menu';
 import { ColorsHeader } from "../components/colors-header";
 import { transposeProgressionStart } from "../colors/generate-radix-colors";
-import { Section, Container, Heading, Box, Flex, Text } from "@radix-solid/themes";
+import { Section, Container, Heading, Box, Flex, Text } from "@wsagency/radix2solid-themes";
 export default function Page() {
   return <>
 			<ColorsHeader ghost /><ColorsMobileMenu />

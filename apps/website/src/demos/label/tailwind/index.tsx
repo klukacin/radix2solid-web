@@ -1,4 +1,4 @@
-import { Label } from "@radix-solid/primitives";
+import { Label } from "@wsagency/radix2solid-primitives";
 const LabelDemo = () => <div class="flex flex-wrap items-center gap-[15px] px-5">
 		<Label.Root class="text-[15px] font-medium leading-[35px] text-white" for="firstName">
 			First name

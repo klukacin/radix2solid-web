@@ -1,6 +1,6 @@
 import { createContext, createSignal, onSettled, omit, useContext, type Element } from 'solid-js';
 import { dynamic, type JSX, type ValidComponent } from '@solidjs/web';
-import { composeRefs } from '@radix-solid/primitives/internal';
+import { composeRefs } from '@wsagency/radix2solid-primitives/internal';
 
 interface CarouselContextValue {
   list?: HTMLDivElement;

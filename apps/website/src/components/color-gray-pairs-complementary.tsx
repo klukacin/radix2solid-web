@@ -1,4 +1,4 @@
-import { Box, Text, Grid, Flex } from "@radix-solid/themes";
+import { Box, Text, Grid, Flex } from "@wsagency/radix2solid-themes";
 const whiteBgColors = ["bronze", "gold", "brown", "orange", "tomato", "red", "ruby", "crimson", "pink", "plum", "purple", "violet", "iris", "indigo", "blue", "cyan", "teal", "jade", "green", "grass"];
 const darkBgColors = ["sky", "mint", "lime", "yellow", "amber"];
 export function ColorGrayPairsComplementary() {

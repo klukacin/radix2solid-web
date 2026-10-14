@@ -1,6 +1,6 @@
 import { omit, type ComponentProps } from "solid-js";
-import { Select } from "@radix-solid/primitives";
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "@radix-solid/icons";
+import { Select } from "@wsagency/radix2solid-primitives";
+import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "@wsagency/radix2solid-icons";
 const SelectDemo = () => <Select.Root>
 		<Select.Trigger class="inline-flex h-[35px] items-center justify-center gap-[5px] rounded bg-white px-[15px] text-[13px] leading-none text-violet11 shadow-[0_2px_10px] shadow-black/10 outline-none hover:bg-mauve3 focus:shadow-[0_0_0_2px] focus:shadow-black data-[placeholder]:text-violet9" aria-label="Food">
 			<Select.Value placeholder="Select a fruit…" />

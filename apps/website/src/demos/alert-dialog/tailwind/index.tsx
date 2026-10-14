@@ -1,4 +1,4 @@
-import { AlertDialog } from "@radix-solid/primitives";
+import { AlertDialog } from "@wsagency/radix2solid-primitives";
 const AlertDialogDemo = () => <AlertDialog.Root>
 		<AlertDialog.Trigger asChild>{target => target("button", {
       "class": "inline-flex h-[35px] items-center justify-center rounded bg-violet4 px-[15px] font-medium leading-none text-violet11 outline-none outline-offset-1 hover:bg-mauve3 focus-visible:outline-2 focus-visible:outline-violet6 select-none",

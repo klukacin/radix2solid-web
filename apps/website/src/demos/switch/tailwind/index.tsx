@@ -1,4 +1,4 @@
-import { Switch } from "@radix-solid/primitives";
+import { Switch } from "@wsagency/radix2solid-primitives";
 const SwitchDemo = () => <form>
 		<div class="flex items-center">
 			<label id="airplane-mode-label" for="airplane-mode" class="pr-[15px] text-[15px] leading-none text-white">

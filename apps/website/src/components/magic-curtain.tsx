@@ -1,6 +1,6 @@
 import { createContext, createSignal, flush, omit, onSettled, useContext, type Element } from 'solid-js';
 import type { JSX } from '@solidjs/web';
-import { NavigationMenu } from '@radix-solid/primitives';
+import { NavigationMenu } from '@wsagency/radix2solid-primitives';
 import styles from './magic-curtain.module.css';
 
 type Visibility = 'hidden' | 'animating-out' | 'visible';

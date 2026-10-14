@@ -27,29 +27,38 @@
 	box-shadow: 0 1px var(--gray-a4);
 }
 
+/* Logo | products | controls. Equal-growth sides keep the products centered on the viewport
+   whenever they fit; when they don't, the sides shrink to their content and the product row
+   scrolls horizontally instead of overlapping the logo or the controls. */
+.HeaderRow {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: inherit;
+	display: flex;
+}
+
+.HeaderSide {
+	flex: 1 0 0;
+	min-width: max-content;
+}
+
+.HeaderProductLinksContainer {
+	display: flex;
+	align-items: center;
+	min-width: 0;
+	margin: 0 var(--space-2);
+	overflow-x: auto;
+	scrollbar-width: none;
+}
+
 :where([data-mobile-menu-open="false"]) .HeaderProductLinksContainer {
 	display: none;
 }
 
-:where([data-mobile-menu-open="true"]) .HeaderProductLinksContainer {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.HeaderProductLinksContainer {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: calc(50% - 125px);
-	width: 250px;
-}
-
 @media (min-width: 768px) {
-	.HeaderProductLinksContainer {
+	:where([data-mobile-menu-open]) .HeaderProductLinksContainer {
 		display: flex;
-		align-items: center;
-		justify-content: center;
 	}
 }
 

@@ -1,4 +1,4 @@
-import { Card, Grid, Heading, Text } from '@radix-solid/themes';
+import { Card, Grid, Heading, Text } from '@wsagency/radix2solid-themes';
 import { routes } from '../routes.js';
 import { useSiteContext } from '../components/site-context.js';
 

@@ -3,7 +3,7 @@ import { MarketingMobileMenu } from '../components/marketing-mobile-menu';
 type BlogMetadata = { metaTitle: string; metaDescription: string; metaImage: string; publishedAt: string };
 const blogMetadata = import.meta.glob<BlogMetadata>('../../data/blog/**/*.mdx', { eager: true, query: '?frontmatter', import: 'default' });
 const blogPosts = Object.entries(blogMetadata).map(([file, metadata]) => ({ ...metadata, slug: file.slice('../../data/'.length).replace(/\.mdx$/, '') }));
-import { Box, Card, Container, Flex, Grid, Heading, Inset, Link, Section, Separator, Text } from "@radix-solid/themes";
+import { Box, Card, Container, Flex, Grid, Heading, Inset, Link, Section, Separator, Text } from "@wsagency/radix2solid-themes";
 import { CommunitySection } from "../components/marketing/community-section";
 import { Footer } from "../components/footer";
 const description = "Historical news from the original Radix team. This site is an independent native Solid fork.";

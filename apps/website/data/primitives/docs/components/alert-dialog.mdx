@@ -39,7 +39,7 @@ aria: https://www.w3.org/WAI/ARIA/apg/patterns/alertdialog
 Import all parts and piece them together.
 
 ```jsx
-import { AlertDialog } from "@radix-solid/primitives";
+import { AlertDialog } from "@wsagency/radix2solid-primitives";
 export default () => <AlertDialog.Root>
 		<AlertDialog.Trigger />
 		<AlertDialog.Portal>
@@ -198,6 +198,10 @@ A layer that covers the inert portion of the view when the dialog is open.
 
 Contains content to be rendered when the dialog is open.
 
+`AlertDialog.Content` sets `aria-labelledby` to `AlertDialog.Title` and `aria-describedby` to `AlertDialog.Description` using IDs that `AlertDialog.Root` allocates up front. Passing either attribute to Content replaces that default, and passing it as `undefined` removes it. A Title or Description with its own `id` must be linked from Content with the same ID.
+
+**Breaking in 0.1.0-rc.2:** Content no longer collects part IDs or appends them to the relationships you pass. Add Content ARIA for custom part IDs and list the title ID yourself when combining it with an external label.
+
 <PropsTable
 	data={[
 		{
@@ -325,7 +329,7 @@ A button that closes the dialog. These buttons should be distinguished visually 
 
 ### Title
 
-An accessible name to be announced when the dialog is opened. Alternatively, you can provide `aria-label` or `aria-labelledby` to `AlertDialog.Content` and exclude this component.
+An accessible name to be announced when the dialog is opened. Alternatively, you can exclude this component and name `AlertDialog.Content` with a nonblank `aria-label` or with `aria-labelledby`. An `undefined` or empty `aria-label` keeps the Title link. A custom `id` replaces the Root ID, so link it with `aria-labelledby` on `AlertDialog.Content`.
 
 <PropsTable
 	data={[
@@ -350,7 +354,7 @@ An accessible name to be announced when the dialog is opened. Alternatively, you
 
 ### Description
 
-An accessible description to be announced when the dialog is opened. Alternatively, you can provide `aria-describedby` to `AlertDialog.Content` and exclude this component.
+An accessible description to be announced when the dialog is opened. Alternatively, you can exclude this component and give `AlertDialog.Content` your own `aria-describedby`, or `aria-describedby={undefined}` for no description. A custom `id` replaces the Root ID, so link it with `aria-describedby` on `AlertDialog.Content`.
 
 <PropsTable
 	data={[
@@ -381,7 +385,7 @@ Use the controlled props to programmatically close the Alert Dialog after an asy
 
 ```jsx line=3,5,6,11,12
 import { createSignal } from "solid-js";
-import { AlertDialog } from "@radix-solid/primitives";
+import { AlertDialog } from "@wsagency/radix2solid-primitives";
 const wait = () => new Promise(resolve => setTimeout(resolve, 1000));
 export default () => {
   const [open, setOpen] = createSignal(false);
@@ -389,7 +393,7 @@ export default () => {
 			<AlertDialog.Trigger>Open</AlertDialog.Trigger>
 			<AlertDialog.Portal>
 				<AlertDialog.Overlay />
-				<AlertDialog.Content>
+				<AlertDialog.Content aria-label="Submit form" aria-describedby={undefined}>
 					<form onSubmit={event => {
           wait().then(() => setOpen(false));
           event.preventDefault();

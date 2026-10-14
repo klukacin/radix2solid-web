@@ -39,7 +39,7 @@ aria: https://www.w3.org/WAI/ARIA/apg/patterns/listbox
 Import all parts and piece them together.
 
 ```jsx
-import { Select } from "@radix-solid/primitives";
+import { Select } from "@wsagency/radix2solid-primitives";
 export default () => <Select.Root>
 		<Select.Trigger>
 			<Select.Value />
@@ -905,7 +905,7 @@ By default, `Select` will behave similarly to a native MacOS menu by positioning
 
 ```jsx line=6
 // index.tsx
-import { Select } from "@radix-solid/primitives";
+import { Select } from "@wsagency/radix2solid-primitives";
 export default () => <Select.Root>
 		<Select.Trigger>…</Select.Trigger>
 		<Select.Portal>
@@ -924,7 +924,7 @@ We expose several CSS custom properties such as `--radix-select-trigger-width` a
 
 ```jsx line=7
 // index.tsx
-import { Select } from "@radix-solid/primitives";
+import { Select } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 export default () => <Select.Root>
 		<Select.Trigger>…</Select.Trigger>
@@ -950,7 +950,7 @@ You can add special styles to disabled items via the `data-disabled` attribute.
 
 ```jsx line=9
 // index.tsx
-import { Select } from "@radix-solid/primitives";
+import { Select } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 export default () => <Select.Root>
 		<Select.Trigger>…</Select.Trigger>
@@ -981,7 +981,7 @@ You can use the `placeholder` prop on `Value` for when the select has no value. 
 
 ```jsx line=5,6
 // index.tsx
-import { Select } from "@radix-solid/primitives";
+import { Select } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 export default () => <Select.Root>
 		<Select.Trigger __class__="SelectTrigger">
@@ -1050,7 +1050,7 @@ Use the `Group` and `Label` parts to group items in a section.
 You can use custom content in your items.
 
 ```jsx line=9
-import { Select } from "@radix-solid/primitives";
+import { Select } from "@wsagency/radix2solid-primitives";
 export default () => <Select.Root>
 		<Select.Trigger>…</Select.Trigger>
 		<Select.Portal>
@@ -1121,7 +1121,7 @@ The native scrollbar is hidden by default as we recommend using the `ScrollUpBut
 
 ```jsx line=8-10,17-18
 // index.tsx
-import { Select, ScrollArea } from "@radix-solid/primitives";
+import { Select, ScrollArea } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 export default () => <Select.Root>
 		<Select.Trigger>…</Select.Trigger>
@@ -1178,7 +1178,7 @@ By default, `Select.Root` renders a visually hidden `select` for form submission
 - `Select.unstable_BubbleInput` is the visually hidden `select` that `Select.Root` renders by default. Omit it when you don't need form submission.
 
 ```jsx
-import { Select } from "@radix-solid/primitives";
+import { Select } from "@wsagency/radix2solid-primitives";
 export default () => <Select.unstable_Provider name="fruit">
 		<Select.Trigger>
 			<Select.Value placeholder="Pick an option" />
@@ -1259,7 +1259,7 @@ See the W3C [Select-Only Combobox](https://www.w3.org/TR/wai-aria-practices/exam
 Use our [Label](label) component in order to offer a visual and accessible label for the select.
 
 ```jsx line=3,6,10
-import { Select, Label } from "@radix-solid/primitives";
+import { Select, Label } from "@wsagency/radix2solid-primitives";
 export default () => <>
 		<Label.Root>
 			Country
@@ -1303,8 +1303,8 @@ export default () => <Select defaultValue="2">
 import { omit, type ComponentProps } from "solid-js";
 // your-select.tsx
 
-import { Select as SelectPrimitive } from "@radix-solid/primitives";
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "@radix-solid/icons";
+import { Select as SelectPrimitive } from "@wsagency/radix2solid-primitives";
+import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "@wsagency/radix2solid-icons";
 export const Select = (p: ComponentProps<typeof SelectPrimitive.Root> &
   Pick<ComponentProps<typeof SelectPrimitive.Trigger>, "ref" | "class">) => {
   return <SelectPrimitive.Root {...omit(p, "children", "class", "ref")}>

@@ -17,7 +17,7 @@ sourcePath: components/popover
 			Comment
 		</>
       })}</Popover.Trigger>
-	<Popover.Content width="360px">
+	<Popover.Content width="360px" aria-label="Comment">
 		<Flex gap="3">
 			<Avatar size="2" src="https://images.unsplash.com/photo-1607346256330-dee7af15f7c5?&w=64&h=64&dpr=2&q=70&crop=focalpoint&fp-x=0.67&fp-y=0.5&fp-z=1.4&fit=crop" fallback="A" radius="full" />
 			<Box flexGrow="1">
@@ -59,7 +59,7 @@ Wraps the control that will open the popover.
 
 ### Content
 
-Contains content to be rendered in the open popover. This component is based on the `div` element.
+Contains content to be rendered in the open popover. This component is based on the `div` element. Themes Popover has no Title or Description part, so Content sets no `aria-labelledby` or `aria-describedby` of its own: name it with a nonblank `aria-label` or your own `aria-labelledby`. If you place a primitive `Popover.Title` or `Popover.Description` inside, give it an `id` and link it from Content with `aria-labelledby` or `aria-describedby`. See the [Popover primitive](/primitives/docs/components/popover#content) for the full naming contract.
 
 <ThemesPropsTable defs="popoverContentPropDefs" />
 
@@ -81,7 +81,7 @@ Use it in conjunction with the `width`/`minWidth`/`maxWidth` and `height`/`minHe
           "variant": "soft",
           children: <>Size 1</>
         })}</Popover.Trigger>
-		<Popover.Content __size__="1" maxWidth="300px">
+		<Popover.Content __size__="1" maxWidth="300px" aria-label="Size 1">
 			<Text as="p" trim="both" size="1">
 				The quick brown fox jumps over the lazy dog.
 			</Text>
@@ -93,7 +93,7 @@ Use it in conjunction with the `width`/`minWidth`/`maxWidth` and `height`/`minHe
           "variant": "soft",
           children: <>Size 2</>
         })}</Popover.Trigger>
-		<Popover.Content __size__="2" maxWidth="400px">
+		<Popover.Content __size__="2" maxWidth="400px" aria-label="Size 2">
 			<Text as="p" trim="both" size="2">
 				The quick brown fox jumps over the lazy dog.
 			</Text>
@@ -105,7 +105,7 @@ Use it in conjunction with the `width`/`minWidth`/`maxWidth` and `height`/`minHe
           "variant": "soft",
           children: <>Size 3</>
         })}</Popover.Trigger>
-		<Popover.Content __size__="3" maxWidth="500px">
+		<Popover.Content __size__="3" maxWidth="500px" aria-label="Size 3">
 			<Text as="p" trim="both" size="3">
 				The quick brown fox jumps over the lazy dog.
 			</Text>
@@ -117,7 +117,7 @@ Use it in conjunction with the `width`/`minWidth`/`maxWidth` and `height`/`minHe
           "variant": "soft",
           children: <>Size 4</>
         })}</Popover.Trigger>
-		<Popover.Content __size__="4">
+		<Popover.Content __size__="4" aria-label="Size 4">
 			<Text as="p" trim="both" size="4">
 				The quick brown fox jumps over the lazy dog.
 			</Text>
@@ -139,7 +139,7 @@ Use the [Inset](/themes/docs/components/inset) component to align content flush 
 			Share image
 		</>
       })}</Popover.Trigger>
-	<Popover.Content width="360px">
+	<Popover.Content width="360px" aria-label="Share image">
 		<Grid columns="130px 1fr">
 			<Inset side="left" pr="current">
 				<img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?&auto=format&fit=crop&w=400&q=80" style={{

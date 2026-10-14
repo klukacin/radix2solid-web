@@ -66,6 +66,27 @@ function InvoiceCard(props: { person: { name: string; image: string } }) {
 	<ThemesScalingExample />
 </Box>
 
+#### Custom scaling values
+
+Besides the five preset values, `scaling` accepts any positive, finite percentage such as `"87.5%"` or `"115%"`. The factor is the percentage divided by 100. Unitless numbers, zero, negative and non-finite values throw an error that names the invalid input; values are not clamped.
+
+Each nested `Theme` sets an absolute scaling, not a multiple of its parent. This sidebar renders at 90% and the content at 120%, whatever the outer value is:
+
+```jsx
+<Theme scaling="115%">
+	<Flex>
+		<Theme scaling="90%">
+			<Text>Sidebar</Text>
+		</Theme>
+		<Theme scaling="120%">
+			<Text>Content</Text>
+		</Theme>
+	</Flex>
+</Theme>
+```
+
+Scaling changes only the tokens defined with `--scaling`, such as space, font sizes, line heights and radii. It is not equivalent to CSS `zoom` or a `transform`: images, borders and sizes you set yourself stay as they are. A `style` prop that sets `--scaling` on one theme root overrides it locally, but that value is not a theme setting and nested themes do not inherit it.
+
 #### Scaling factor
 
 The scaling factor token can be accessed using the `--scaling` CSS variable. If you need to use different scaling factors in your app, you can use this token in your custom styles, ensuring they are consistent with the rest of your theme.

@@ -1,6 +1,6 @@
 import { createSignal } from "solid-js";
-import { ContextMenu } from "@radix-solid/primitives";
-import { DotFilledIcon, CheckIcon, ChevronRightIcon } from "@radix-solid/icons";
+import { ContextMenu } from "@wsagency/radix2solid-primitives";
+import { DotFilledIcon, CheckIcon, ChevronRightIcon } from "@wsagency/radix2solid-icons";
 import "./styles.css";
 const ContextMenuDemo = () => {
   const [bookmarksChecked, setBookmarksChecked] = createSignal(true);

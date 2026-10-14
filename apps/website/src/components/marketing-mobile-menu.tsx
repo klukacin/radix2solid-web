@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, ScrollArea } from '@radix-solid/themes';
+import { Box, Button, Dialog, ScrollArea } from '@wsagency/radix2solid-themes';
 import type { Element } from 'solid-js';
 import { DocumentNavigation } from './navigation.js';
 import { ThemesHeader } from './themes-header.js';

@@ -1,5 +1,5 @@
 import { createSignal, onSettled, omit, type ComponentProps } from 'solid-js';
-import { TabNav } from '@radix-solid/themes';
+import { TabNav } from '@wsagency/radix2solid-themes';
 
 type Props = ComponentProps<typeof TabNav.Root> & { items?: string[] };
 export function TabNavDemo(props: Props) {

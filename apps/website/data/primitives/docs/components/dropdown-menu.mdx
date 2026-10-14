@@ -43,7 +43,7 @@ aria: https://www.w3.org/WAI/ARIA/apg/patterns/menu-button/
 Import all parts and piece them together.
 
 ```jsx
-import { DropdownMenu } from "@radix-solid/primitives";
+import { DropdownMenu } from "@wsagency/radix2solid-primitives";
 export default () => <DropdownMenu.Root>
 		<DropdownMenu.Trigger />
 
@@ -1324,7 +1324,7 @@ You can add special styles to disabled items via the `data-disabled` attribute.
 
 ```jsx line=8
 // index.tsx
-import { DropdownMenu } from "@radix-solid/primitives";
+import { DropdownMenu } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 export default () => <DropdownMenu.Root>
 		<DropdownMenu.Trigger>…</DropdownMenu.Trigger>
@@ -1389,8 +1389,8 @@ Use the `CheckboxItem` part to add an item that can be checked.
 
 ```jsx line=5,13,14,15
 import { createSignal } from "solid-js";
-import { CheckIcon } from "@radix-solid/icons";
-import { DropdownMenu } from "@radix-solid/primitives";
+import { CheckIcon } from "@wsagency/radix2solid-icons";
+import { DropdownMenu } from "@wsagency/radix2solid-primitives";
 export default () => {
   const [checked, setChecked] = createSignal(true);
   return <DropdownMenu.Root>
@@ -1418,8 +1418,8 @@ Use the `RadioGroup` and `RadioItem` parts to add an item that can be checked am
 
 ```jsx line=5,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29
 import { createSignal } from "solid-js";
-import { CheckIcon } from "@radix-solid/icons";
-import { DropdownMenu } from "@radix-solid/primitives";
+import { CheckIcon } from "@wsagency/radix2solid-icons";
+import { DropdownMenu } from "@wsagency/radix2solid-primitives";
 export default () => {
   const [color, setColor] = createSignal("blue");
   return <DropdownMenu.Root>
@@ -1457,7 +1457,7 @@ export default () => {
 You can add extra decorative elements in the `Item` parts, such as images.
 
 ```jsx line=7,11
-import { DropdownMenu } from "@radix-solid/primitives";
+import { DropdownMenu } from "@wsagency/radix2solid-primitives";
 export default () => <DropdownMenu.Root>
 		<DropdownMenu.Trigger>…</DropdownMenu.Trigger>
 		<DropdownMenu.Portal>
@@ -1483,7 +1483,7 @@ We expose several CSS custom properties such as `--radix-dropdown-menu-trigger-w
 
 ```jsx line=7
 // index.tsx
-import { DropdownMenu } from "@radix-solid/primitives";
+import { DropdownMenu } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 export default () => <DropdownMenu.Root>
 		<DropdownMenu.Trigger>…</DropdownMenu.Trigger>
@@ -1509,7 +1509,7 @@ We expose a CSS custom property `--radix-dropdown-menu-content-transform-origin`
 
 ```jsx line=7
 // index.tsx
-import { DropdownMenu } from "@radix-solid/primitives";
+import { DropdownMenu } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 export default () => <DropdownMenu.Root>
 		<DropdownMenu.Trigger>…</DropdownMenu.Trigger>
@@ -1546,7 +1546,7 @@ We expose `data-side` and `data-align` attributes. Their values will change at r
 
 ```jsx line=7
 // index.tsx
-import { DropdownMenu } from "@radix-solid/primitives";
+import { DropdownMenu } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 export default () => <DropdownMenu.Root>
 		<DropdownMenu.Trigger>…</DropdownMenu.Trigger>
@@ -1696,8 +1696,8 @@ export default () => <DropdownMenu>
 import { omit, type ComponentProps } from "solid-js";
 // your-dropdown-menu.tsx
 
-import { DropdownMenu as DropdownMenuPrimitive } from "@radix-solid/primitives";
-import { CheckIcon, DividerHorizontalIcon } from "@radix-solid/icons";
+import { DropdownMenu as DropdownMenuPrimitive } from "@wsagency/radix2solid-primitives";
+import { CheckIcon, DividerHorizontalIcon } from "@wsagency/radix2solid-icons";
 export const DropdownMenu = DropdownMenuPrimitive.Root;
 export const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
 export const DropdownMenuContent = (p: Extract<ComponentProps<typeof DropdownMenuPrimitive.Content>, {

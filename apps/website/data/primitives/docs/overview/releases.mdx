@@ -71,7 +71,7 @@ Added support for a controlled `open` prop on [`ContextMenu.Root`](../components
 
 ```tsx
 import { createSignal } from "solid-js";
-import { ContextMenu } from "@radix-solid/primitives";
+import { ContextMenu } from "@wsagency/radix2solid-primitives";
 function ControlledContextMenu() {
   const [open, setOpen] = createSignal(false);
   return <ContextMenu.Root open={open()} onOpenChange={setOpen}>
@@ -99,7 +99,7 @@ Several form-control primitives now expose their previously internal composition
 - **Switch** — `unstable_Provider`, `unstable_Trigger`, and `unstable_BubbleInput`
 
 ```tsx
-import { Switch } from "@radix-solid/primitives";
+import { Switch } from "@wsagency/radix2solid-primitives";
 function ExampleSwitch() {
   return <Switch.unstable_Provider>
 			<Switch.unstable_Trigger>
@@ -196,7 +196,7 @@ This new primitive provides components for rendering a password input alongside 
 This API is currently unstable, and we hope you'll help us test it out! Import the primitive using the `unstable_` prefix.
 
 ```tsx
-import { unstable_PasswordToggleField as PasswordToggleField } from "@radix-solid/primitives";
+import { unstable_PasswordToggleField as PasswordToggleField } from "@wsagency/radix2solid-primitives";
 export function PasswordField() {
   return <PasswordToggleField.Root>
 			<PasswordToggleField.Input />
@@ -235,7 +235,7 @@ As this is a preview release, **the API is currently unstable**. We hope you'll 
 Import the primitive using the `unstable_` prefix.
 
 ```tsx
-import { unstable_OneTimePasswordField as OneTimePasswordField } from "@radix-solid/primitives";
+import { unstable_OneTimePasswordField as OneTimePasswordField } from "@wsagency/radix2solid-primitives";
 export function Verify() {
   return <OneTimePasswordField.Root>
 			<OneTimePasswordField.Input />

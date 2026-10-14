@@ -1,5 +1,5 @@
-import { unstable_PasswordToggleField as PasswordToggleField } from "@radix-solid/primitives";
-import { EyeClosedIcon, EyeOpenIcon } from "@radix-solid/icons";
+import { unstable_PasswordToggleField as PasswordToggleField } from "@wsagency/radix2solid-primitives";
+import { EyeClosedIcon, EyeOpenIcon } from "@wsagency/radix2solid-icons";
 const PasswordToggleFieldDemo = () => <PasswordToggleField.Root>
 		<div class="Root">
 			<PasswordToggleField.Input class="Input" />

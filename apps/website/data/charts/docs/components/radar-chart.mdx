@@ -1,0 +1,61 @@
+---
+metaTitle: RadarChart
+metaDescription: Polar chart container for Radar series with angle and radius axes.
+---
+
+import { RadarChart, Radar, PolarGrid, PolarAngleAxis, Tooltip, Legend, ResponsiveContainer } from "@wsagency/radix2solid-charts";
+
+> Native Solid 2 fork of [solid-recharts](https://github.com/yumemi-thomas/solid-recharts) (MIT, © Thomas Guehenneux), derived from [Recharts](https://github.com/recharts/recharts) (MIT, © recharts). Adapted documentation; neither project endorses this fork.
+
+# RadarChart
+
+`RadarChart` is the polar container for `Radar` series. It owns the
+chart's layout, scales, and interaction state; children like `PolarAngleAxis`, `PolarRadiusAxis` and `Radar` register themselves into it.
+
+```tsx live=true
+() => {
+	const data = [
+		{ subject: "Speed", a: 120, b: 110 },
+		{ subject: "Design", a: 98, b: 130 },
+		{ subject: "Docs", a: 86, b: 130 },
+		{ subject: "Tests", a: 99, b: 100 },
+		{ subject: "A11y", a: 85, b: 90 },
+	];
+	return <ResponsiveContainer width="100%" height={300} initialDimension={{ width: 560, height: 300 }}>
+		<RadarChart data={data} outerRadius="75%" title="Team skill comparison">
+			<PolarGrid stroke="var(--gray-a6)" />
+			<PolarAngleAxis dataKey="subject" />
+			<Radar name="Team A" dataKey="a" stroke="var(--accent-9)" fill="var(--accent-9)" fillOpacity={0.4} />
+			<Radar name="Team B" dataKey="b" stroke="var(--teal-9)" fill="var(--teal-9)" fillOpacity={0.3} />
+			<Tooltip />
+			<Legend />
+		</RadarChart>
+	</ResponsiveContainer>;
+}
+```
+
+## Props
+
+| Prop                        | Type                           | Default          | Description                                         |
+| --------------------------- | ------------------------------ | ---------------- | --------------------------------------------------- |
+| `data`                      | `object[]`                     | —                | Source data array, one entry per angle position     |
+| `width`, `height`           | `number`                       | —                | Fixed size (omit when inside `ResponsiveContainer`) |
+| `margin`                    | `{ top, right, bottom, left }` | `{ 5, 5, 5, 5 }` | Space around the plot area                          |
+| `syncId`                    | `string`                       | —                | Sync tooltip across charts sharing the id           |
+| `cx`, `cy`                  | `number \| string`             | `"50%"`          | Center position of the radar                        |
+| `startAngle`, `endAngle`    | `number`                       | `90`, `-270`     | Angle range swept by the radar                      |
+| `onClick`, `onMouseMove`, … | `function`                     | —                | Chart-level mouse events with the active payload    |
+
+The remaining props follow the Recharts 3.9.2 `RadarChart` API (reference commit `b3451050`) that solid-recharts tracks; see the [Recharts RadarChart reference](https://recharts.org/en-US/api/RadarChart). Changes from Recharts 3.10.1 are tracked but not ported.
+
+## Notes
+
+- The default `layout` is `"centric"`, positioning the radar at the chart center.
+- Multiple `Radar` children render overlaid on the same polar grid.
+- Use `PolarAngleAxis` and `PolarRadiusAxis` to label the angle and radius dimensions.
+
+## See also
+
+- Radar — the series component and its dot/label options
+- PolarAngleAxis · PolarRadiusAxis
+- Tooltip · Legend

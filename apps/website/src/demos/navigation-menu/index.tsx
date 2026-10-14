@@ -1,7 +1,7 @@
 import type { JSX } from "@solidjs/web";
 import { omit } from "solid-js";
-import { NavigationMenu } from "@radix-solid/primitives";
-import { CaretDownIcon } from "@radix-solid/icons";
+import { NavigationMenu } from "@wsagency/radix2solid-primitives";
+import { CaretDownIcon } from "@wsagency/radix2solid-icons";
 import styles from "./styles.module.css";
 const NavigationMenuDemo = () => {
   return <NavigationMenu.Root class={styles.Root}>

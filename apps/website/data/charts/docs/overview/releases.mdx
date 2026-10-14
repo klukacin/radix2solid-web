@@ -1,0 +1,20 @@
+---
+metaTitle: Releases
+metaDescription: Charts release notes.
+---
+
+> Native Solid 2 fork of [solid-recharts](https://github.com/yumemi-thomas/solid-recharts) (MIT, © Thomas Guehenneux), derived from [Recharts](https://github.com/recharts/recharts) (MIT, © recharts). Adapted documentation; neither project endorses this fork.
+
+# Releases
+
+<Description>Charts release notes.</Description>
+
+## 0.1.0-rc.2
+
+_Release candidate, not published on npm._
+
+- First Charts release in Radix2Solid: source copy of solid-recharts `2.0.0-beta.1` (`b1f9c67`), tracking Recharts `3.9.2` (`b3451050`). Recharts `3.10.1` is tracked but not ported.
+- Built for `solid-js` and `@solidjs/web` `2.0.0-rc.15` with `@solidjs/vite-plugin` `3.0.0-next.50`; `solid-js` and `@solidjs/web` are exact peer dependencies.
+- Fixed-size charts and `ResponsiveContainer` with `initialDimension` render SVG on the server; the root SVG of a fixed-size chart hydrates in place. A bounded Cartesian recipe is regression-tested to keep the same tick positions and series geometry across hydration: axes before series, gutters reserved in `margin` with zero-size axes, a `band` category scale, an explicit value `domain` with `allowDataOverflow`, and `interval={0}` on both axes. Automatic domains and axis sizes, including stacked series, are not supported on the server: their server HTML is wrong until the client redraws it ([recipe](/charts/docs/guides/responsive-and-ssr#server-geometry-needs-explicit-axes)).
+- `LICENSE` keeps the solid-recharts and Recharts MIT notices; `NOTICE` carries the ISC licenses of the external D3 dependencies (`d3-scale`, `d3-shape` and the packages they resolve).
+- Download: [`wsagency-radix2solid-charts-0.1.0-rc.2.tgz`](/packages/wsagency-radix2solid-charts-0.1.0-rc.2.tgz).

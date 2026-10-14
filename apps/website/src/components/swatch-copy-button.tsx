@@ -1,5 +1,5 @@
 import { createSignal, onCleanup, type Element } from 'solid-js';
-import { Button, Tooltip } from '@radix-solid/themes';
+import { Button, Tooltip } from '@wsagency/radix2solid-themes';
 
 export function SwatchCopyButton(props: { children: Element }) {
   let button: HTMLButtonElement | undefined;

@@ -34,7 +34,7 @@ aria: https://www.w3.org/WAI/ARIA/apg/patterns/checkbox
 Import all parts and piece them together.
 
 ```jsx
-import { Checkbox } from "@radix-solid/primitives";
+import { Checkbox } from "@wsagency/radix2solid-primitives";
 export default () => <Checkbox.Root>
 		<Checkbox.Indicator />
 	</Checkbox.Root>;
@@ -191,8 +191,8 @@ You can set the checkbox to `indeterminate` by taking control of its state.
 
 ```tsx line=5,7,8,9,10,11,12,14
 import { createSignal } from "solid-js";
-import { DividerHorizontalIcon, CheckIcon } from "@radix-solid/icons";
-import { Checkbox } from "@radix-solid/primitives";
+import { DividerHorizontalIcon, CheckIcon } from "@wsagency/radix2solid-icons";
+import { Checkbox } from "@wsagency/radix2solid-primitives";
 export default () => {
   const [checked, setChecked] = createSignal<boolean | "indeterminate">("indeterminate");
   return <>
@@ -221,7 +221,7 @@ By default, `Checkbox.Root` renders a visually hidden `input` for form submissio
 - `Checkbox.unstable_BubbleInput` is the visually hidden input that `Checkbox.Root` renders by default. Omit it when you don't need form submission.
 
 ```jsx
-import { Checkbox } from "@radix-solid/primitives";
+import { Checkbox } from "@wsagency/radix2solid-primitives";
 export default () => <Checkbox.unstable_Provider name="terms">
 		<Checkbox.unstable_Trigger>
 			<Checkbox.Indicator />

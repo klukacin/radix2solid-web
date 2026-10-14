@@ -1,4 +1,4 @@
-import { Grid, Box, Container, Section, Flex, Text } from "@radix-solid/themes";
+import { Grid, Box, Container, Section, Flex, Text } from "@wsagency/radix2solid-themes";
 import styles from "./stats-section.module.css";
 export const StatsSection = () => {
   return <Section size="2" class={styles.StatsSection}>

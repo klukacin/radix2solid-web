@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { expect, test as base } from '@playwright/test';
+import { expect, test as base, type Locator } from '@playwright/test';
 import { accessibilityViolations } from './accessibility.js';
 
 // Test-only exact original free-license images; production URLs, Unsplash+ and WorkOS remain live.
@@ -20,7 +20,7 @@ const test = base.extend<{ unsplash: void }>({
   }, { auto: true }],
 });
 
-const origin = 'http://127.0.0.1:4149';
+const origin = `http://127.0.0.1:${process.env.WEBSITE_PREVIEW_PORT ?? 4149}`;
 
 for (const viewport of [{ width: 1365, height: 900 }, { width: 390, height: 844 }]) {
   test(`primary GitHub control links to the native library at ${viewport.width}px`, async ({ page }) => {
@@ -548,6 +548,16 @@ test('custom palettes restore six shared colors, reject invalid edits and preser
   await accent.press('Enter');
   const previewButton = page.getByRole('button', { name: 'Submit', exact: true });
   await expect(previewButton).toHaveCSS('background-color', 'rgb(128, 134, 140)');
+  // A low-saturation accent resolves to the generated custom palette; the portalled Copy menu must paint with the same accent.
+  // The Copy menu is modal and hides the rest of the page from the accessibility tree, so read the preview paint first.
+  const previewPaint = await previewButton.evaluate(node => getComputedStyle(node).backgroundColor);
+  await page.getByRole('button', { name: 'Copy', exact: true }).click();
+  const paletteUrl = page.getByRole('menuitem', { name: 'Copy palette URL', exact: true });
+  await paletteUrl.hover();
+  await expect(paletteUrl).toHaveAttribute('data-highlighted', '');
+  await expect.poll(() => paletteUrl.evaluate(node => getComputedStyle(node).backgroundColor), { message: 'portalled menu highlight uses the custom accent' }).toBe(previewPaint);
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('menu')).toHaveCount(0);
   await page.getByRole('radio', { name: 'Dark', exact: true }).click();
   await accent.fill('909090');
   await accent.press('Enter');
@@ -815,4 +825,206 @@ test('curated documentation navigation and native Markdown retain their public c
   expect(html).toContain('renderToString');
   expect(html).toContain('renderId');
   expect(html).not.toContain('upgrading to React 18');
+});
+
+test('charts landing hydrates one chart per container, switches chart type and ships its license notices', async ({ page, request }) => {
+  const errors: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto(`${origin}/charts`);
+  await expect(page.getByRole('navigation', { name: 'Products', exact: true }).filter({ visible: true }).getByRole('link', { name: 'Charts', exact: true })).toHaveAttribute('data-state', 'active');
+  const demo = page.locator('.hero-demo');
+  // One root SVG per chart: duplicated hydration output would render a second surface.
+  await expect(demo.locator('.recharts-wrapper > svg.recharts-surface')).toHaveCount(1);
+  await expect(demo.locator('.recharts-line-curve')).toHaveCount(2);
+  // A tooltip on hover needs the hydrated, measured chart; then the settled axis must not keep a stale server tick.
+  const chart = demo.locator('.recharts-wrapper');
+  const box = await chart.boundingBox();
+  await page.mouse.move(box!.x + box!.width / 2, box!.y + box!.height / 2);
+  await expect(demo.locator('.recharts-tooltip-wrapper')).toBeVisible();
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+  const labels = await demo.locator('.recharts-xAxis .recharts-cartesian-axis-tick text').allTextContents();
+  expect(labels, 'x-axis labels are an ordered, unique subset of the data').toEqual(months.filter(month => labels.includes(month)));
+  expect(labels.filter(label => label === 'Jun')).toEqual(['Jun']);
+  await demo.getByRole('button', { name: 'Bar', exact: true }).click();
+  await expect(demo.getByRole('button', { name: 'Bar', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await expect(demo.locator('.recharts-bar-rectangle')).toHaveCount(12);
+  await expect(demo.locator('.recharts-wrapper > svg.recharts-surface')).toHaveCount(1);
+  const families = page.locator('a[href^="/charts/docs/components/"]').filter({ has: page.locator('.recharts-wrapper') });
+  await expect(families).toHaveCount(12);
+  for (const family of await families.all()) await expect(family.locator('.recharts-wrapper > svg.recharts-surface')).toHaveCount(1);
+  const download = page.getByRole('link', { name: 'Download package', exact: true });
+  expect((await request.get(`${origin}${await download.getAttribute('href')}`)).status()).toBe(200);
+  const notice = await (await request.get(`${origin}/NOTICE.txt`)).text();
+  for (const text of ['Copyright (c) 2026 Thomas Guehenneux', 'Copyright (c) 2015-present recharts', '--- d3-scale@', '--- d3-shape@', '--- internmap@', '--- solid-js@2.0.0-rc.15 ', '--- @floating-ui/dom@', 'Copyright (c) 2022 WorkOS']) expect(notice).toContain(text);
+  await page.goto(`${origin}/charts/docs/overview/introduction`);
+  await expect(page.getByRole('heading', { name: 'Licensing', exact: true })).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
+test('narrow header product links stay reachable by Tab without page overflow', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 700 });
+  await page.goto(`${origin}/charts/docs/overview/introduction`);
+  await expect(page.getByRole('button', { name: 'Toggle theme', exact: true }).first()).toBeEnabled();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth), 'the page does not overflow at 320px').toBeLessThanOrEqual(320);
+  // Below 768px the product row lives in the mobile navigation's header, as on the original site.
+  await page.getByRole('button', { name: 'Open navigation', exact: true }).click();
+  const products = page.getByRole('dialog', { name: 'Navigation', exact: true }).getByRole('navigation', { name: 'Products', exact: true });
+  for (const name of ['Themes', 'Primitives', 'Icons', 'Charts', 'Colors']) {
+    const link = products.getByRole('link', { name, exact: true });
+    for (let presses = 0; presses < 40 && !(await link.evaluate(node => node === document.activeElement)); presses++) await page.keyboard.press('Tab');
+    await expect(link).toBeFocused();
+    await expect.poll(async () => {
+      const bounds = (await link.boundingBox())!;
+      return bounds.x >= 0 && bounds.x + bounds.width <= 320;
+    }, { message: `${name}: focused product link is scrolled into view` }).toBe(true);
+  }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth), 'the open navigation does not widen the page').toBeLessThanOrEqual(320);
+});
+
+test('Themes recipes are navigable and the profile menu submits its native logout form once', async ({ page }) => {
+  await page.goto(`${origin}/themes/docs/recipes/accordion`);
+  const navigation = page.getByRole('navigation', { name: 'Documentation', exact: true });
+  await expect(navigation.getByRole('heading', { name: 'Recipes', exact: true })).toBeVisible();
+  for (const slug of ['accordion', 'collapsible', 'toast', 'toggle-group', 'toolbar', 'profile-menu']) await expect(navigation.locator(`a[href="/themes/docs/recipes/${slug}"]`)).toHaveCount(1);
+  await page.goto(`${origin}/themes/docs/recipes/profile-menu`);
+  await expect(page.getByRole('button', { name: 'Toggle theme', exact: true }).first()).toBeEnabled();
+  const trigger = page.getByRole('button', { name: 'Profile menu for Ana Horvat', exact: true });
+  const menu = page.getByRole('menu').first();
+  const submenuTrigger = page.getByRole('menuitem', { name: 'Help', exact: true });
+  const shortcuts = page.getByRole('menuitem', { name: 'Keyboard shortcuts', exact: true });
+  for (const direction of ['ltr', 'rtl'] as const) {
+    if (direction === 'rtl') await page.getByRole('button', { name: 'Use right-to-left', exact: true }).click();
+    const [open, close] = direction === 'ltr' ? ['ArrowRight', 'ArrowLeft'] : ['ArrowLeft', 'ArrowRight'];
+    for (const key of ['Enter', ' ', 'ArrowDown']) {
+      await trigger.focus();
+      await page.keyboard.press(key);
+      await expect(menu, `${direction} ${key} opens the menu`).toBeVisible();
+      await expect(page.getByRole('menuitemradio', { name: 'Online', exact: true }), `${direction} ${key} focuses the first item`).toBeFocused();
+      await page.keyboard.press('Escape');
+      await expect(menu).toBeHidden();
+      await expect(trigger, `${direction} Escape returns focus`).toBeFocused();
+    }
+    await page.keyboard.press('Enter');
+    await submenuTrigger.focus();
+    await page.keyboard.press(open);
+    await expect(shortcuts, `${direction} ${open} opens Help and focuses its first item`).toBeFocused();
+    await page.keyboard.press(close);
+    await expect(shortcuts).toBeHidden();
+    await expect(submenuTrigger, `${direction} ${close} closes Help`).toBeFocused();
+    await page.keyboard.press('ArrowUp');
+    await expect(page.getByRole('menuitem', { name: 'Documentation', exact: true })).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(trigger).toBeFocused();
+  }
+  // The demo cancels the POST; check what the native submit event carries, not a server response.
+  const tokenField = page.locator('form[method="post"][action="/logout"] input[type="hidden"][name="csrf_token"]');
+  await expect(tokenField, 'the hidden field carries a token').toHaveValue(/\S/);
+  const token = await tokenField.inputValue();
+  await page.evaluate(() => {
+    const submissions: { method: string; action: string; token: FormDataEntryValue | null }[] = [];
+    Object.assign(window, { logoutSubmissions: submissions });
+    document.addEventListener('submit', event => {
+      const form = event.target as HTMLFormElement;
+      submissions.push({ method: form.method, action: new URL(form.action).pathname, token: new FormData(form).get('csrf_token') });
+    }, true);
+  });
+  await trigger.click();
+  const logout = page.getByRole('menuitem', { name: 'Log out', exact: true });
+  await expect(logout).not.toHaveAttribute('data-disabled');
+  await logout.click();
+  await expect.poll(() => page.evaluate(() => (window as unknown as { logoutSubmissions: unknown[] }).logoutSubmissions), { message: 'one native POST submission to /logout with the rendered token' })
+    .toEqual([{ method: 'post', action: '/logout', token }]);
+});
+
+test('Themes recipe targets keep their visual and accessible state in step with the primitive', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  page.on('console', message => { if (message.type() === 'warning' || message.type() === 'error') errors.push(message.text()); });
+  // Selected/deselected paint is captured from the initial render, then compared after the pointer leaves so hover paint cannot mask it.
+  const paint = (control: Locator) => control.evaluate(node => getComputedStyle(node).backgroundColor);
+  const settle = () => page.mouse.move(0, 0);
+  await page.goto(`${origin}/themes/docs/recipes/toggle-group`);
+  const center = page.getByRole('radio', { name: 'Center aligned', exact: true });
+  const right = page.getByRole('radio', { name: 'Right aligned', exact: true });
+  await expect(center).toHaveAttribute('aria-checked', 'true');
+  const [selected, deselected] = [await paint(center), await paint(right)];
+  expect(selected, 'selected and deselected alignments are painted differently').not.toBe(deselected);
+  await right.click();
+  await settle();
+  await expect(right).toHaveAttribute('aria-checked', 'true');
+  await expect(center).toHaveAttribute('aria-checked', 'false');
+  await expect.poll(() => paint(right), { message: 'newly selected alignment takes the selected paint' }).toBe(selected);
+  await expect.poll(() => paint(center), { message: 'deselected alignment returns to the deselected paint' }).toBe(deselected);
+
+  await page.goto(`${origin}/themes/docs/recipes/toolbar`);
+  const bold = page.getByRole('button', { name: 'Bold', exact: true });
+  const italic = page.getByRole('button', { name: 'Italic', exact: true });
+  await expect(bold).toHaveAttribute('aria-pressed', 'true');
+  await expect(italic).toHaveAttribute('aria-pressed', 'false');
+  const [pressed, released] = [await paint(bold), await paint(italic)];
+  expect(pressed, 'pressed and released marks are painted differently').not.toBe(released);
+  await italic.click();
+  await settle();
+  await expect(italic).toHaveAttribute('aria-pressed', 'true');
+  await expect.poll(() => paint(italic), { message: 'pressed mark takes the pressed paint' }).toBe(pressed);
+  await bold.click();
+  await settle();
+  await expect(bold).toHaveAttribute('aria-pressed', 'false');
+  await expect.poll(() => paint(bold), { message: 'released mark returns to the released paint' }).toBe(released);
+
+  await page.goto(`${origin}/themes/docs/recipes/collapsible`);
+  const show = page.getByRole('button', { name: 'Show repositories', exact: true });
+  await expect(show).toHaveAttribute('aria-expanded', 'false');
+  const collapsedIcon = await show.locator('svg').innerHTML();
+  await show.click();
+  const hide = page.getByRole('button', { name: 'Hide repositories', exact: true });
+  await expect(hide, 'expanded trigger announces the hide action').toHaveAttribute('aria-expanded', 'true');
+  const content = page.locator(`[id="${await hide.getAttribute('aria-controls')}"]`);
+  await expect(content, 'the trigger controls the content it reveals').toBeVisible();
+  expect(await hide.locator('svg').innerHTML(), 'expanded trigger swaps its icon').not.toBe(collapsedIcon);
+  await hide.click();
+  await expect(page.getByRole('button', { name: 'Show repositories', exact: true })).toHaveAttribute('aria-expanded', 'false');
+  await expect(content, 'collapsing hides the controlled content').toBeHidden();
+  expect(await show.locator('svg').innerHTML()).toBe(collapsedIcon);
+
+  await page.goto(`${origin}/themes/docs/recipes/accordion`);
+  const first = page.getByRole('button', { name: 'Is it accessible?', exact: true });
+  const second = page.getByRole('button', { name: 'Does it follow the theme?', exact: true });
+  const firstAnswer = page.getByText('Yes. It follows the WAI-ARIA accordion pattern.', { exact: true });
+  const secondAnswer = page.getByText('Yes. Colors, radius and scaling come from the nearest Theme.', { exact: true });
+  await expect(first).toHaveAttribute('aria-expanded', 'true');
+  await expect(firstAnswer).toBeVisible();
+  await expect(second).toHaveAttribute('aria-expanded', 'false');
+  await second.click();
+  await expect(second, 'single accordion expands the chosen item').toHaveAttribute('aria-expanded', 'true');
+  await expect(secondAnswer).toBeVisible();
+  await expect(first, 'single accordion collapses the previous item').toHaveAttribute('aria-expanded', 'false');
+  await expect(firstAnswer).toBeHidden();
+  await second.click();
+  await expect(second, 'collapsible accordion closes the open item').toHaveAttribute('aria-expanded', 'false');
+  await expect(secondAnswer).toBeHidden();
+
+  await page.goto(`${origin}/themes/docs/recipes/toast`);
+  const notify = page.getByRole('button', { name: 'Show notification', exact: true });
+  const title = page.getByText('Example notification', { exact: true });
+  await expect(title).toHaveCount(0);
+  for (const round of [1, 2]) {
+    await notify.click();
+    await expect(title, `toast ${round} opens`).toBeVisible();
+    await expect(page.getByText('Dismiss it, swipe it right or let the timer close it.', { exact: true })).toBeVisible();
+    await page.getByRole('button', { name: 'Dismiss', exact: true }).click();
+    await expect(title, `toast ${round} Close dismisses it`).toHaveCount(0);
+  }
+  expect(errors).toEqual([]);
+});
+
+test('playground charts render every family once with the page theme tokens', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto(`${origin}/themes/playground#charts`);
+  await expect(page.locator('#charts')).toBeVisible();
+  await expect(page.locator('.recharts-wrapper')).toHaveCount(12);
+  await expect(page.locator('.recharts-wrapper > svg.recharts-surface')).toHaveCount(12);
+  expect(await page.locator('.recharts-line-curve').first().evaluate(node => getComputedStyle(node).stroke)).not.toBe('none');
+  expect(errors).toEqual([]);
 });

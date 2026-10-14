@@ -1,5 +1,5 @@
 import { MarketingCaption } from "./marketing-caption";
-import { Box, Heading, Text, Card, Grid, Flex } from "@radix-solid/themes";
+import { Box, Heading, Text, Card, Grid, Flex } from "@wsagency/radix2solid-themes";
 export const CommunitySection = () => {
   return <>
 			<Box mb="5">

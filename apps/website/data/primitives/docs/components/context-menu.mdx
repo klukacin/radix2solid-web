@@ -42,7 +42,7 @@ aria: https://www.w3.org/WAI/ARIA/apg/patterns/menu
 Import all parts and piece them together.
 
 ```jsx
-import { ContextMenu } from "@radix-solid/primitives";
+import { ContextMenu } from "@wsagency/radix2solid-primitives";
 export default () => <ContextMenu.Root>
 		<ContextMenu.Trigger />
 
@@ -1265,7 +1265,7 @@ You can add special styles to disabled items via the `data-disabled` attribute.
 
 ```jsx line=8
 // index.tsx
-import { ContextMenu } from "@radix-solid/primitives";
+import { ContextMenu } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 export default () => <ContextMenu.Root>
 		<ContextMenu.Trigger>…</ContextMenu.Trigger>
@@ -1330,8 +1330,8 @@ Use the `CheckboxItem` part to add an item that can be checked.
 
 ```jsx line=5,13,14,15
 import { createSignal } from "solid-js";
-import { CheckIcon } from "@radix-solid/icons";
-import { ContextMenu } from "@radix-solid/primitives";
+import { CheckIcon } from "@wsagency/radix2solid-icons";
+import { ContextMenu } from "@wsagency/radix2solid-primitives";
 export default () => {
   const [checked, setChecked] = createSignal(true);
   return <ContextMenu.Root>
@@ -1359,8 +1359,8 @@ Use the `RadioGroup` and `RadioItem` parts to add an item that can be checked am
 
 ```jsx line=5,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29
 import { createSignal } from "solid-js";
-import { CheckIcon } from "@radix-solid/icons";
-import { ContextMenu } from "@radix-solid/primitives";
+import { CheckIcon } from "@wsagency/radix2solid-icons";
+import { ContextMenu } from "@wsagency/radix2solid-primitives";
 export default () => {
   const [color, setColor] = createSignal("blue");
   return <ContextMenu.Root>
@@ -1398,7 +1398,7 @@ export default () => {
 You can add extra decorative elements in the `Item` parts, such as images.
 
 ```jsx line=7,11
-import { ContextMenu } from "@radix-solid/primitives";
+import { ContextMenu } from "@wsagency/radix2solid-primitives";
 export default () => <ContextMenu.Root>
 		<ContextMenu.Trigger>…</ContextMenu.Trigger>
 		<ContextMenu.Portal>
@@ -1424,7 +1424,7 @@ We expose several CSS custom properties such as `--radix-context-menu-trigger-wi
 
 ```jsx line=7
 // index.tsx
-import { ContextMenu } from "@radix-solid/primitives";
+import { ContextMenu } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 export default () => <ContextMenu.Root>
 		<ContextMenu.Trigger>…</ContextMenu.Trigger>
@@ -1450,7 +1450,7 @@ We expose a CSS custom property `--radix-context-menu-content-transform-origin`.
 
 ```jsx line=7
 // index.tsx
-import { ContextMenu } from "@radix-solid/primitives";
+import { ContextMenu } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 export default () => <ContextMenu.Root>
 		<ContextMenu.Trigger>…</ContextMenu.Trigger>
@@ -1487,7 +1487,7 @@ We expose `data-side` and `data-align` attributes. Their values will change at r
 
 ```jsx line=7
 // index.tsx
-import { ContextMenu } from "@radix-solid/primitives";
+import { ContextMenu } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 export default () => <ContextMenu.Root>
 		<ContextMenu.Trigger>…</ContextMenu.Trigger>

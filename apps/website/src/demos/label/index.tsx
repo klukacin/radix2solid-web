@@ -1,4 +1,4 @@
-import { Label } from "@radix-solid/primitives";
+import { Label } from "@wsagency/radix2solid-primitives";
 import styles from "./styles.module.css";
 const LabelDemo = () => <div style={{
   "display": "flex",

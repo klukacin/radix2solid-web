@@ -35,7 +35,7 @@ aria: https://www.w3.org/WAI/ARIA/apg/patterns/radio
 Import all parts and piece them together.
 
 ```jsx
-import { RadioGroup } from "@radix-solid/primitives";
+import { RadioGroup } from "@wsagency/radix2solid-primitives";
 export default () => <RadioGroup.Root>
 		<RadioGroup.Item value="item">
 			<RadioGroup.Indicator />
@@ -284,7 +284,7 @@ By default, `RadioGroup.Item` renders a visually hidden `input` for form submiss
 - `RadioGroup.unstable_ItemBubbleInput` is the visually hidden input that `RadioGroup.Item` renders by default. Omit it when you don't need form submission.
 
 ```jsx
-import { RadioGroup } from "@radix-solid/primitives";
+import { RadioGroup } from "@wsagency/radix2solid-primitives";
 export default () => <RadioGroup.Root>
 		{["one", "two", "three"].map(value => <RadioGroup.unstable_ItemProvider value={value}>
 				<RadioGroup.unstable_ItemTrigger>

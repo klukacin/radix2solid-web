@@ -1,8 +1,8 @@
 
 import type { JSX } from "@solidjs/web";
 import { createSignal, onCleanup, onSettled, createEffect, omit } from "solid-js";
-import { Box, Container, Card, Grid, Flex, Section, Heading, Text } from "@radix-solid/themes";
-import { CaretDownIcon, CaretLeftIcon, CheckCircledIcon, CheckIcon, CodeIcon, EyeClosedIcon, InputIcon } from "@radix-solid/icons";
+import { Box, Container, Card, Grid, Flex, Section, Heading, Text } from "@wsagency/radix2solid-themes";
+import { CaretDownIcon, CaretLeftIcon, CheckCircledIcon, CheckIcon, CodeIcon, EyeClosedIcon, InputIcon } from "@wsagency/radix2solid-icons";
 import { MarketingCaption } from "./marketing-caption";
 import styles from "./accessibility-section.module.css";
 type SequenceType = "screenReader" | "keyboardNavigation" | "typeahead" | "rtl";

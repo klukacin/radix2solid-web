@@ -1,5 +1,5 @@
 import { type Element } from "solid-js";
-import { Box, Code, Table } from "@radix-solid/themes";
+import { Box, Code, Table } from "@wsagency/radix2solid-themes";
 type KeyboardDef = {
   cssVariable: string;
   description: Element | (() => Element);

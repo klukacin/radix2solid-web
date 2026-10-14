@@ -1,4 +1,4 @@
-import { mergeStyles } from "@radix-solid/themes/helpers";
+import { mergeStyles } from "@wsagency/radix2solid-themes/helpers";
 import type { JSX } from "@solidjs/web";
 import { omit } from "solid-js";
 export const ThemesPanelBackgroundImage = (p: JSX.IntrinsicElements["svg"] & {

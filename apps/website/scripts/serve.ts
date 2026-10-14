@@ -4,6 +4,9 @@ import { resolve, extname, sep } from 'node:path';
 import worker from '../worker/index.ts';
 
 const root = resolve(import.meta.dirname, '../out');
+// Shared with playwright.config.ts and e2e/website.spec.ts; override to run a second preview beside 4149.
+const port = Number(process.env.WEBSITE_PREVIEW_PORT ?? 4149);
+const origin = `http://127.0.0.1:${port}`;
 const types: Record<string, string> = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8', '.md': 'text/markdown; charset=utf-8', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.woff2': 'font/woff2', '.gz': 'application/gzip' };
 export async function assets(request: Request): Promise<Response> {
   if (request.method !== 'GET' && request.method !== 'HEAD') return new Response(null, { status: 405, headers: { Allow: 'GET, HEAD' } });
@@ -29,8 +32,8 @@ if (import.meta.main) createServer(async (incoming, outgoing) => {
   try {
     const headers = new Headers();
     for (const [name, value] of Object.entries(incoming.headers)) if (value !== undefined) headers.set(name, Array.isArray(value) ? value.join(', ') : value);
-    const response = await worker.fetch(new Request(new URL(incoming.url ?? '/', 'http://127.0.0.1:4149'), { method: incoming.method ?? 'GET', headers }), { ASSETS: { fetch: assets } });
+    const response = await worker.fetch(new Request(new URL(incoming.url ?? '/', origin), { method: incoming.method ?? 'GET', headers }), { ASSETS: { fetch: assets } });
     outgoing.writeHead(response.status, Object.fromEntries(response.headers));
     outgoing.end(incoming.method === 'HEAD' ? undefined : Buffer.from(await response.arrayBuffer()));
   } catch (error) { console.error(error); outgoing.writeHead(error instanceof URIError ? 400 : 500).end(); }
-}).listen(4149, '127.0.0.1', () => console.log('Native static website http://127.0.0.1:4149'));
+}).listen(port, '127.0.0.1', () => console.log(`Native static website ${origin}`));

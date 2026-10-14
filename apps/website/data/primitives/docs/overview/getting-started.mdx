@@ -20,10 +20,10 @@ In this quick tutorial, we will install and style the [Popover](../components/po
 
 ### 1. Install the primitive
 
-Use the local packed native package; this fork is private and is not published as `radix-ui` or `@radix-solid/primitives` on npm. Build and pack `packages/primitives`, then install its generated tarball:
+This fork is not published on npm. Download [`wsagency-radix2solid-primitives-0.1.0-rc.2.tgz`](/packages/wsagency-radix2solid-primitives-0.1.0-rc.2.tgz) (or pack `packages/primitives` yourself) into your Solid 2 application and install the tarball. It requires `solid-js` and `@solidjs/web` `2.0.0-rc.15` compiled by `@solidjs/vite-plugin` `3.0.0-next.50`:
 
 ```bash
-npm install ./radix-solid-primitives-0.0.0-local.tgz
+npm install ./wsagency-radix2solid-primitives-0.1.0-rc.2.tgz
 ```
 
 ### 2. Import the parts
@@ -33,11 +33,11 @@ Import and structure the parts.
 ```jsx line=3,4,5,6,7,8,9,10,11,12
 // index.tsx
 
-import { Popover } from "@radix-solid/primitives";
+import { Popover } from "@wsagency/radix2solid-primitives";
 const PopoverDemo = () => <Popover.Root>
 		<Popover.Trigger>More info</Popover.Trigger>
 		<Popover.Portal>
-			<Popover.Content>
+			<Popover.Content aria-label="More info" aria-describedby={undefined}>
 				Some more info…
 				<Popover.Arrow />
 			</Popover.Content>
@@ -49,7 +49,7 @@ export default PopoverDemo;
 Each primitive is also available from its own entrypoint. Importing from the subpath can help some bundlers tree-shake more effectively:
 
 ```jsx
-import * as Popover from "@radix-solid/primitives/popover";
+import * as Popover from "@wsagency/radix2solid-primitives/popover";
 ```
 
 ### 3. Add your styles
@@ -59,12 +59,12 @@ Add styles where desired.
 ```jsx line=4,6,8,10
 // index.tsx
 
-import { Popover } from "@radix-solid/primitives";
+import { Popover } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 const PopoverDemo = () => <Popover.Root>
 		<Popover.Trigger __class__="PopoverTrigger">Show info</Popover.Trigger>
 		<Popover.Portal>
-			<Popover.Content __class__="PopoverContent">
+			<Popover.Content __class__="PopoverContent" aria-label="Show info" aria-describedby={undefined}>
 				Some content
 				<Popover.Arrow __class__="PopoverArrow" />
 			</Popover.Content>

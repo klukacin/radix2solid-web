@@ -1,8 +1,8 @@
 
 import { createSignal } from "solid-js";
-import { DropdownMenu as DropdownMenuPrimitive } from "@radix-solid/primitives";
-import { CaretDownIcon, CaretRightIcon, CheckIcon, GitHubLogoIcon, TwitterLogoIcon } from "@radix-solid/icons";
-import { Box, Flex } from "@radix-solid/themes";
+import { DropdownMenu as DropdownMenuPrimitive } from "@wsagency/radix2solid-primitives";
+import { CaretDownIcon, CaretRightIcon, CheckIcon, GitHubLogoIcon, TwitterLogoIcon } from "@wsagency/radix2solid-icons";
+import { Box, Flex } from "@wsagency/radix2solid-themes";
 import { PrimitivesHeroButton } from "../marketing/primitives-hero-button";
 import styles from "./primitives-hero-dropdown-menu.module.css";
 import { styled } from "../../utils/css";

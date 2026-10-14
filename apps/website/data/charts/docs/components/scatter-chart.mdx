@@ -1,0 +1,62 @@
+---
+metaTitle: ScatterChart
+metaDescription: Cartesian chart container for scatter plot series with optional bubble sizing.
+---
+
+import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "@wsagency/radix2solid-charts";
+
+> Native Solid 2 fork of [solid-recharts](https://github.com/yumemi-thomas/solid-recharts) (MIT, © Thomas Guehenneux), derived from [Recharts](https://github.com/recharts/recharts) (MIT, © recharts). Adapted documentation; neither project endorses this fork.
+
+# ScatterChart
+
+`ScatterChart` is the cartesian container for `Scatter` series (point clouds).
+It owns the layout, scales, and interaction state; children like `XAxis`, `YAxis`,
+`CartesianGrid` and `Tooltip` register themselves into it. A `ZAxis` can drive bubble sizes.
+
+```tsx live=true
+() => {
+	const data = [
+		{ x: 100, y: 200, z: 200 },
+		{ x: 120, y: 100, z: 260 },
+		{ x: 170, y: 300, z: 400 },
+		{ x: 140, y: 250, z: 280 },
+		{ x: 150, y: 400, z: 500 },
+		{ x: 110, y: 280, z: 200 },
+	];
+	return <ResponsiveContainer width="100%" height={300} initialDimension={{ width: 560, height: 300 }}>
+		<ScatterChart title="Request load against latency">
+			<CartesianGrid strokeDasharray="3 3" stroke="var(--gray-a6)" />
+			<XAxis dataKey="x" type="number" name="Load" />
+			<YAxis dataKey="y" type="number" name="Latency" />
+			<ZAxis dataKey="z" range={[60, 400]} />
+			<Tooltip />
+			<Scatter name="Requests" data={data} fill="var(--accent-9)" />
+		</ScatterChart>
+	</ResponsiveContainer>;
+}
+```
+
+## Props
+
+| Prop                        | Type                           | Default          | Description                                         |
+| --------------------------- | ------------------------------ | ---------------- | --------------------------------------------------- |
+| `data`                      | `object[]`                     | —                | Source data array, one entry per point              |
+| `width`, `height`           | `number`                       | —                | Fixed size (omit when inside `ResponsiveContainer`) |
+| `layout`                    | `"horizontal" \| "vertical"`   | `"horizontal"`   | Direction of the independent axis                   |
+| `margin`                    | `{ top, right, bottom, left }` | `{ 5, 5, 5, 5 }` | Space around the plot area                          |
+| `onClick`, `onMouseMove`, … | `function`                     | —                | Chart-level mouse events with the active payload    |
+
+The remaining props follow the Recharts 3.9.2 `ScatterChart` API (reference commit `b3451050`) that solid-recharts tracks; see the [Recharts ScatterChart reference](https://recharts.org/en-US/api/ScatterChart). Changes from Recharts 3.10.1 are tracked but not ported.
+
+## Notes
+
+- Use numerical `XAxis` and `YAxis` with `type="number"` for proper coordinate mapping.
+- Add a `ZAxis` to drive bubble sizes via a data property.
+- The `ZAxis` `range` prop sets the minimum and maximum bubble area in pixels (e.g. `range={[100, 1000]}`).
+- Multiple `Scatter` children share the same axes unless you assign custom `xAxisId`/`yAxisId`/`zAxisId`.
+
+## See also
+
+- Scatter — the point series component
+- XAxis · YAxis · ZAxis
+- [LineChart](/charts/docs/components/line-chart) — similar cartesian layout for line series

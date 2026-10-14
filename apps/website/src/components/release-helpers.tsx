@@ -1,4 +1,4 @@
-import { Flex, Heading, Badge, Link, Text } from "@radix-solid/themes";
+import { Flex, Heading, Badge, Link, Text } from "@wsagency/radix2solid-themes";
 export function PackageRelease(p: {
   id: string;
   major?: boolean;

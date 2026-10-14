@@ -1,0 +1,67 @@
+---
+metaTitle: ComposedChart
+metaDescription: Cartesian chart container that combines Line, Area and Bar series.
+---
+
+import { ComposedChart, Bar, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "@wsagency/radix2solid-charts";
+
+> Native Solid 2 fork of [solid-recharts](https://github.com/yumemi-thomas/solid-recharts) (MIT, © Thomas Guehenneux), derived from [Recharts](https://github.com/recharts/recharts) (MIT, © recharts). Adapted documentation; neither project endorses this fork.
+
+# ComposedChart
+
+`ComposedChart` is the cartesian container for mixed `Area`, `Bar`,
+and `Line` series in a single chart. It owns the layout, scales, and
+interaction state; children like `XAxis`, `CartesianGrid` and `Tooltip` register themselves
+into it.
+
+```tsx live=true
+() => {
+	const data = [
+		{ month: "Jan", visitors: 4000, signups: 2400, revenue: 2400 },
+		{ month: "Feb", visitors: 3000, signups: 1398, revenue: 2210 },
+		{ month: "Mar", visitors: 2000, signups: 3800, revenue: 2290 },
+		{ month: "Apr", visitors: 2780, signups: 3908, revenue: 2000 },
+		{ month: "May", visitors: 1890, signups: 4800, revenue: 2181 },
+		{ month: "Jun", visitors: 2390, signups: 3800, revenue: 2500 },
+	];
+	return <ResponsiveContainer width="100%" height={300} initialDimension={{ width: 560, height: 300 }}>
+		<ComposedChart data={data} title="Revenue bars with visitor trend">
+			<CartesianGrid strokeDasharray="3 3" stroke="var(--gray-a6)" />
+			<XAxis dataKey="month" />
+			<YAxis />
+			<Tooltip />
+			<Legend />
+			<Bar dataKey="revenue" fill="var(--accent-a8)" />
+			<Area type="monotone" dataKey="signups" stroke="var(--teal-9)" fill="var(--teal-a4)" />
+			<Line type="monotone" dataKey="visitors" stroke="var(--amber-10)" strokeWidth={2} />
+		</ComposedChart>
+	</ResponsiveContainer>;
+}
+```
+
+## Props
+
+| Prop                        | Type                           | Default          | Description                                         |
+| --------------------------- | ------------------------------ | ---------------- | --------------------------------------------------- |
+| `data`                      | `object[]`                     | —                | Source data array, one entry per x position         |
+| `width`, `height`           | `number`                       | —                | Fixed size (omit when inside `ResponsiveContainer`) |
+| `layout`                    | `"horizontal" \| "vertical"`   | `"horizontal"`   | Direction of the independent axis                   |
+| `margin`                    | `{ top, right, bottom, left }` | `{ 5, 5, 5, 5 }` | Space around the plot area                          |
+| `syncId`                    | `string`                       | —                | Sync tooltip/brush across charts sharing the id     |
+| `onClick`, `onMouseMove`, … | `function`                     | —                | Chart-level mouse events with the active payload    |
+
+The remaining props follow the Recharts 3.9.2 `ComposedChart` API (reference commit `b3451050`) that solid-recharts tracks; see the [Recharts ComposedChart reference](https://recharts.org/en-US/api/ComposedChart). Changes from Recharts 3.10.1 are tracked but not ported.
+
+## Notes
+
+- Add any combination of `<Bar>`, `<Area>`, and `<Line>` children. In the browser their order does not change the result; for server rendering, put the axes before the series (see [Server geometry needs explicit axes](/charts/docs/guides/responsive-and-ssr#server-geometry-needs-explicit-axes)).
+- All series share the same x and y axes unless you assign custom `xAxisId`/`yAxisId`.
+- Set `stackId` on two or more `Bar` or `Area` children to stack them. Stacked series with an automatic domain are only correct after the client renders; for server rendering, follow the [explicit-axes recipe](/charts/docs/guides/responsive-and-ssr#server-geometry-needs-explicit-axes).
+- Set `syncId` on two charts to mirror tooltips and brushes between them.
+
+## See also
+
+- Area — fill series with dots and labels
+- Bar — column series with shapes and stacking
+- Line — line series with curves and customization
+- XAxis · YAxis

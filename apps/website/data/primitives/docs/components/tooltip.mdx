@@ -36,7 +36,7 @@ aria: https://www.w3.org/WAI/ARIA/apg/patterns/tooltip
 Import all parts and piece them together.
 
 ```jsx
-import { Tooltip } from "@radix-solid/primitives";
+import { Tooltip } from "@wsagency/radix2solid-primitives";
 export default () => <Tooltip.Provider>
 		<Tooltip.Root>
 			<Tooltip.Trigger />
@@ -489,7 +489,7 @@ An optional arrow element to render alongside the tooltip. This can be used to h
 Use the `Provider` to control `delayDuration` and `skipDelayDuration` globally.
 
 ```jsx line=2
-import { Tooltip } from "@radix-solid/primitives";
+import { Tooltip } from "@wsagency/radix2solid-primitives";
 export default () => <Tooltip.Provider __delayDuration__={800} __skipDelayDuration__={500}>
 		<Tooltip.Root>
 			<Tooltip.Trigger>…</Tooltip.Trigger>
@@ -507,7 +507,7 @@ export default () => <Tooltip.Provider __delayDuration__={800} __skipDelayDurati
 Use the `delayDuration` prop to control the time it takes for the tooltip to open.
 
 ```jsx line=2
-import { Tooltip } from "@radix-solid/primitives";
+import { Tooltip } from "@wsagency/radix2solid-primitives";
 export default () => <Tooltip.Root __delayDuration__={0}>
 		<Tooltip.Trigger>…</Tooltip.Trigger>
 		<Tooltip.Content>…</Tooltip.Content>
@@ -522,7 +522,7 @@ We expose several CSS custom properties such as `--radix-tooltip-trigger-width` 
 
 ```jsx line=7
 // index.tsx
-import { Tooltip } from "@radix-solid/primitives";
+import { Tooltip } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 export default () => <Tooltip.Root>
 		<Tooltip.Trigger>…</Tooltip.Trigger>
@@ -548,7 +548,7 @@ We expose a CSS custom property `--radix-tooltip-content-transform-origin`. Use 
 
 ```jsx line=6
 // index.tsx
-import { Tooltip } from "@radix-solid/primitives";
+import { Tooltip } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 export default () => <Tooltip.Root>
 		<Tooltip.Trigger>…</Tooltip.Trigger>
@@ -581,7 +581,7 @@ We expose `data-side` and `data-align` attributes. Their values will change at r
 
 ```jsx line=6
 // index.tsx
-import { Tooltip } from "@radix-solid/primitives";
+import { Tooltip } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 export default () => <Tooltip.Root>
 		<Tooltip.Trigger>…</Tooltip.Trigger>
@@ -675,7 +675,7 @@ Use the [`asChild` prop](/primitives/docs/guides/composition) to convert the tri
 import { omit, type ComponentProps, type Element } from "solid-js";
 // your-tooltip.tsx
 
-import { Tooltip as TooltipPrimitive, Slot } from "@radix-solid/primitives";
+import { Tooltip as TooltipPrimitive, Slot } from "@wsagency/radix2solid-primitives";
 export const TooltipProvider = TooltipPrimitive.Provider;
 type TooltipProps = Omit<Extract<ComponentProps<typeof TooltipPrimitive.Content>, { __asChild__?: false }>, "children"> &
   Pick<ComponentProps<typeof TooltipPrimitive.Root>, "open" | "defaultOpen" | "onOpenChange"> &

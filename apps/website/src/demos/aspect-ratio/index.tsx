@@ -1,4 +1,4 @@
-import { AspectRatio } from "@radix-solid/primitives";
+import { AspectRatio } from "@wsagency/radix2solid-primitives";
 import styles from "./styles.module.css";
 const AspectRatioDemo = () => <div class={styles.Container}>
 		<AspectRatio.Root ratio={16 / 9}>

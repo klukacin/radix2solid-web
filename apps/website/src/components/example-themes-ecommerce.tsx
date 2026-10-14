@@ -1,8 +1,8 @@
 
 import { type ComponentProps, omit, createSignal, type Element } from "solid-js";
-import { Badge, Box, Button, Card, Flex, Grid, Heading, IconButton, Inset, Link, Select, Separator, Strong, Text, TextArea, TextField, Theme } from "@radix-solid/themes";
-import { BookmarkFilledIcon, BookmarkIcon, CalendarIcon, CrumpledPaperIcon, FontBoldIcon, FontItalicIcon, ImageIcon, InstagramLogoIcon, MagicWandIcon, MagnifyingGlassIcon, RulerHorizontalIcon, StrikethroughIcon, TextAlignCenterIcon, TextAlignLeftIcon, TextAlignRightIcon, VideoIcon } from "@radix-solid/icons";
-import { Label, ToggleGroup } from "@radix-solid/primitives";
+import { Badge, Box, Button, Card, Flex, Grid, Heading, IconButton, Inset, Link, Select, Separator, Strong, Text, TextArea, TextField, Theme } from "@wsagency/radix2solid-themes";
+import { BookmarkFilledIcon, BookmarkIcon, CalendarIcon, CrumpledPaperIcon, FontBoldIcon, FontItalicIcon, ImageIcon, InstagramLogoIcon, MagicWandIcon, MagnifyingGlassIcon, RulerHorizontalIcon, StrikethroughIcon, TextAlignCenterIcon, TextAlignLeftIcon, TextAlignRightIcon, VideoIcon } from "@wsagency/radix2solid-icons";
+import { Label, ToggleGroup } from "@wsagency/radix2solid-primitives";
 type ExampleLayoutProps = Extract<ComponentProps<typeof Flex>, {
   asChild?: false;
 }> & {

@@ -35,7 +35,7 @@ aria: https://www.w3.org/WAI/ARIA/apg/patterns/button
 Import the component.
 
 ```jsx
-import { ToggleGroup } from "@radix-solid/primitives";
+import { ToggleGroup } from "@wsagency/radix2solid-primitives";
 export default () => <ToggleGroup.Root type="single">
 		<ToggleGroup.Item value="bold" aria-label="Bold" />
 	</ToggleGroup.Root>;
@@ -293,7 +293,7 @@ You can control the component to ensure a value.
 
 ```jsx line=4,5
 import { createSignal } from "solid-js";
-import { ToggleGroup } from "@radix-solid/primitives";
+import { ToggleGroup } from "@wsagency/radix2solid-primitives";
 export default () => {
   const [value, setValue] = createSignal("left");
   return <ToggleGroup.Root type="single" value={value()} onValueChange={value => {

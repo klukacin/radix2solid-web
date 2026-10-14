@@ -1,4 +1,4 @@
-import { Link } from '@radix-solid/themes';
+import { Link } from '@wsagency/radix2solid-themes';
 import { Header, type HeaderProps } from './header';
 import { useSiteContext } from './site-context';
 

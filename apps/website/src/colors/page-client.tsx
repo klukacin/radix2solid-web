@@ -3,14 +3,14 @@ import { onCleanup } from 'solid-js';
 import { ColorField } from "../components/color-field";
 import { useColorThemeContext } from "./color-theme-provider";
 import { type GeneratedColors, getBackgroundColorCss, getColorName, getColorScaleCss, getNewPreviewStyles } from "./utils";
-import { BoxIcon, GridIcon, InfoCircledIcon, MagnifyingGlassIcon, TextIcon, ImageIcon, PlusIcon, FrameIcon, CrumpledPaperIcon, ScissorsIcon, Component1Icon, TokensIcon, FontFamilyIcon, LightningBoltIcon, StarIcon, AccessibilityIcon, BookmarkIcon, HeartIcon, Share2Icon, GitHubLogoIcon, CopyIcon, FigmaLogoIcon, SunIcon, MoonIcon } from "@radix-solid/icons";
-import { Avatar, Badge, Blockquote, Box, Button, Callout, Card, Checkbox, DropdownMenu, Flex, Grid, Heading, HoverCard, IconButton, Inset, Link, Reset, SegmentedControl, Separator, Strong, Switch, TabNav, Text, TextField, Theme as RadixTheme, Tooltip } from "@radix-solid/themes";
+import { BoxIcon, GridIcon, InfoCircledIcon, MagnifyingGlassIcon, TextIcon, ImageIcon, PlusIcon, FrameIcon, CrumpledPaperIcon, ScissorsIcon, Component1Icon, TokensIcon, FontFamilyIcon, LightningBoltIcon, StarIcon, AccessibilityIcon, BookmarkIcon, HeartIcon, Share2Icon, GitHubLogoIcon, CopyIcon, FigmaLogoIcon, SunIcon, MoonIcon } from "@wsagency/radix2solid-icons";
+import { Avatar, Badge, Blockquote, Box, Button, Callout, Card, Checkbox, DropdownMenu, Flex, Grid, Heading, HoverCard, IconButton, Inset, Link, Reset, SegmentedControl, Separator, Strong, Switch, TabNav, Text, TextField, Theme as RadixTheme, Tooltip } from "@wsagency/radix2solid-themes";
 import { useSiteContext } from "../components/site-context";
 import { CustomSwatch } from "../components/custom-swatch";
 import { AvatarIconFallback } from "../components/avatar-icon-fallback";
 import { ThemesPanelBackgroundImage } from "../components/themes-panel-background-image";
 import { getPeopleForColor } from "../components/people";
-import { ToggleGroup } from "@radix-solid/primitives";
+import { ToggleGroup } from "@wsagency/radix2solid-primitives";
 import styles from "./page.module.css";
 export function ColorStyles() {
   const _colors = useColorThemeContext();
@@ -25,8 +25,10 @@ export function RootTheme(p: {
 }) {
   const _colors2 = useColorThemeContext();
   // Custom palettes supply these CSS tokens; nested Themes must inherit their name.
+  // Low-saturation accents map to "custom": getNewPreviewStyles writes their --custom-* tokens globally,
+  // so the preview only needs a valid palette identity for Theme's accentColor="custom" contract.
   const accentColor = createMemo(() => _colors2.accent as ComponentProps<typeof RadixTheme>['accentColor']);
-  return <RadixTheme accentColor={accentColor()} grayColor="gray" class={p.class} appearance="inherit">
+  return <RadixTheme accentColor={accentColor()} customAccent={accentColor() === 'custom' ? 'generated' : undefined} grayColor="gray" class={p.class} appearance="inherit">
 			{p.children}
 		</RadixTheme>;
 }

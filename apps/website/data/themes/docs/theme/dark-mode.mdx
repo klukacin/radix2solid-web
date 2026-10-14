@@ -39,7 +39,7 @@ Use the browser's `matchMedia` API and pass the resolved appearance to `Theme`. 
 ```tsx
 import { createSignal, onSettled, type Element } from "solid-js";
 import { isServer } from "@solidjs/web";
-import { Theme } from "@radix-solid/themes";
+import { Theme } from "@wsagency/radix2solid-themes";
 
 export default function SystemTheme(props: { children: Element }) {
   const [dark, setDark] = createSignal(false);

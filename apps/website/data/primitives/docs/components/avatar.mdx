@@ -33,7 +33,7 @@ name: avatar
 Import all parts and piece them together.
 
 ```jsx
-import { Avatar } from "@radix-solid/primitives";
+import { Avatar } from "@wsagency/radix2solid-primitives";
 export default () => <Avatar.Root>
 		<Avatar.Image />
 		<Avatar.Fallback />
@@ -137,7 +137,7 @@ An element that renders when the image hasn't loaded. This means whilst it's loa
 You can compose the Avatar with a [Tooltip](/primitives/docs/components/tooltip) to display extra information.
 
 ```jsx line=1,2,3,5,7,8,9,10,11
-import { Avatar, __Tooltip__ } from "@radix-solid/primitives";
+import { Avatar, __Tooltip__ } from "@wsagency/radix2solid-primitives";
 export default () => <Tooltip.Root>
 		<Tooltip.Trigger>
 			<Avatar.Root>…</Avatar.Root>

@@ -1,4 +1,4 @@
-import { ScrollArea } from "@radix-solid/primitives";
+import { ScrollArea } from "@wsagency/radix2solid-primitives";
 import styles from "./styles.module.css";
 const TAGS = Array.from({
   length: 50

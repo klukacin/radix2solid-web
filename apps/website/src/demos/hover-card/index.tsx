@@ -1,4 +1,4 @@
-import { HoverCard } from "@radix-solid/primitives";
+import { HoverCard } from "@wsagency/radix2solid-primitives";
 import styles from "./styles.module.css";
 const HoverCardDemo = () => <HoverCard.Root>
 		<HoverCard.Trigger asChild>{target => target("a", {

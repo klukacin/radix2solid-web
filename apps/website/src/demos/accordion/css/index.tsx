@@ -1,6 +1,6 @@
 import { omit, type ComponentProps } from "solid-js";
-import { Accordion } from "@radix-solid/primitives";
-import { ChevronDownIcon } from "@radix-solid/icons";
+import { Accordion } from "@wsagency/radix2solid-primitives";
+import { ChevronDownIcon } from "@wsagency/radix2solid-icons";
 import "./styles.css";
 const AccordionDemo = () => <Accordion.Root class="AccordionRoot" type="single" defaultValue="item-1" collapsible>
 		<Accordion.Item class="AccordionItem" value="item-1">

@@ -1,4 +1,4 @@
-import { Box, Button, Container, Grid, Heading, Section, Text } from "@radix-solid/themes";
+import { Box, Button, Container, Grid, Heading, Section, Text } from "@wsagency/radix2solid-themes";
 import { MarketingCaption } from "./marketing-caption";
 export const AdoptionSection = () => {
   return <Section size={{

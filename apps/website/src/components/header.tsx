@@ -1,11 +1,11 @@
 
 import type { JSX } from "@solidjs/web";
 import { type Element, createSignal, createMemo, onSettled, omit, type ComponentProps } from "solid-js";
-import { AccessibleIcon, Flex, IconButton, Link, Theme, Tooltip } from "@radix-solid/themes";
+import { AccessibleIcon, Flex, IconButton, Link, Theme, Tooltip } from "@wsagency/radix2solid-themes";
 import styles from "./header.module.css";
 import { BoxLink } from "./box-link";
 import { ThemeToggle } from "./theme-toggle";
-import { GitHubLogoIcon, HamburgerMenuIcon } from "@radix-solid/icons";
+import { GitHubLogoIcon, HamburgerMenuIcon } from "@wsagency/radix2solid-icons";
 import { Radix2SolidLogo, Radix2SolidLogoIcon } from "./radix-logo";
 import { useSiteContext } from "./site-context";
 export interface HeaderProps {
@@ -71,16 +71,12 @@ export const Header = (p: HeaderProps) => {
         children: <>
 				<div class={styles.HeaderInner}>
 					
-					<div class={"native-scroll-compensation"} style={{
-              "position": "absolute",
-              "height": "inherit",
-              "top": 0 as const,
-              "left": 0 as const,
+					<div class={styles.HeaderRow} style={{
               "right": headerGap()
             }}>
 						<Flex display={{
                 sm: "none"
-              }} align="center" position="absolute" top="0" bottom="0" left="0" pl="4">
+              }} align="center" pl="4" class={styles.HeaderSide}>
 							{mobileMenu.open ? <BoxLink asChild>{target => target("a", {
                     "href": "/",
                     children: <>
@@ -92,11 +88,13 @@ export const Header = (p: HeaderProps) => {
 						<Flex display={{
                 initial: "none",
                 sm: "flex"
-              }} align="center" position="absolute" top="0" bottom="0" left="0" pl="4">
+              }} align="center" pl="4" class={styles.HeaderSide}>
 							<Radix2SolidLogoLink />
 						</Flex>
 
-						<div class={styles.HeaderProductLinksContainer}>
+						{/* Narrow screens scroll this row. Browsers leave a partly visible focused link unscrolled, and the
+						    mobile menu mounts its own header, so reveal the current product on mount and each focused link. */}
+						<nav ref={element => requestAnimationFrame(() => revealProduct(element.querySelector('[data-state="active"]')))} onFocusIn={event => revealProduct(event.target as globalThis.Element)} aria-label="Products" class={styles.HeaderProductLinksContainer}>
 							<HeaderProductLink href="/" active={pathname === "/" || pathname?.startsWith("/themes")}>
 								Themes
 							</HeaderProductLink>
@@ -106,15 +104,18 @@ export const Header = (p: HeaderProps) => {
 							<HeaderProductLink href="/icons" active={pathname?.startsWith("/icons")}>
 								Icons
 							</HeaderProductLink>
+							<HeaderProductLink href="/charts" active={pathname?.startsWith("/charts")}>
+								Charts
+							</HeaderProductLink>
 							<HeaderProductLink href="/colors" active={pathname?.startsWith("/colors")}>
 								Colors
 							</HeaderProductLink>
-						</div>
+						</nav>
 
 						<Flex display={{
                 initial: "none",
                 md: "flex"
-              }} align="center" gap="5" position="absolute" top="0" bottom="0" right="0" pr="4">
+              }} align="center" justify="end" gap="5" pr="4" class={styles.HeaderSide}>
 							{p.children}
 
 							<Link size="2" color="gray" href="/blog" highContrast={pathname?.includes("/blog")}>
@@ -143,7 +144,7 @@ export const Header = (p: HeaderProps) => {
 
 						<Flex display={{
                 md: "none"
-              }} align="center" gap="4" position="absolute" top="0" bottom="0" right="0" pr="4">
+              }} align="center" justify="end" gap="4" pr="4" class={styles.HeaderSide}>
               {p.gitHubLink && <IconButton asChild size="3" variant="ghost" color="gray">{target => target("a", {
                 href: p.gitHubLink, target: "_blank", rel: "noopener noreferrer", "aria-label": "View GitHub",
                 children: <GitHubLogoIcon width="16" height="16" />
@@ -185,6 +186,10 @@ export const Header = (p: HeaderProps) => {
       return target("div", nativeProps);
     }}</Theme>;
 };
+const revealProduct = (link: globalThis.Element | null) => link?.scrollIntoView({
+  block: "nearest",
+  inline: "nearest"
+});
 const HeaderProductLink = (p: Omit<JSX.IntrinsicElements["a"], "href"> & {
   active?: boolean;
   href: string;

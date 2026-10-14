@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import { glob, mkdir, mkdtemp, readFile, writeFile, rm } from 'node:fs/promises';
 import { resolve, dirname, basename } from 'node:path';
-import ts from 'typescript';
+// The TypeScript 7 package has no JS compiler API; this checker keeps the 5.9 API alias.
+import ts from 'typescript5';
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkMdx from 'remark-mdx';
@@ -18,7 +19,7 @@ const cache = resolve(site, 'node_modules/.cache');
 await mkdir(cache, { recursive: true });
 const fixture = await mkdtemp(resolve(cache, 'native-doc-snippets-'));
 try {
-  const nativePackages: { name: string; version: string; private: boolean }[] = await Promise.all(['primitives', 'themes', 'icons'].map(async name => JSON.parse(await readFile(resolve(root, `.library/packages/${name}/package.json`), 'utf8'))));
+  const nativePackages: { name: string; version: string; private: boolean; peerDependencies?: Record<string, string> }[] = await Promise.all(['primitives', 'themes', 'icons', 'charts'].map(async name => JSON.parse(await readFile(resolve(root, `.library/packages/${name}/package.json`), 'utf8'))));
   const colors: { name: string; version: string; private?: boolean } = JSON.parse(await readFile(resolve(site, 'node_modules/@radix-ui/colors/package.json'), 'utf8'));
   let highlightedFences = 0, installationCommands = 0;
   const config = ts.readConfigFile(resolve(root, 'tsconfig.json'), ts.sys.readFile);
@@ -27,7 +28,7 @@ try {
   assert.deepEqual(parsed.errors, []);
   const options = parsed.options;
   const scopeFile = resolve(fixture, 'native-scope.ts');
-  await writeFile(scopeFile, "import * as Themes from '@radix-solid/themes'; import * as Icons from '@radix-solid/icons'; export { Themes, Icons };\n");
+  await writeFile(scopeFile, "import * as Themes from '@wsagency/radix2solid-themes'; import * as Icons from '@wsagency/radix2solid-icons'; export { Themes, Icons };\n");
   const scopeProgram = ts.createProgram([scopeFile], options);
   const checker = scopeProgram.getTypeChecker();
   const scope = scopeProgram.getSourceFile(scopeFile);
@@ -51,7 +52,7 @@ try {
     const source = await readFile(resolve(site, 'data', path), 'utf8');
     for (const command of source.matchAll(/\b(?:npm install|pnpm add|yarn add|bun add)\s+([^\n'"}<]+)/g)) {
       installationCommands++;
-      for (const argument of command[1].trim().split(/\s+/)) {
+      for (const argument of command[1].trim().split(/\s+/).filter(argument => !/^-[a-zA-Z]$/.test(argument))) {
         if (argument.endsWith('.tgz')) {
           const metadata = nativePackages.find(pkg => basename(argument) === `${pkg.name.replace(/^@/, '').replace('/', '-')}-${pkg.version}.tgz`);
           assert(metadata, `${path}: installation tarball must match an actual native package name and version: ${argument}`);
@@ -62,6 +63,12 @@ try {
         assert(packageArgument, `${path}: malformed package argument ${argument}`);
         const native = nativePackages.find(pkg => pkg.name === packageArgument[1]);
         assert(!native?.private, `${path}: private native packages must be installed from their packed tarballs, not the registry`);
+        // Optional peers are installed by name with the exact range a native package declares.
+        const peer = nativePackages.find(pkg => pkg.peerDependencies?.[packageArgument[1]]);
+        if (peer && packageArgument[1] !== 'solid-js' && !packageArgument[1].startsWith('@solidjs/')) {
+          assert.equal(packageArgument[2], peer.peerDependencies![packageArgument[1]], `${path}: ${packageArgument[1]} must use the ${peer.name} peer range`);
+          continue;
+        }
         assert.equal(packageArgument[1], colors.name, `${path}: registry installation must name the actual published colors package`);
         assert.notEqual(colors.private, true, `${path}: colors installation requires a published package`);
         if (packageArgument[2]) assert.equal(packageArgument[2], colors.version, `${path}: pinned colors version must match the installed package`);
@@ -110,7 +117,7 @@ try {
         const themes = [...identifiers].filter(name => exports.Themes.has(name) && !declared.has(name) && !sharedImports.has(name));
         const icons = [...identifiers].filter(name => exports.Icons.has(name) && !declared.has(name) && !sharedImports.has(name));
         const components = [...identifiers].filter(name => documentComponents.has(name) && !declared.has(name) && !sharedImports.has(name) && !themes.includes(name) && !icons.includes(name));
-        const imports = [themes.length ? `import { ${themes.join(', ')} } from '@radix-solid/themes';` : '', icons.length ? `import { ${icons.join(', ')} } from '@radix-solid/icons';` : '', ...inherited.map(name => sharedImports.get(name)), ...components.map(name => `import { ${name} } from ${JSON.stringify(documentComponents.get(name))};`)].filter(Boolean).join('\n');
+        const imports = [themes.length ? `import { ${themes.join(', ')} } from '@wsagency/radix2solid-themes';` : '', icons.length ? `import { ${icons.join(', ')} } from '@wsagency/radix2solid-icons';` : '', ...inherited.map(name => sharedImports.get(name)), ...components.map(name => `import { ${name} } from ${JSON.stringify(documentComponents.get(name))};`)].filter(Boolean).join('\n');
         if (code.startsWith('<')) code = `export default () => (${code.replace(/;$/, '')});`;
         else if (code.startsWith('() =>')) code = `export default ${code}`;
         assert(node.position);

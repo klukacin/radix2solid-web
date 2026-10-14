@@ -19,7 +19,19 @@ Getting up and running is quick and easy.
 
 ### 1. Install Radix Themes
 
-This fork is private and is not published on npm. Build and pack `packages/primitives` and `packages/themes`, copy both generated tarballs into your Solid 2 application, and install them from your command line. The native packages require `solid-js` and `@solidjs/web` version `2.0.0-rc.13`.
+This fork is not published on npm. Download [`wsagency-radix2solid-primitives-0.1.0-rc.2.tgz`](/packages/wsagency-radix2solid-primitives-0.1.0-rc.2.tgz) and [`wsagency-radix2solid-themes-0.1.0-rc.2.tgz`](/packages/wsagency-radix2solid-themes-0.1.0-rc.2.tgz) (or pack `packages/primitives` and `packages/themes` yourself) into your Solid 2 application and install both. The packages require `solid-js` and `@solidjs/web` `2.0.0-rc.15` with the matching `@solidjs/signals`, `@solidjs/compiler` and `@solidjs/babel-plugin` `2.0.0-rc.15`, compiled by `@solidjs/vite-plugin` `3.0.0-next.50`. Themes depends on Primitives, so point that transitive dependency at the same tarball; with pnpm, add to `pnpm-workspace.yaml`:
+
+```yaml
+overrides:
+  '@wsagency/radix2solid-primitives': file:./wsagency-radix2solid-primitives-0.1.0-rc.2.tgz
+  solid-js: 2.0.0-rc.15
+  '@solidjs/web': 2.0.0-rc.15
+  '@solidjs/signals': 2.0.0-rc.15
+  '@solidjs/compiler': 2.0.0-rc.15
+  '@solidjs/babel-plugin': 2.0.0-rc.15
+```
+
+Every “Download runnable sandbox” archive under the documentation demos ships this exact workspace, including exact `minimumReleaseAgeExclude` entries for the newly published Solid versions.
 
 <Tabs.Root asChild defaultValue="npm">
   <CodeBlock.Root my="5">
@@ -36,7 +48,7 @@ This fork is private and is not published on npm. Build and pack `packages/primi
       <CodeBlock.Content>
         <CodeBlock.Pre>
           <CodeBlock.Code language="bash">
-            {'npm install ./radix-solid-primitives-0.0.0-local.tgz ./radix-solid-themes-0.0.0-local.tgz'}
+            {'npm install ./wsagency-radix2solid-primitives-0.1.0-rc.2.tgz ./wsagency-radix2solid-themes-0.1.0-rc.2.tgz'}
           </CodeBlock.Code>
         </CodeBlock.Pre>
         <CodeBlock.CopyButton />
@@ -47,7 +59,7 @@ This fork is private and is not published on npm. Build and pack `packages/primi
       <CodeBlock.Content>
         <CodeBlock.Pre>
           <CodeBlock.Code language="bash">
-            {'yarn add ./radix-solid-primitives-0.0.0-local.tgz ./radix-solid-themes-0.0.0-local.tgz'}
+            {'yarn add ./wsagency-radix2solid-primitives-0.1.0-rc.2.tgz ./wsagency-radix2solid-themes-0.1.0-rc.2.tgz'}
           </CodeBlock.Code>
         </CodeBlock.Pre>
         <CodeBlock.CopyButton />
@@ -58,7 +70,7 @@ This fork is private and is not published on npm. Build and pack `packages/primi
       <CodeBlock.Content>
         <CodeBlock.Pre>
           <CodeBlock.Code language="bash">
-            {'pnpm add ./radix-solid-primitives-0.0.0-local.tgz ./radix-solid-themes-0.0.0-local.tgz'}
+            {'pnpm add ./wsagency-radix2solid-primitives-0.1.0-rc.2.tgz ./wsagency-radix2solid-themes-0.1.0-rc.2.tgz'}
           </CodeBlock.Code>
         </CodeBlock.Pre>
         <CodeBlock.CopyButton />
@@ -69,7 +81,7 @@ This fork is private and is not published on npm. Build and pack `packages/primi
       <CodeBlock.Content>
         <CodeBlock.Pre>
           <CodeBlock.Code language="bash">
-            {'bun add ./radix-solid-primitives-0.0.0-local.tgz ./radix-solid-themes-0.0.0-local.tgz'}
+            {'bun add ./wsagency-radix2solid-primitives-0.1.0-rc.2.tgz ./wsagency-radix2solid-themes-0.1.0-rc.2.tgz'}
           </CodeBlock.Code>
         </CodeBlock.Pre>
         <CodeBlock.CopyButton />
@@ -79,12 +91,16 @@ This fork is private and is not published on npm. Build and pack `packages/primi
   </CodeBlock.Root>
 </Tabs.Root>
 
+Requirements: Node.js `>=22.12.0` for your build (this project's own tooling uses Node 24.21). The packages are built with TypeScript 7.0.2 and their published types are also checked with TypeScript 5.9.3. `postcss` is an optional peer dependency, needed only if you use the [PostCSS plugins](/themes/docs/theme/breakpoints#postcss-plugins); importing the compiled CSS needs no PostCSS setup.
+
+Icons are a separate package and Themes does not need it. With [Radix Icons](/icons) installed, the first icon adds about 1.3 kB (0.6 kB gzip) to an app that already renders a Themes `Button`; see the [icons page](/icons#installation) for the measurement. Custom icons are your own SVG or Solid component.
+
 ### 2. Import the CSS file
 
 Import the global CSS file at the root of your application.
 
 ```ts
-import "@radix-solid/themes/styles.css";
+import "@wsagency/radix2solid-themes/styles.css";
 ```
 
 ### 3. Add the Theme component
@@ -93,7 +109,7 @@ Add `Theme` around your application. For a client-rendered app, mount into the r
 
 ```tsx
 import { render } from "@solidjs/web";
-import { Theme } from "@radix-solid/themes";
+import { Theme } from "@wsagency/radix2solid-themes";
 import MyApp from "./your-app";
 
 const root = document.getElementById("root");
@@ -107,7 +123,7 @@ You are now ready to use Radix Themes components.
 
 ```jsx
 // your-app.tsx
-import { Flex, Text, Button } from "@radix-solid/themes";
+import { Flex, Text, Button } from "@wsagency/radix2solid-themes";
 export default function MyApp() {
   return <Flex direction="column" gap="2">
 			<Text>Hello from Radix Themes :)</Text>
@@ -138,7 +154,7 @@ import MyApp from "./your-app";
 To add `ThemePanel` to your app, import it from the package and drop it inside your root `Theme`.
 
 ```jsx line=6
-import { Theme, ThemePanel } from "@radix-solid/themes";
+import { Theme, ThemePanel } from "@wsagency/radix2solid-themes";
 import MyApp from "./your-app";
 export default function () {
   return <Theme>
@@ -147,6 +163,8 @@ export default function () {
 		</Theme>;
 }
 ```
+
+The panel offers every built-in accent and gray color but loads none of them. It works with `styles.css` as above; if you import [only the palettes you use](/themes/docs/overview/styling#per-component-css), import `tokens.css` (or every palette) and, in split mode, `css/theme-panel.css` while the panel is mounted.
 
 ### Take it further
 

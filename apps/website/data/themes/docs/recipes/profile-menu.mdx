@@ -1,0 +1,78 @@
+---
+metaTitle: Profile menu
+metaDescription: An account menu with an avatar trigger, status radio items, a submenu, links and a form-based logout.
+---
+
+import { createSignal, createUniqueId, onSettled } from "solid-js";
+import { Direction } from "@wsagency/radix2solid-primitives";
+
+# Profile menu
+
+<Description>An account menu with an avatar trigger, status radio items, a submenu, links and a form-based logout.</Description>
+
+This recipe composes Themes `DropdownMenu`, `Avatar` and `IconButton`. The menu owns keyboard navigation, typeahead, submenus and focus return; the recipe adds no keyboard or focus handling of its own.
+
+Logout is a native `<form method="post">` with a hidden CSRF field. The menu item calls `requestSubmit()`, so the browser runs normal form validation and fires the form's submit event. This demo is client-only: its submit handler cancels the submission, so no request is sent and no server checks the token. The token is generated in the browser only so the field has a value; it is **not** CSRF protection. In your app, render the token your server issued for the session, point `action` at your logout route and remove the demo handler, so the browser sends the POST. Authentication and redirects stay in your app.
+
+```tsx live=true
+() => {
+	// Your app supplies these: its logout route and the CSRF token its server issued for this session.
+	const logoutAction = "/logout";
+	const csrfField = "csrf_token";
+	// Demo only: a browser-generated placeholder so the field has a value. It is not CSRF protection.
+	const [csrfToken, setCsrfToken] = createSignal("");
+	onSettled(() => { setCsrfToken(crypto.randomUUID()); });
+	const [submitted, setSubmitted] = createSignal("");
+	const [status, setStatus] = createSignal("online");
+	const [rtl, setRtl] = createSignal(false);
+	const formId = createUniqueId();
+	return <Direction.Provider dir={rtl() ? "rtl" : "ltr"}>
+		<Flex direction="column" align="center" gap="3" dir={rtl() ? "rtl" : "ltr"}>
+			<DropdownMenu.Root>
+				<DropdownMenu.Trigger>{target => target(IconButton, { variant: "ghost", radius: "full", size: "3", "aria-label": "Profile menu for Ana Horvat", children: <Avatar size="2" radius="full" fallback="AH" /> })}</DropdownMenu.Trigger>
+				<DropdownMenu.Content align="end">
+					<DropdownMenu.Label>Ana Horvat</DropdownMenu.Label>
+					<DropdownMenu.RadioGroup value={status()} onValueChange={setStatus}>
+						<DropdownMenu.RadioItem value="online">Online</DropdownMenu.RadioItem>
+						<DropdownMenu.RadioItem value="away">Away</DropdownMenu.RadioItem>
+						<DropdownMenu.RadioItem value="busy">Do not disturb</DropdownMenu.RadioItem>
+					</DropdownMenu.RadioGroup>
+					<DropdownMenu.Separator />
+					<DropdownMenu.Item asChild>{target => target("a", { href: "/themes/docs/overview/getting-started", children: "Documentation" })}</DropdownMenu.Item>
+					<DropdownMenu.Sub>
+						<DropdownMenu.SubTrigger>Help</DropdownMenu.SubTrigger>
+						<DropdownMenu.SubContent>
+							<DropdownMenu.Item asChild>{target => target("a", { href: "/primitives/docs/components/dropdown-menu#keyboard-interactions", children: "Keyboard shortcuts" })}</DropdownMenu.Item>
+							<DropdownMenu.Item asChild>{target => target("a", { href: "https://github.com/wsagency/radix2solid/issues/new", target: "_blank", rel: "noopener noreferrer", children: "Report an issue" })}</DropdownMenu.Item>
+						</DropdownMenu.SubContent>
+					</DropdownMenu.Sub>
+					<DropdownMenu.Separator />
+					<DropdownMenu.Item color="red" disabled={!csrfToken()} onSelect={() => document.forms.namedItem(formId)?.requestSubmit()}>Log out</DropdownMenu.Item>
+				</DropdownMenu.Content>
+			</DropdownMenu.Root>
+			<form id={formId} method="post" action={logoutAction} onSubmit={event => {
+				// Demo only: this page has no server, so cancel the POST. Remove this handler in your app.
+				event.preventDefault();
+				setSubmitted(`Demo: ${event.currentTarget.method.toUpperCase()} ${new URL(event.currentTarget.action).pathname} was submitted and cancelled; nothing was sent.`);
+			}}>
+				<input type="hidden" name={csrfField} value={csrfToken()} />
+			</form>
+			<Text size="2" color="gray" role="status">{submitted() || `Status: ${status()}`}</Text>
+			<Button size="1" variant="soft" color="gray" onClick={() => setRtl(!rtl())}>{rtl() ? "Use left-to-right" : "Use right-to-left"}</Button>
+		</Flex>
+	</Direction.Provider>;
+}
+```
+
+## Keyboard
+
+- <Kbd>Enter</Kbd>, <Kbd>Space</Kbd> or <Kbd>↓</Kbd> on the avatar button opens the menu and focuses the first item.
+- <Kbd>↑</Kbd> and <Kbd>↓</Kbd> move between items; typing a letter jumps to a matching item.
+- <Kbd>→</Kbd> opens the Help submenu and <Kbd>←</Kbd> closes it. In right-to-left layouts the two keys swap.
+- <Kbd>Esc</Kbd> closes the menu and returns focus to the avatar button.
+
+## In your app
+
+- Render the form outside the menu content. The menu closes when an item is selected, and a form inside it would unmount before it submits.
+- Render the CSRF token your server issued for the session, and remove the demo `onSubmit` handler so the browser sends the POST. Keep the token out of the URL and logs. The field name and token are whatever your server's CSRF protection expects.
+- Without JavaScript the menu cannot open, so also provide a plain logout button on your account page.

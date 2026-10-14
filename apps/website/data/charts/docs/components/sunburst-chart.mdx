@@ -1,0 +1,65 @@
+---
+metaTitle: SunburstChart
+metaDescription: A radial hierarchical chart with nested rings of sectors.
+---
+
+import { SunburstChart, ResponsiveContainer } from "@wsagency/radix2solid-charts";
+
+> Native Solid 2 fork of [solid-recharts](https://github.com/yumemi-thomas/solid-recharts) (MIT, © Thomas Guehenneux), derived from [Recharts](https://github.com/recharts/recharts) (MIT, © recharts). Adapted documentation; neither project endorses this fork.
+
+# SunburstChart
+
+`SunburstChart` is a self-contained radial hierarchical chart that displays nested data
+as concentric rings of sectors. Each sector's angle is proportional to its value within
+its parent, making hierarchical proportions and structure easy to see at a glance. It is
+not placed inside another chart container.
+
+```tsx live=true
+() => {
+	const data = {
+		name: "Packages",
+		children: [
+			{ name: "Themes", fill: "var(--accent-9)", children: [{ name: "Layout", value: 30, fill: "var(--accent-8)" }, { name: "Forms", value: 40, fill: "var(--accent-7)" }] },
+			{ name: "Charts", fill: "var(--teal-9)", children: [{ name: "Cartesian", value: 35, fill: "var(--teal-8)" }, { name: "Polar", value: 25, fill: "var(--teal-7)" }] },
+		],
+	};
+	return <ResponsiveContainer width="100%" height={300} initialDimension={{ width: 560, height: 300 }}>
+		<SunburstChart data={data} innerRadius={30} />
+	</ResponsiveContainer>;
+}
+```
+
+## Props
+
+| Prop              | Type                 | Default   | Description                                           |
+| ----------------- | -------------------- | --------- | ----------------------------------------------------- |
+| `data`            | `object`             | —         | Root node with nested `children` array                |
+| `dataKey`         | `string`             | `"value"` | Key to read each node's numeric value                 |
+| `nameKey`         | `string \| function` | `"name"`  | Key to read each node's name / label                  |
+| `width`, `height` | `number \| "%"`      | —         | Fixed size or percentage inside `ResponsiveContainer` |
+| `innerRadius`     | `number`             | `50`      | Radius of the innermost ring (center hole)            |
+| `outerRadius`     | `number`             | —         | Outer radius of the outermost ring                    |
+| `padding`         | `number`             | `2`       | Space between sectors (stroke width)                  |
+| `ringPadding`     | `number`             | `2`       | Padding between each hierarchical level               |
+| `cx`, `cy`        | `number \| "%"`      | `"50%"`   | Center point of the chart                             |
+| `fill`, `stroke`  | `string`             | —         | Default sector colors                                 |
+
+The remaining props follow the Recharts 3.9.2 `SunburstChart` API (reference commit `b3451050`) that solid-recharts tracks; see the [Recharts SunburstChart reference](https://recharts.org/en-US/api/SunburstChart). Changes from Recharts 3.10.1 are tracked but not ported.
+
+## Notes
+
+- **Data shape:** The `data` prop is a single root node object with a nested `children`
+  array. Each child can have its own `children`, forming an arbitrary tree.
+- **Values:** Each node's numeric `dataKey` is summed across its children. Leaf nodes
+  should have explicit values; parent values roll up automatically.
+- **Colors:** Use the `fill` prop on nodes (in the data) to assign colors to individual
+  sectors. The chart applies a default color palette if no node fill is set.
+- **Tooltip:** Sunburst supports item-type tooltips; hover a sector to see its details
+  (name and value).
+- **Animation:** Entry animation is wired; nodes fade and grow on mount. Update animation
+  is not yet ported.
+
+## See also
+
+- [ResponsiveContainer](/charts/docs/guides/responsive-and-ssr) — fluid sizing
+- Tooltip — hover info

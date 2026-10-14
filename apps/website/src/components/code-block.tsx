@@ -1,7 +1,7 @@
 import { createSignal, onCleanup, omit, type ComponentProps } from 'solid-js';
 import type { JSX } from '@solidjs/web';
-import { Box, IconButton, ScrollArea, Theme } from '@radix-solid/themes';
-import { CheckIcon, CopyIcon } from '@radix-solid/icons';
+import { Box, IconButton, ScrollArea, Theme } from '@wsagency/radix2solid-themes';
+import { CheckIcon, CopyIcon } from '@wsagency/radix2solid-icons';
 import { highlightCode } from '../utils/highlight-code.js';
 import styles from './code-block.module.css';
 import '../syntax-highlighting.css';

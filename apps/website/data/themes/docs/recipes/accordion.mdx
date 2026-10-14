@@ -1,0 +1,35 @@
+---
+metaTitle: Accordion
+metaDescription: A Primitives accordion styled with Themes typography, separators and tokens.
+---
+
+import { Accordion } from "@wsagency/radix2solid-primitives";
+import { ChevronDownIcon } from "@wsagency/radix2solid-icons";
+
+# Accordion
+
+<Description>A Primitives accordion styled with Themes typography, separators and tokens.</Description>
+
+The [Accordion primitive](/primitives/docs/components/accordion) owns headings, `aria-expanded`, arrow-key navigation between triggers and the collapse behavior. Themes `Card`, `Text` and `Separator` provide the look, and the trigger is a Themes `Button`.
+
+```tsx live=true
+<Card style={{ width: "320px" }}>
+	<Accordion.Root type="single" defaultValue="item-1" collapsible>
+		<Accordion.Item value="item-1">
+			<Accordion.Header style={{ margin: 0 }}>
+				<Accordion.Trigger asChild>{target => target(Button, { variant: "ghost", color: "gray", highContrast: true, style: { width: "100%", "justify-content": "space-between" }, children: <>Is it accessible?<ChevronDownIcon aria-hidden="true" /></> })}</Accordion.Trigger>
+			</Accordion.Header>
+			<Accordion.Content><Text as="p" size="2" color="gray" my="2">Yes. It follows the WAI-ARIA accordion pattern.</Text></Accordion.Content>
+		</Accordion.Item>
+		<Separator size="4" my="2" />
+		<Accordion.Item value="item-2">
+			<Accordion.Header style={{ margin: 0 }}>
+				<Accordion.Trigger asChild>{target => target(Button, { variant: "ghost", color: "gray", highContrast: true, style: { width: "100%", "justify-content": "space-between" }, children: <>Does it follow the theme?<ChevronDownIcon aria-hidden="true" /></> })}</Accordion.Trigger>
+			</Accordion.Header>
+			<Accordion.Content><Text as="p" size="2" color="gray" my="2">Yes. Colors, radius and scaling come from the nearest Theme.</Text></Accordion.Content>
+		</Accordion.Item>
+	</Accordion.Root>
+</Card>
+```
+
+The unstyled demo with every styling solution, open and close animations and a runnable sandbox is on the [Accordion primitive page](/primitives/docs/components/accordion).

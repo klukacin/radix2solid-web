@@ -1,6 +1,6 @@
 import { createSignal } from "solid-js";
-import { Menubar } from "@radix-solid/primitives";
-import { CheckIcon, ChevronRightIcon, DotFilledIcon } from "@radix-solid/icons";
+import { Menubar } from "@wsagency/radix2solid-primitives";
+import { CheckIcon, ChevronRightIcon, DotFilledIcon } from "@wsagency/radix2solid-icons";
 const RADIO_ITEMS = ["Andy", "Benoît", "Luis"];
 const CHECK_ITEMS = ["Always Show Bookmarks Bar", "Always Show Full URLs"];
 const MenubarDemo = () => {

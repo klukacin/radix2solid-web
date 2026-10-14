@@ -1,6 +1,6 @@
 import { omit, type ComponentProps } from "solid-js";
-import { Select } from "@radix-solid/primitives";
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "@radix-solid/icons";
+import { Select } from "@wsagency/radix2solid-primitives";
+import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "@wsagency/radix2solid-icons";
 import styles from "./styles.module.css";
 const SelectDemo = () => <Select.Root>
 		<Select.Trigger class={styles.Trigger} aria-label="Food">

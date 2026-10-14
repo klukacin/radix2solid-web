@@ -1,4 +1,4 @@
-import { RadioGroup } from "@radix-solid/primitives";
+import { RadioGroup } from "@wsagency/radix2solid-primitives";
 const RadioGroupDemo = () => <form>
 		<RadioGroup.Root class="flex flex-col gap-2.5" defaultValue="default" aria-label="View density">
 			<div class="flex items-center">

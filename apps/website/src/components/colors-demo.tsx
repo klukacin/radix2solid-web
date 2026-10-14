@@ -1,7 +1,7 @@
 import { createMemo, omit, type Element } from 'solid-js';
 import type { JSX } from '@solidjs/web';
-import { Slider as ThemeSlider, Switch } from '@radix-solid/themes';
-import { mergeStyles } from '@radix-solid/themes/helpers';
+import { Slider as ThemeSlider, Switch } from '@wsagency/radix2solid-themes';
+import { mergeStyles } from '@wsagency/radix2solid-themes/helpers';
 import styles from './colors-demo.module.css';
 
 type Props = JSX.IntrinsicElements['button'] & {

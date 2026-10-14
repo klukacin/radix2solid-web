@@ -31,6 +31,55 @@ For more information on specific tokens, refer to the corresponding guides in th
 	<ThemesPanelComposition />
 </Flex>
 
+## Per-component CSS
+
+`styles.css` contains every component and every color and stays the default. You can instead import the tokens, the shared rules and one file per component. All files are compiled; none needs PostCSS.
+
+Import them in this order:
+
+```ts
+import "@wsagency/radix2solid-themes/tokens/base.css";
+import "@wsagency/radix2solid-themes/tokens/colors/indigo.css";
+import "@wsagency/radix2solid-themes/tokens/colors/slate.css";
+import "@wsagency/radix2solid-themes/css/common.css";
+import "@wsagency/radix2solid-themes/css/button.css";
+import "@wsagency/radix2solid-themes/css/dropdown-menu.css";
+import "@wsagency/radix2solid-themes/css/utilities.css";
+```
+
+- Tokens: `tokens/base.css` plus the palette file of every accent and gray color you use, or `tokens.css` for all of them. With `grayColor="auto"`, import the gray that matches your accent (`slate` for `indigo`).
+- `css/common.css` comes first. It holds the reset, animations, layout, `Skeleton` and `Text` rules that every component relies on.
+- `css/<component>.css` holds only that component's rules and those of the components it renders (a loading `Button` includes `Spinner`; menus include `ScrollArea`). Layout components (`Box`, `Flex`, `Grid`, `Container`, `Section`), `Text`, `Skeleton`, `Reset` and `Theme` have files too. Components without styles of their own, such as `Slot`, `Portal`, `AccessibleIcon`, `AspectRatio` and `VisuallyHidden`, have none.
+- `css/utilities.css` comes last. It holds the Theme root and forced-colors rules and the responsive utility classes behind props such as `m`, `p`, `width` and `display`, so `css/theme.css` is not needed with it.
+- `common.css` and `utilities.css` are required. Leaving one out raises no error: the page quietly loses the reset, layout and typography rules, or high-contrast and responsive styles.
+- `ThemePanel` shows a swatch for every built-in accent and gray color and does not load palettes. With per-palette tokens its swatches, and any accent you pick from it, stay unpainted unless that palette is imported. Use `styles.css` or `tokens.css` while it is mounted, or import every palette; in split mode also import `css/theme-panel.css`.
+
+Measured with Lightning CSS 1.33.0 for eight components (Button, Checkbox, Radio, TextField, DropdownMenu, Dialog, Popover and Flex); every row also includes the same small app stylesheet:
+
+| Imports | Minified | gzip | Brotli |
+| --- | --- | --- | --- |
+| `styles.css` | 702,487 B | 82,822 B | 50,321 B |
+| `tokens.css` + per-component files | 464,287 B | 65,102 B | 39,097 B |
+| Base tokens, gray/jade/sage + `components.css` + `utilities.css` | 608,460 B | 58,063 B | 34,658 B |
+| Base tokens, gray/jade/sage + per-component files | 369,971 B | 39,862 B | 23,273 B |
+
+After compression, importing only the palettes you use saves more than splitting components; doing both saves the most. The `.layer.css` variants measure within 1% of these sizes. Measure your own imports.
+
+### Cascade layers
+
+Every CSS file has a `.layer.css` sibling that wraps the same rules in `@layer radix`: `styles.layer.css`, `tokens/base.layer.css`, `tokens/colors/indigo.layer.css`, `css/common.layer.css`, `css/button.layer.css`, `css/utilities.layer.css` and so on. Your unlayered CSS then wins over Themes styles regardless of selector specificity or import order. To order Themes among your own layers, declare the order first, for example `@layer reset, radix, app;`.
+
+```ts
+import "@wsagency/radix2solid-themes/tokens/base.layer.css";
+import "@wsagency/radix2solid-themes/tokens/colors/indigo.layer.css";
+import "@wsagency/radix2solid-themes/tokens/colors/slate.layer.css";
+import "@wsagency/radix2solid-themes/css/common.layer.css";
+import "@wsagency/radix2solid-themes/css/button.layer.css";
+import "@wsagency/radix2solid-themes/css/utilities.layer.css";
+```
+
+Pick one mode for the whole app. Never import a file together with its `.layer.css` sibling: the rules would load twice, and the unlayered copy would beat your own layered styles.
+
 ## Overriding styles
 
 Beyond simple style overrides, we recommend using the components as-is, or create your own versions using the same building blocks.
@@ -78,7 +127,7 @@ Your main content and portalled content are separated by the stacking context th
 Import the native theme stylesheet before your custom styles from the same client entry so the bundler preserves their intended order:
 
 ```ts
-import "@radix-solid/themes/styles.css";
+import "@wsagency/radix2solid-themes/styles.css";
 import "./my-styles.css";
 ```
 
@@ -103,8 +152,8 @@ When you render a custom portal in a Radix Themes project, it will naturally app
 ```jsx line=9,16
 // Implementation example of a custom dialog using the low-level Dialog primitive
 // Refer to https://www.radix-ui.com/primitives/docs/components/dialog
-import { Dialog } from "@radix-solid/primitives";
-import { Theme } from "@radix-solid/themes";
+import { Dialog } from "@wsagency/radix2solid-primitives";
+import { Theme } from "@wsagency/radix2solid-themes";
 function MyCustomDialog() {
   return <Dialog.Root>
 			<Dialog.Trigger>Open</Dialog.Trigger>
@@ -139,7 +188,7 @@ Consider a simple paragraph style that just resets the browser’s default margi
 You might apply the margin prop from a `Box` onto your custom paragraph via `asChild`:
 
 ```jsx line=5,8
-import "@radix-solid/themes/styles.css";
+import "@wsagency/radix2solid-themes/styles.css";
 import "./my-styles.css";
 function MyApp() {
   return <Theme>
@@ -154,9 +203,9 @@ function MyApp() {
 Yet, this won’t work intuitively. The custom styles are imported after Radix Themes styles, so they will override the margin prop. As a workaround, Radix Themes provides separate `tokens.css`, `components.css`, and `utilities.css` files that the original `styles.css` is built upon:
 
 ```jsx
-import "@radix-solid/themes/tokens.css";
-import "@radix-solid/themes/components.css";
-import "@radix-solid/themes/utilities.css";
+import "@wsagency/radix2solid-themes/tokens.css";
+import "@wsagency/radix2solid-themes/components.css";
+import "@wsagency/radix2solid-themes/utilities.css";
 ```
 
 You can import `utilities.css` after your custom styles to ensure that the layout props work as expected with your custom styles. Keep the [CSS import order](#css-import-order) consistent between your development and production bundles.
@@ -164,7 +213,7 @@ You can import `utilities.css` after your custom styles to ensure that the layou
 If you use [standalone layout components](/themes/docs/overview/layout#standalone-usage), split CSS files are also available for them:
 
 ```jsx
-import "@radix-solid/themes/layout/tokens.css";
-import "@radix-solid/themes/layout/components.css";
-import "@radix-solid/themes/layout/utilities.css";
+import "@wsagency/radix2solid-themes/layout/tokens.css";
+import "@wsagency/radix2solid-themes/layout/components.css";
+import "@wsagency/radix2solid-themes/layout/utilities.css";
 ```

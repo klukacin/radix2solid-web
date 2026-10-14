@@ -1,6 +1,6 @@
 import { createUniqueId } from 'solid-js';
-import { Dialog } from '@radix-solid/primitives';
-import { Cross2Icon } from '@radix-solid/icons';
+import { Dialog } from '@wsagency/radix2solid-primitives';
+import { Cross2Icon } from '@wsagency/radix2solid-icons';
 import './styles.css';
 
 export default function DialogDemo() {

@@ -1,7 +1,7 @@
 import { ColorsHeader } from "../components/colors-header";
 import { ColorsMobileMenu } from "../components/colors-mobile-menu";
-import { ArrowLeftIcon } from "@radix-solid/icons";
-import { Box, Container, Flex, Grid, Heading, Link, Section, Text, Theme } from "@radix-solid/themes";
+import { ArrowLeftIcon } from "@wsagency/radix2solid-icons";
+import { Box, Container, Flex, Grid, Heading, Link, Section, Text, Theme } from "@wsagency/radix2solid-themes";
 import { ColorUsageRange } from "../components/color-usage-range";
 import { ColorStepLabel } from "../components/color-step-label";
 import { ColorThemeProvider } from "../colors/color-theme-provider";
@@ -105,6 +105,10 @@ export default function CustomColorsPage() {
 									<CopyButton />
 								</Flex>
 							</Grid>
+							<Text as="p" size="2" color="gray" align="center" mt="4">
+								Copied and downloaded CSS is global, not scoped to one Theme. To use it as a Radix Themes accent beside the built-in ones, see{" "}
+								<Link href="/themes/docs/theme/color#custom-accent" underline="always">Custom accent</Link>.
+							</Text>
 						</Box>
 
 						<Grid mb="9" flow={{

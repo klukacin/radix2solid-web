@@ -33,3 +33,20 @@ Each size maps to a corresponding key, the value of each will be applied when th
     xl: "7"
   }} />
 ```
+
+## PostCSS plugins
+
+The package's CSS files are compiled, so importing them needs no PostCSS setup. The `postcss-breakpoints` and `postcss-whitespace` plugins are only for teams that build their own responsive `rt-r-` classes the way Themes does. `postcss` is an optional peer dependency, so install it when you use a plugin:
+
+```bash
+pnpm add -D postcss@^8.5.9
+```
+
+```mjs
+// postcss.config.mjs
+import breakpoints from "@wsagency/radix2solid-themes/postcss-breakpoints";
+
+export default { plugins: [breakpoints()] };
+```
+
+CommonJS configs can `require("@wsagency/radix2solid-themes/postcss-breakpoints")`. The plugin expands each `@breakpoints` block into one `@media` rule per breakpoint and prefixes the `rt-r-` classes inside it with the breakpoint name, for example `.xs\:rt-r-size-2`.

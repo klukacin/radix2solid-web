@@ -1,5 +1,5 @@
 import { MarketingCaption } from "./marketing-caption";
-import { Box, Section, Grid, Container, Heading, Em, Text } from "@radix-solid/themes";
+import { Box, Section, Grid, Container, Heading, Em, Text } from "@wsagency/radix2solid-themes";
 export const BenefitsSection = () => {
   return <Section size={{
     initial: "2",

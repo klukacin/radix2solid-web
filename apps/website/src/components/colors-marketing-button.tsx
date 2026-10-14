@@ -1,4 +1,4 @@
-import { Button } from '@radix-solid/themes';
+import { Button } from '@wsagency/radix2solid-themes';
 import type { ComponentProps } from 'solid-js';
 import styles from './colors-marketing-button.module.css';
 

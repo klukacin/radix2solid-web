@@ -1,7 +1,7 @@
 import { createMemo } from 'solid-js';
 import type { JSX } from '@solidjs/web';
-import * as metadata from '@radix-solid/themes/props';
-import { Code, Link } from '@radix-solid/themes';
+import * as metadata from '@wsagency/radix2solid-themes/props';
+import { Code, Link } from '@wsagency/radix2solid-themes';
 import { PropsTable } from './mdx-components.js';
 
 type Definition = { type: string; values?: readonly string[]; default?: unknown; required?: boolean; responsive?: boolean };

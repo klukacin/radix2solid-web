@@ -13,6 +13,7 @@ const pages = {
   '/themes/example-ecommerce': { file: './pages/example-ecommerce.tsx', metaTitle: 'Ecommerce Example Layout', metaDescription: 'The original Radix Themes ecommerce layout, implemented natively in Solid 2.' },
   '/themes/example-music-app': { file: './pages/example-music-app.tsx', metaTitle: 'Music App Example Layout', metaDescription: 'The original Radix Themes music layout, implemented natively in Solid 2.' },
   '/icons': { file: './pages/icons.tsx', metaTitle: 'Icons', metaDescription: 'A crisp set of 15×15 icons designed by WorkOS, with native Solid 2 components and licensed SVG downloads.' },
+  '/charts': { file: './pages/charts.tsx', metaTitle: 'Charts', metaDescription: 'Composable SVG charts for native Solid 2, derived from solid-recharts and Recharts. Colors take any CSS value, including Themes tokens.' },
   '/blog': { file: './pages/blog.tsx', metaTitle: 'Blog', metaDescription: 'Historical news from the original Radix team, preserved with attribution by this independent native Solid fork.' },
   '/primitives/case-studies': { file: './pages/case-studies.tsx', metaTitle: 'Case studies', metaDescription: 'Historical case studies about the original Radix React project; not endorsements of this native Solid fork.' },
   '/primitives': { file: './pages/primitives.tsx', metaTitle: 'Primitives', metaDescription: 'The complete original Radix Primitives landing design, with interactive native Solid 2 demonstrations and attributed historical case studies.' },

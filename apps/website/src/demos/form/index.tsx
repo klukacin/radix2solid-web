@@ -1,4 +1,4 @@
-import { Form } from "@radix-solid/primitives";
+import { Form } from "@wsagency/radix2solid-primitives";
 import styles from "./styles.module.css";
 const FormDemo = () => <Form.Root class={styles.Root}>
 		<Form.Field class={styles.Field} name="email">

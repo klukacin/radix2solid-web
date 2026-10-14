@@ -1,6 +1,6 @@
 
-import { ArrowLeftIcon, FigmaLogoIcon } from "@radix-solid/icons";
-import { Box, Button, Container, Flex, Section } from "@radix-solid/themes";
+import { ArrowLeftIcon, FigmaLogoIcon } from "@wsagency/radix2solid-icons";
+import { Box, Button, Container, Flex, Section } from "@wsagency/radix2solid-themes";
 import { SerifHeading } from "../serif-heading";
 import styles from "./icons-hero.module.css";
 export const IconsHero = () => {
@@ -80,7 +80,7 @@ export const IconsHero = () => {
 									Open in Figma
 								</>
               })}</Button>
-							<input readonly onClick={event => event.currentTarget.select()} value="pnpm add ./radix-solid-icons-0.0.0-local.tgz" style={{
+							<input readonly onClick={event => event.currentTarget.select()} value="pnpm add ./wsagency-radix2solid-icons-0.1.0-rc.2.tgz" style={{
               "text-align": "center",
               "min-height": "40px",
               "min-width": 0 as const,

@@ -1,6 +1,6 @@
 import { spawnSync } from 'node:child_process';
 import { lstat, mkdir, readFile, realpath, rm } from 'node:fs/promises';
-import { resolve } from 'node:path';
+import { isAbsolute, resolve } from 'node:path';
 
 const root = resolve(import.meta.dirname, '..');
 const target = resolve(root, '.library');
@@ -13,18 +13,35 @@ if (!pin || typeof pin !== 'object' || !('repository' in pin) || pin.repository 
 }
 // Capture once: file replacement cannot change the commit used by this invocation.
 const commit = pin.commit;
-function git(...args: string[]) {
-  const result = spawnSync('git', ['-C', target, ...args], { encoding: 'utf8' });
+// Developer preview only: an explicit absolute path to a local native Git repository replaces the
+// fetch source. Pin, repository, provenance and clean-checkout validation are unchanged.
+const localSource = process.env.RADIX2SOLID_LIBRARY_SOURCE;
+function git(...args: string[]) { return gitIn(target, ...args); }
+function gitIn(cwd: string, ...args: string[]) {
+  const result = spawnSync('git', ['-C', cwd, ...args], { encoding: 'utf8' });
   if (result.error) throw result.error;
   if (result.status !== 0) throw new Error(`Library Git checkout: ${result.stderr.trim()}`);
   return result.stdout.trim();
 }
-async function validate() {
+async function source() {
+  if (localSource === undefined) return repository;
+  if (!isAbsolute(localSource)) throw new Error('RADIX2SOLID_LIBRARY_SOURCE must be an absolute local path.');
+  const path = await realpath(localSource);
+  if (await realpath(gitIn(path, 'rev-parse', '--show-toplevel')) !== path) {
+    throw new Error('RADIX2SOLID_LIBRARY_SOURCE must be the top level of a local Git repository.');
+  }
+  return path;
+}
+function fetchPinned(from: string) {
+  git('fetch', '--depth=1', from, commit);
+  git('checkout', '--detach', 'FETCH_HEAD');
+}
+async function validate(requireHead = true) {
   if (await realpath(git('rev-parse', '--show-toplevel')) !== await realpath(target)) {
     throw new Error('.library must be its own real Git checkout.');
   }
-  if (git('rev-parse', 'HEAD') !== commit) throw new Error(`Library HEAD differs from pinned ${commit}; existing checkout was not changed.`);
   if (git('status', '--porcelain=v1', '--untracked-files=all')) throw new Error('Library checkout is dirty; existing data was not changed.');
+  if (requireHead && git('rev-parse', 'HEAD') !== commit) throw new Error(`Library HEAD differs from pinned ${commit}; existing checkout was not changed.`);
 }
 
 let existing;
@@ -33,7 +50,12 @@ catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw er
 if (existing) {
   if (existing.isSymbolicLink()) throw new Error('.library must not be a symlink.');
   if (!existing.isDirectory()) throw new Error('.library must be a real Git checkout directory.');
-  await validate();
+  // Without the explicit local source, a different HEAD is rejected unchanged.
+  await validate(localSource === undefined);
+  if (git('rev-parse', 'HEAD') !== commit) {
+    fetchPinned(await source());
+    await validate();
+  }
 } else {
   // Exclusive creation: never overwrite a target another process created meanwhile.
   await mkdir(target);
@@ -41,8 +63,7 @@ if (existing) {
   try {
     git('init');
     git('remote', 'add', 'origin', repository);
-    git('fetch', '--depth=1', 'origin', commit);
-    git('checkout', '--detach', 'FETCH_HEAD');
+    fetchPinned(await source());
     await validate();
   } catch (error) {
     const current = await lstat(target).catch(() => undefined);
@@ -50,4 +71,5 @@ if (existing) {
     throw error;
   }
 }
-console.log(`Library checkout validated at ${commit}.`);
+console.log(localSource === undefined ? `Library checkout validated at ${commit}.`
+  : `Developer preview: library checkout validated at ${commit} with local source ${localSource} allowed; this is not proof of public availability.`);

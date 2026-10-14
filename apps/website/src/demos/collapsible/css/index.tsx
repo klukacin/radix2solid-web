@@ -1,6 +1,6 @@
 import { createSignal } from "solid-js";
-import { Collapsible } from "@radix-solid/primitives";
-import { RowSpacingIcon, Cross2Icon } from "@radix-solid/icons";
+import { Collapsible } from "@wsagency/radix2solid-primitives";
+import { RowSpacingIcon, Cross2Icon } from "@wsagency/radix2solid-icons";
 import "./styles.css";
 const CollapsibleDemo = () => {
   const [open, setOpen] = createSignal(false);

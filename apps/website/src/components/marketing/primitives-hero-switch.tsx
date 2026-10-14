@@ -1,4 +1,4 @@
-import { Switch as SwitchPrimitive } from "@radix-solid/primitives";
+import { Switch as SwitchPrimitive } from "@wsagency/radix2solid-primitives";
 import { styled } from "../../utils/css";
 import styles from "./primitives-hero-switch.module.css";
 const Switch = styled(SwitchPrimitive.Root, styles.Switch);

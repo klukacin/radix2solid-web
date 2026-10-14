@@ -36,7 +36,7 @@ aria: https://www.w3.org/TR/wai-aria/#navigation
 Import all parts and piece them together.
 
 ```jsx
-import { NavigationMenu } from "@radix-solid/primitives";
+import { NavigationMenu } from "@wsagency/radix2solid-primitives";
 export default () => <NavigationMenu.Root>
 		<NavigationMenu.List>
 			<NavigationMenu.Item>
@@ -638,7 +638,7 @@ an animated visual cue such as an arrow or highlight to accompany the `Viewport`
 
 ```jsx line=15
 // index.tsx
-import { NavigationMenu } from "@radix-solid/primitives";
+import { NavigationMenu } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 export default () => <NavigationMenu.Root>
 		<NavigationMenu.List>
@@ -716,7 +716,7 @@ If you need to use the `Link` component provided by your routing package then we
 This preserves accessibility and consistent keyboard control. The native example below accepts a reactive `pathname` from your router and marks the matching anchor as active; it does not depend on a framework-specific router. To compose a router's own link host, use a single-target `asChild` factory as described in the [Composition guide](/primitives/docs/guides/composition).
 
 ```jsx line=8-10
-import { NavigationMenu } from '@radix-solid/primitives';
+import { NavigationMenu } from '@wsagency/radix2solid-primitives';
 import { omit, type ComponentProps } from 'solid-js';
 type Props = Extract<ComponentProps<typeof NavigationMenu.Link>, {
   asChild?: false;
@@ -747,7 +747,7 @@ Combining these with `position: absolute;` allows you to create smooth overlappi
 
 ```jsx line=8,9,10,14,15,16,20
 // index.tsx
-import { NavigationMenu } from "@radix-solid/primitives";
+import { NavigationMenu } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 export default () => <NavigationMenu.Root>
 		<NavigationMenu.List>

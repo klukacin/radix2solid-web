@@ -1,6 +1,6 @@
 import { createMemo } from 'solid-js';
-import * as Icons from '@radix-solid/icons';
-import { Button, Flex, Grid, Text } from '@radix-solid/themes';
+import * as Icons from '@wsagency/radix2solid-icons';
+import { Button, Flex, Grid, Text } from '@wsagency/radix2solid-themes';
 import { useCopyToast } from './copy-toast';
 
 function iconLabel(key: string) {

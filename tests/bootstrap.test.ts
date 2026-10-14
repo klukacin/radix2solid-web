@@ -28,13 +28,23 @@ async function fixture(t: TestContext) {
   git(library, 'checkout', '--detach', pin.commit);
   return { web, library, scratch };
 }
-function bootstrap(web: string, cwd = web) {
-  return spawnSync(process.execPath, [resolve(web, 'scripts/prepare-library.ts')], { cwd, encoding: 'utf8' });
+// Strict default: never inherit a developer's local source opt-in.
+const { RADIX2SOLID_LIBRARY_SOURCE: _inherited, ...strictEnv } = process.env;
+function bootstrap(web: string, cwd = web, source?: string) {
+  return spawnSync(process.execPath, [resolve(web, 'scripts/prepare-library.ts')], { cwd, encoding: 'utf8', env: source === undefined ? strictEnv : { ...strictEnv, RADIX2SOLID_LIBRARY_SOURCE: source } });
 }
-function rejected(web: string, reason: RegExp) {
-  const result = bootstrap(web);
+function rejected(web: string, reason: RegExp, source?: string) {
+  const result = bootstrap(web, web, source);
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, reason);
+}
+// A local-only native commit, as the developer preview bridge sees an unpublished native branch.
+async function localCommit(scratch: string) {
+  const source = resolve(scratch, 'native-source');
+  git(scratch, 'clone', '--no-hardlinks', resolve(root, '.library'), source);
+  const result = spawnSync('git', ['commit', '--allow-empty', '-m', 'Scratch-only local native commit'], { cwd: source, encoding: 'utf8', env: { ...process.env, GIT_AUTHOR_NAME: identity[0], GIT_AUTHOR_EMAIL: identity[1], GIT_COMMITTER_NAME: identity[2], GIT_COMMITTER_EMAIL: identity[3] } });
+  assert.equal(result.status, 0, result.stderr);
+  return { source, commit: git(source, 'rev-parse', 'HEAD') };
 }
 
 test('a real pinned checkout accepts repeated bootstrap from unrelated working directories and ignores build outputs', async t => {
@@ -110,3 +120,63 @@ test('bootstrap rejects an existing non-Git directory and preserves its user dat
   rejected(web, /Git checkout/i);
   assert.equal(await readFile(resolve(library, 'consumer-data.txt'), 'utf8'), 'do not overwrite');
 });
+
+test('explicit local source advances a clean checkout to a local-only pin and keeps origin and ignored outputs', async t => {
+  const { web, library, scratch } = await fixture(t);
+  const { source, commit } = await localCommit(scratch);
+  await writeFile(resolve(web, 'library-source.json'), JSON.stringify({ ...pin, commit }));
+  await mkdir(resolve(library, 'node_modules'), { recursive: true });
+  await writeFile(resolve(library, 'node_modules/retained.txt'), 'ignored consumer output');
+  const origin = git(library, 'remote', 'get-url', 'origin');
+  rejected(web, /HEAD/i);
+  assert.equal(git(library, 'rev-parse', 'HEAD'), pin.commit);
+  const result = bootstrap(web, scratch, source);
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /Developer preview.*not proof of public availability/);
+  assert.equal(git(library, 'rev-parse', 'HEAD'), commit);
+  assert.equal(git(library, 'status', '--porcelain'), '');
+  assert.equal(git(library, 'remote', 'get-url', 'origin'), origin);
+  assert.equal(await readFile(resolve(library, 'node_modules/retained.txt'), 'utf8'), 'ignored consumer output');
+});
+
+test('explicit local source creates a missing checkout whose origin remains the public repository', async t => {
+  const { web, library, scratch } = await fixture(t);
+  const { source, commit } = await localCommit(scratch);
+  await writeFile(resolve(web, 'library-source.json'), JSON.stringify({ ...pin, commit }));
+  await rm(library, { recursive: true });
+  const result = bootstrap(web, web, source);
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(git(library, 'rev-parse', 'HEAD'), commit);
+  assert.equal(git(library, 'remote', 'get-url', 'origin'), pin.repository);
+});
+
+test('explicit local source still rejects a dirty checkout before fetching', async t => {
+  const { web, library, scratch } = await fixture(t);
+  const { source, commit } = await localCommit(scratch);
+  await writeFile(resolve(web, 'library-source.json'), JSON.stringify({ ...pin, commit }));
+  await writeFile(resolve(library, 'consumer-data.txt'), 'keep this user file');
+  rejected(web, /dirty/i, source);
+  assert.equal(git(library, 'rev-parse', 'HEAD'), pin.commit);
+  assert.equal(await readFile(resolve(library, 'consumer-data.txt'), 'utf8'), 'keep this user file');
+  assert.throws(() => git(library, 'cat-file', '-e', commit));
+});
+
+test('explicit local source fails without a fallback when it lacks the pinned commit', async t => {
+  const { web, library, scratch } = await fixture(t);
+  const { commit } = await localCommit(scratch);
+  await writeFile(resolve(web, 'library-source.json'), JSON.stringify({ ...pin, commit }));
+  rejected(web, /Library Git checkout/, resolve(root, '.library'));
+  assert.equal(git(library, 'rev-parse', 'HEAD'), pin.commit);
+  assert.equal(git(library, 'status', '--porcelain'), '');
+});
+
+for (const [label, path, reason] of [['relative', 'native-source', /absolute/], ['nested', 'native-source/packages', /top level/], ['remote URL', 'https://github.com/wsagency/radix2solid.git', /absolute/]] as const) {
+  test(`explicit local source rejects a ${label} path without touching checkout`, async t => {
+    const { web, library, scratch } = await fixture(t);
+    const { source, commit } = await localCommit(scratch);
+    await writeFile(resolve(web, 'library-source.json'), JSON.stringify({ ...pin, commit }));
+    rejected(web, reason, path.startsWith('native-source/') ? resolve(source, 'packages') : path);
+    assert.equal(git(library, 'rev-parse', 'HEAD'), pin.commit);
+    assert.equal(git(library, 'status', '--porcelain'), '');
+  });
+}

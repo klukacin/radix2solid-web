@@ -1,5 +1,5 @@
 import { type ComponentProps, omit } from "solid-js";
-import { Text } from "@radix-solid/themes";
+import { Text } from "@wsagency/radix2solid-themes";
 import styles from "./hero-quote.module.css";
 type TextProps = Omit<Extract<ComponentProps<typeof Text>, { as?: 'span'; asChild?: false }>, 'as'>;
 export const HeroQuote = (p: TextProps) => {

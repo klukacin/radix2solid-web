@@ -1,4 +1,4 @@
-import { Tabs } from "@radix-solid/primitives";
+import { Tabs } from "@wsagency/radix2solid-primitives";
 import styles from "./styles.module.css";
 const TabsDemo = () => <Tabs.Root class={styles.Root} defaultValue="tab1">
 		<Tabs.List class={styles.List} aria-label="Manage your account">

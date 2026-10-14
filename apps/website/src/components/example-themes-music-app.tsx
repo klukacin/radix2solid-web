@@ -1,8 +1,8 @@
 import type { JSX } from "@solidjs/web";
 import { type ComponentProps, omit } from "solid-js";
-import { AspectRatio, Avatar, Blockquote, Box, Button, Card, Checkbox, Flex, Grid, Heading, HoverCard, IconButton, Inset, Link, Separator, Slider, Switch, Text, TextField } from "@radix-solid/themes";
+import { AspectRatio, Avatar, Blockquote, Box, Button, Card, Checkbox, Flex, Grid, Heading, HoverCard, IconButton, Inset, Link, Separator, Slider, Switch, Text, TextField } from "@wsagency/radix2solid-themes";
 import { Hover } from "./hover";
-import { MagnifyingGlassIcon } from "@radix-solid/icons";
+import { MagnifyingGlassIcon } from "@wsagency/radix2solid-icons";
 import { allPeople } from "./people";
 type ExampleLayoutProps = Extract<ComponentProps<typeof Flex>, {
   asChild?: false;

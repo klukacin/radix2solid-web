@@ -1,5 +1,5 @@
 
-import { Link } from "@radix-solid/themes";
+import { Link } from "@wsagency/radix2solid-themes";
 import { useSiteContext } from "./site-context";
 import { Header, HeaderProps } from "./header";
 export const ThemesHeader = (props: HeaderProps) => {
