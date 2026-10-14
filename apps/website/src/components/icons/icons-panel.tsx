@@ -105,6 +105,7 @@ export const IconsPanel = () => {
 								<CodeBlock.CopyButton />
 							</CodeBlock.Content>
 						</CodeBlock.Root>
+						<Text as="p" size="2" mt="3">Icons requires <Code>solid-js</Code> and <Code>@solidjs/web</Code> exactly <Code>2.0.0-rc.15</Code>, with matching <Code>@solidjs/signals</Code>, <Code>@solidjs/compiler</Code> and <Code>@solidjs/babel-plugin</Code> versions. For Vite, use <Code>@solidjs/vite-plugin</Code> <Code>3.0.0-next.50</Code>. Follow the <Link href="/themes/docs/overview/getting-started#installation">Solid setup instructions</Link> for the pinned compiler graph; Icons does not require installing Themes.</Text>
 
 						<Text as="p" size="3" mt="4">
 							Import the icons into your Solid 2 project:
