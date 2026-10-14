@@ -4,6 +4,21 @@ The independent, unofficial native **Solid 2** documentation website for [Radix2
 
 The site preserves 137 original MDX documents and 151 original routes, and adds 23 native-only documents and 24 native-only routes for Charts and Themes recipes: 160 documents, 175 routes plus 404, 222 demo source files and 95 downloadable runnable sandboxes. It includes native interactive examples, API tables, Markdown negotiation, heading-aware search, redirects, the Themes playground and historical marketing/example layouts. Website source and issues belong to [wsagency/radix2solid-web](https://github.com/wsagency/radix2solid-web); native package issues belong to [wsagency/radix2solid](https://github.com/wsagency/radix2solid).
 
+## Published packages
+
+All four native packages are published at **0.1.0-rc.2**: [Primitives](https://www.npmjs.com/package/@wsagency/radix2solid-primitives), [Themes](https://www.npmjs.com/package/@wsagency/radix2solid-themes), [Icons](https://www.npmjs.com/package/@wsagency/radix2solid-icons) and [Charts](https://www.npmjs.com/package/@wsagency/radix2solid-charts). Install exact versions to retain the documented Solid RC15 tuple:
+
+```sh
+pnpm add -E @wsagency/radix2solid-primitives@0.1.0-rc.2 @wsagency/radix2solid-themes@0.1.0-rc.2 @wsagency/radix2solid-icons@0.1.0-rc.2 @wsagency/radix2solid-charts@0.1.0-rc.2
+```
+
+The `-E` flag saves exact dependency specifiers instead of caret ranges, keeping later installs aligned with the documented Solid RC15 tuple.
+
+At this cutover, `next` points to rc.2 for all four; `latest` remains rc.1 for Primitives, Themes and Icons, and rc.2 for Charts. Tags can move; the documentation deliberately pins versions. Downloadable local archives remain supported.
+
+Before rc.3, maintainers must configure Trusted Publishers for **all four** npm packages: repository `wsagency/radix2solid`, workflow `publish.yml`, environment `npm`. Charts currently lacks this configuration. This website change does not configure publishers, publish packages or move tags.
+
+
 ## Created for WS Agency
 
 <a href="https://ws.agency"><picture><source media="(prefers-color-scheme: dark)" srcset="https://design.ws.agency/assets/logos/original/sign-white.svg"><img src="https://design.ws.agency/assets/logos/original/sign-color.svg" height="32" alt="WS Agency"></picture></a>
@@ -40,7 +55,7 @@ If the pinned source has not been published yet, a real local sibling clone is a
 
 ```sh
 git clone --no-hardlinks ../radix2solid .library
-git -C .library checkout --detach e1ecdf69bc24ec24035d7b1977c3931430294cc4
+git -C .library checkout --detach b0cf970aba2f67f4ac5d8a6355e5737b1c29b89c
 node scripts/prepare-library.ts
 pnpm install --frozen-lockfile
 pnpm check

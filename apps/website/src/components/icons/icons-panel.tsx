@@ -92,14 +92,15 @@ export const IconsPanel = () => {
 						</Heading>
 
 						<Text as="p" size="3" mt="3">
-							All icons are available as individual native Solid 2 components. Download the built package archive and install it locally:
+							All icons are available as individual native Solid 2 components. Install the published release candidate from <Link href="https://www.npmjs.com/package/@wsagency/radix2solid-icons">npm</Link>:
 						</Text>
 						<Link href="/packages/wsagency-radix2solid-icons-0.1.0-rc.2.tgz" download size="2">Download native icons package</Link>
+						<Text as="p" size="2">For a local archive installation, download the package and run <Code>pnpm add ./wsagency-radix2solid-icons-0.1.0-rc.2.tgz</Code>.</Text>
 
 						<CodeBlock.Root mt="3">
 							<CodeBlock.Content>
 								<CodeBlock.Pre>
-									<CodeBlock.Code language="bash">pnpm add ./wsagency-radix2solid-icons-0.1.0-rc.2.tgz</CodeBlock.Code>
+									<CodeBlock.Code language="bash">pnpm add -E @wsagency/radix2solid-icons@0.1.0-rc.2</CodeBlock.Code>
 								</CodeBlock.Pre>
 								<CodeBlock.CopyButton />
 							</CodeBlock.Content>

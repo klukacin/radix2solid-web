@@ -63,6 +63,10 @@ try {
         assert(packageArgument, `${path}: malformed package argument ${argument}`);
         const native = nativePackages.find(pkg => pkg.name === packageArgument[1]);
         assert(!native?.private, `${path}: private native packages must be installed from their packed tarballs, not the registry`);
+        if (native) {
+          assert.equal(packageArgument[2], native.version, `${path}: native registry installation must pin the actual package version`);
+          continue;
+        }
         // Optional peers are installed by name with the exact range a native package declares.
         const peer = nativePackages.find(pkg => pkg.peerDependencies?.[packageArgument[1]]);
         if (peer && packageArgument[1] !== 'solid-js' && !packageArgument[1].startsWith('@solidjs/')) {

@@ -22,6 +22,52 @@ const test = base.extend<{ unsplash: void }>({
 
 const origin = `http://127.0.0.1:${process.env.WEBSITE_PREVIEW_PORT ?? 4149}`;
 
+test('published package installation commands retain exact versions and local archives', async ({ page, context, browserName, request }) => {
+  test.skip(browserName !== 'chromium', 'Native clipboard read permission is supported by Chromium.');
+  await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin });
+  for (const [name, path, manager] of [
+    ['primitives', '/primitives/docs/overview/getting-started', 'npm install'],
+    ['themes', '/themes/docs/overview/getting-started', 'pnpm add'],
+    ['icons', '/icons', 'pnpm add'],
+    ['charts', '/charts/docs/overview/getting-started', 'pnpm add'],
+  ]) {
+    const manifest = JSON.parse(readFileSync(new URL(`../.library/packages/${name}/package.json`, import.meta.url), 'utf8'));
+    const command = `${manager} -E ${manifest.name}@${manifest.version}`;
+    await page.goto(`${origin}${path}`);
+    if (name === 'themes') await page.getByRole('tab', { name: 'pnpm', exact: true }).click();
+    const code = page.locator('pre').filter({ hasText: command }).filter({ visible: true }).first();
+    await expect(code).toHaveText(command);
+    const block = page.locator('[data-code-block-content]').filter({ has: code });
+    await block.hover();
+    await block.getByRole('button', { name: 'Copy code to clipboard', exact: true }).click();
+    await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe(command);
+    if (name === 'themes') {
+      for (const [tab, verb] of [['npm', 'install'], ['yarn', 'add'], ['bun', 'add']]) {
+        await page.getByRole('tab', { name: tab, exact: true }).click();
+        const panel = page.getByRole('tabpanel').filter({ visible: true });
+        const expected = `${tab} ${verb} -E ${manifest.name}@${manifest.version}`;
+        await expect(panel.locator('pre')).toHaveText(expected);
+        await panel.getByRole('button', { name: 'Copy code to clipboard', exact: true }).click();
+        await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe(expected);
+      }
+    }
+    await expect(page.locator(`a[href="https://www.npmjs.com/package/${manifest.name}"]`).first()).toBeVisible();
+    await expect(page.locator(`a[href="/packages/wsagency-radix2solid-${name}-${manifest.version}.tgz"]`).first()).toBeVisible();
+    if (name === 'icons') {
+      const input = page.getByRole('textbox', { name: 'Install native icons from npm', exact: true });
+      await expect(input).toHaveValue(command);
+      await input.click();
+      expect(await input.evaluate(node => (node as HTMLInputElement).selectionEnd! - (node as HTMLInputElement).selectionStart!)).toBe(command.length);
+    }
+    const markdown = await (await request.get(`${origin}${path}.md`)).text();
+    // Markdown exports the server-selected npm tab, not the hydrated pnpm tab.
+    expect(markdown).toContain(name === 'themes' ? `npm install -E ${manifest.name}@${manifest.version}` : command);
+    expect(markdown).toContain(`https://www.npmjs.com/package/${manifest.name}`);
+    expect(markdown).toContain(`/packages/wsagency-radix2solid-${name}-${manifest.version}.tgz`);
+    expect(markdown).not.toContain('not published on npm');
+  }
+});
+
 for (const viewport of [{ width: 1365, height: 900 }, { width: 390, height: 844 }]) {
   test(`primary GitHub control links to the native library at ${viewport.width}px`, async ({ page }) => {
     await page.setViewportSize(viewport);

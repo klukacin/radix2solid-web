@@ -34,7 +34,7 @@ export default function ChartsPage() {
               <Button asChild size="3" variant="soft">{target => target('a', { href: '/charts/docs/overview/introduction', children: 'Introduction' })}</Button>
               <Button asChild size="3" variant="soft" color="gray">{target => target('a', { href: '/packages/wsagency-radix2solid-charts-0.1.0-rc.2.tgz', download: true, children: 'Download package' })}</Button>
             </Flex>
-            <Text as="p" size="2" color="gray">Release candidate <Code>0.1.0-rc.2</Code>, not published on npm. Derived from <Link href="https://github.com/yumemi-thomas/solid-recharts" target="_blank" rel="noopener noreferrer">solid-recharts</Link> and <Link href="https://github.com/recharts/recharts" target="_blank" rel="noopener noreferrer">Recharts</Link> (MIT); neither project endorses this fork.</Text>
+            <Text as="p" size="2" color="gray">Release candidate <Code>0.1.0-rc.2</Code>, published on <Link href="https://www.npmjs.com/package/@wsagency/radix2solid-charts">npm</Link>. Install with <Code>pnpm add -E @wsagency/radix2solid-charts@0.1.0-rc.2</Code>. Derived from <Link href="https://github.com/yumemi-thomas/solid-recharts" target="_blank" rel="noopener noreferrer">solid-recharts</Link> and <Link href="https://github.com/recharts/recharts" target="_blank" rel="noopener noreferrer">Recharts</Link> (MIT); neither project endorses this fork.</Text>
           </Box>
           <Box class="hero-demo" data-search-exclude data-md-exclude><Theme appearance="light"><Flex justify="center" p="5"><ChartsDemo /></Flex></Theme></Box>
         </Grid>
