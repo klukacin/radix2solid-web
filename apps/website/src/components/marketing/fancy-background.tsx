@@ -1,5 +1,5 @@
 import { type Element } from "solid-js";
-import { Box } from "@radix-solid/themes";
+import { Box } from "@wsagency/radix2solid-themes";
 export const FancyBackground = (p: {
   children: Element;
 }) => {

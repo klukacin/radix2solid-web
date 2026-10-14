@@ -29,7 +29,7 @@ try {
   }
   await writeFile(resolve(fixture, 'scene.tsx'), `
 import { createSignal } from 'solid-js';
-import { Theme } from '@radix-solid/themes';
+import { Theme } from '@wsagency/radix2solid-themes';
 import Animation from './Animation';
 import SystemTheme from './SystemTheme';
 export default function Scene() {
@@ -41,7 +41,7 @@ export default function Scene() {
   </Theme>;
 }
 `);
-  await writeFile(resolve(fixture, 'entry.tsx'), "import { render } from '@solidjs/web'; import '@radix-solid/themes/styles.css'; import Scene from './scene'; render(() => <Scene />, document.getElementById('root')!);\n");
+  await writeFile(resolve(fixture, 'entry.tsx'), "import { render } from '@solidjs/web'; import '@wsagency/radix2solid-themes/styles.css'; import Scene from './scene'; render(() => <Scene />, document.getElementById('root')!);\n");
   await writeFile(resolve(fixture, 'entry-server.tsx'), "import { renderToString } from '@solidjs/web'; import Scene from './scene'; export const html = renderToString(() => <Scene />);\n");
   await writeFile(resolve(fixture, 'index.html'), '<!doctype html><html><body><div id="root"></div><script type="module" src="/entry.tsx"></script></body></html>');
   const config = { root: fixture, configFile: false as const, plugins: [solid({ ssr: true })], resolve: { dedupe: ['solid-js', '@solidjs/web', '@solidjs/signals'] }, logLevel: 'warn' as const };

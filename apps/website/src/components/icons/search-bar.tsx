@@ -1,5 +1,5 @@
-import { MagnifyingGlassIcon } from '@radix-solid/icons';
-import { Flex, Separator } from '@radix-solid/themes';
+import { MagnifyingGlassIcon } from '@wsagency/radix2solid-icons';
+import { Flex, Separator } from '@wsagency/radix2solid-themes';
 import styles from './search-bar.module.css';
 
 export function SearchBar(props: { value: string; onValueChange: (value: string) => void }) {

@@ -1,4 +1,4 @@
-import { Text, Grid, Flex } from "@radix-solid/themes";
+import { Text, Grid, Flex } from "@wsagency/radix2solid-themes";
 const grayColors = ["gray", "mauve", "slate", "sage", "olive", "sand"];
 export function ColorGrays() {
   return <Grid my="5" align="center" style={{

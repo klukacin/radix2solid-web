@@ -1,4 +1,4 @@
-import { Box, Card, Flex, Heading, Text } from "@radix-solid/themes";
+import { Box, Card, Flex, Heading, Text } from "@wsagency/radix2solid-themes";
 export function ThemesUnofficialTailwindPlugin() {
   return <Card asChild size="3">{target => target("a", {
       "href": "https://github.com/viktorbonino/radix-themes-tw",

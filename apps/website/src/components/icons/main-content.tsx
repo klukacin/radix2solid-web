@@ -1,6 +1,6 @@
 
 import { createSignal } from "solid-js";
-import { Box } from "@radix-solid/themes";
+import { Box } from "@wsagency/radix2solid-themes";
 import { AllIcons } from "./all-icons";
 import { SearchBar } from "./search-bar";
 import { SearchResults } from "./search-results";

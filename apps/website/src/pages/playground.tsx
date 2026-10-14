@@ -1,10 +1,10 @@
 
-import { mergeStyles } from "@radix-solid/themes/helpers";
+import { mergeStyles } from "@wsagency/radix2solid-themes/helpers";
 import type { JSX } from "@solidjs/web";
 import { type ComponentProps, omit, type Element } from "solid-js";
-import { AlertDialog, AspectRatio, Avatar, Badge, Blockquote, Box, Button, Callout, Card, Checkbox, CheckboxCards, CheckboxGroup, Code, ContextMenu, DataList, Dialog, DropdownMenu, Em, Flex, Grid, Heading, HoverCard, IconButton, Inset, Kbd, Link, Popover, Progress, Quote, Radio, RadioCards, RadioGroup, ScrollArea, Section, SegmentedControl, Select, Separator, Skeleton, Slider, Spinner, Strong, Switch, Table, Tabs, Text, TextArea, TextField, Theme, ThemePanel, Tooltip } from "@radix-solid/themes";
-import { accentColors, avatarPropDefs, badgePropDefs, blockquotePropDefs, buttonPropDefs, calloutRootPropDefs, cardPropDefs, checkboxCardsRootPropDefs, checkboxGroupRootPropDefs, checkboxPropDefs, codePropDefs, contextMenuContentPropDefs, dataListRootPropDefs, dropdownMenuContentPropDefs, headingPropDefs, hoverCardContentPropDefs, iconButtonPropDefs, kbdPropDefs, linkPropDefs, progressPropDefs, radioCardsRootPropDefs, radioGroupRootPropDefs, radioPropDefs, segmentedControlRootPropDefs, selectRootPropDefs, selectTriggerPropDefs, sliderPropDefs, switchPropDefs, tabNavRootPropDefs, tableRootPropDefs, tabsListPropDefs, textAreaPropDefs, textFieldRootPropDefs, textPropDefs, themePropDefs } from "@radix-solid/themes/props";
-import { ArrowRightIcon, CaretDownIcon, CubeIcon, InfoCircledIcon, MagnifyingGlassIcon, StarIcon, VercelLogoIcon } from "@radix-solid/icons";
+import { AlertDialog, AspectRatio, Avatar, Badge, Blockquote, Box, Button, Callout, Card, Checkbox, CheckboxCards, CheckboxGroup, Code, ContextMenu, DataList, Dialog, DropdownMenu, Em, Flex, Grid, Heading, HoverCard, IconButton, Inset, Kbd, Link, Popover, Progress, Quote, Radio, RadioCards, RadioGroup, ScrollArea, Section, SegmentedControl, Select, Separator, Skeleton, Slider, Spinner, Strong, Switch, Table, Tabs, Text, TextArea, TextField, Theme, ThemePanel, Tooltip } from "@wsagency/radix2solid-themes";
+import { accentColors as themeAccentColors, avatarPropDefs, badgePropDefs, blockquotePropDefs, buttonPropDefs, calloutRootPropDefs, cardPropDefs, checkboxCardsRootPropDefs, checkboxGroupRootPropDefs, checkboxPropDefs, codePropDefs, contextMenuContentPropDefs, dataListRootPropDefs, dropdownMenuContentPropDefs, headingPropDefs, hoverCardContentPropDefs, iconButtonPropDefs, kbdPropDefs, linkPropDefs, progressPropDefs, radioCardsRootPropDefs, radioGroupRootPropDefs, radioPropDefs, segmentedControlRootPropDefs, selectRootPropDefs, selectTriggerPropDefs, sliderPropDefs, switchPropDefs, tabNavRootPropDefs, tableRootPropDefs, tabsListPropDefs, textAreaPropDefs, textFieldRootPropDefs, textPropDefs, themePropDefs } from "@wsagency/radix2solid-themes/props";
+import { ArrowRightIcon, CaretDownIcon, CubeIcon, InfoCircledIcon, MagnifyingGlassIcon, StarIcon, VercelLogoIcon } from "@wsagency/radix2solid-icons";
 import { getPeopleForColor } from "../components/people";
 import styles from "./playground.module.css";
 import { ThemesHeader } from "../components/themes-header";
@@ -13,6 +13,15 @@ import { useSiteContext } from "../components/site-context";
 import { MarketingMobileMenu } from "../components/marketing-mobile-menu";
 import { AvatarIconFallback } from "../components/avatar-icon-fallback";
 import { TabNavDemo } from "../components/tab-nav-demo";
+import { chartFamilies } from "../components/chart-previews";
+import { HeroCodeBlock } from "../components/hero-code-block";
+// "custom" needs a consumer-supplied palette, so the colour grids show only the built-in scales.
+const accentColors = themeAccentColors.filter((color): color is Exclude<typeof color, "custom"> => color !== "custom");
+const chartSources = import.meta.glob<string>("../demos/charts/**/*.{tsx,css,cjs}", {
+  query: "?raw",
+  import: "default",
+  eager: true
+});
 export default function ComponentsPage() {
   const site = useSiteContext();
   return <>
@@ -2481,7 +2490,7 @@ export default function ComponentsPage() {
 											Comment
 										</>
                   })}</Popover.Trigger>
-									<Popover.Content size="1" style={{
+									<Popover.Content size="1" aria-label="Comment" style={{
                   "width": "280px"
                 }}>
 										<Flex gap="3">
@@ -2522,7 +2531,7 @@ export default function ComponentsPage() {
 											Comment
 										</>
                   })}</Popover.Trigger>
-									<Popover.Content size="2" style={{
+									<Popover.Content size="2" aria-label="Comment" style={{
                   "width": "320px"
                 }}>
 										<Flex gap="4">
@@ -2562,7 +2571,7 @@ export default function ComponentsPage() {
 											Comment
 										</>
                   })}</Popover.Trigger>
-									<Popover.Content size="3" style={{
+									<Popover.Content size="3" aria-label="Comment" style={{
                   "width": "400px"
                 }}>
 										<Flex gap="4">
@@ -2602,7 +2611,7 @@ export default function ComponentsPage() {
 											Comment
 										</>
                   })}</Popover.Trigger>
-									<Popover.Content size="4" style={{
+									<Popover.Content size="4" aria-label="Comment" style={{
                   "width": "440px"
                 }}>
 										<Flex gap="5">
@@ -4318,6 +4327,26 @@ export default function ComponentsPage() {
                 })}</Tooltip>
 							</Flex>
 						</PlaygroundSection>
+
+						<PlaygroundSection>
+							<PlaygroundSectionTitle id="charts" href="/charts/docs/overview/introduction">Charts</PlaygroundSectionTitle>
+							<Text as="p" size="2" color="gray">
+								Real charts from <Code size="2">@wsagency/radix2solid-charts</Code>. Their colors are this page's Themes tokens, so the theme panel's accent and appearance apply live. Hover or focus a chart for its tooltip.
+							</Text>
+							<Grid columns={{
+                initial: "1",
+                sm: "2",
+                lg: "3"
+              }} gap="4">
+								{Object.entries(chartFamilies).map(([slug, family]) => <Card size="2">
+										<Heading as="h3" size="3" mb="3">
+											<Link href={`/charts/docs/components/${slug}`}>{family.title}</Link>
+										</Heading>
+										<Box data-md-exclude>{family.render(200)}</Box>
+									</Card>)}
+							</Grid>
+							<HeroCodeBlock folder="Charts" sources={chartSources} />
+						</PlaygroundSection>
 					</Flex>
 				</Section>
 			</div>
@@ -4553,6 +4582,7 @@ const PlaygroundSection = (p: {
 interface PlaygroundSectionTitleProps {
   children: Element;
   id: string;
+  href?: string;
 }
 const PlaygroundSectionTitle = (p: PlaygroundSectionTitleProps) => <Flex align="baseline" gap="4" mt="2">
 		<Heading id={p.id}>
@@ -4561,7 +4591,9 @@ const PlaygroundSectionTitle = (p: PlaygroundSectionTitleProps) => <Flex align="
 			</Link>
 		</Heading>
 		<Link class={styles.PlaygroundDocsLink} size="2" asChild>{target => target("a", {
-      "href": `/themes/docs/components/${p.id}`,
+      get "href"() {
+        return p.href ?? `/themes/docs/components/${p.id}`;
+      },
       children: <>View in docs</>
     })}</Link>
 	</Flex>;

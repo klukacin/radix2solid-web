@@ -1,7 +1,7 @@
 import { styled } from "../../utils/css";
-import { Label, Tabs as TabsPrimitive } from "@radix-solid/primitives";
+import { Label, Tabs as TabsPrimitive } from "@wsagency/radix2solid-primitives";
 import { PrimitivesHeroButton } from "../marketing/primitives-hero-button";
-import { TextField, Text, Box, Flex } from "@radix-solid/themes";
+import { TextField, Text, Box, Flex } from "@wsagency/radix2solid-themes";
 import styles from "./primitives-hero-tabs.module.css";
 const Tabs = styled(TabsPrimitive.Root, styles.Tabs);
 const TabsList = styled(TabsPrimitive.List, styles.List);

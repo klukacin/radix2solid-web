@@ -1,11 +1,14 @@
 import { defineConfig } from '@playwright/test';
 
+// WEBSITE_PREVIEW_PORT is inherited by the preview webServer (scripts/serve.ts) and the spec workers.
+const origin = `http://127.0.0.1:${process.env.WEBSITE_PREVIEW_PORT ?? 4149}`;
+
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: false,
   workers: 1,
   testMatch: '**/website.spec.ts',
-  use: { baseURL: 'http://127.0.0.1:4149', browserName: 'chromium' },
+  use: { baseURL: origin, browserName: 'chromium' },
   projects: [
     { name: 'chromium' },
     { name: 'firefox', use: { browserName: 'firefox' } },
@@ -13,7 +16,7 @@ export default defineConfig({
   ],
   webServer: [{
     command: 'pnpm --filter @radix-solid/website preview',
-    url: 'http://127.0.0.1:4149/primitives/docs/components/dialog',
+    url: `${origin}/primitives/docs/components/dialog`,
     reuseExistingServer: false
   }],
   outputDir: '.artifacts/playwright',

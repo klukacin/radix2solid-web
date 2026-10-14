@@ -1,4 +1,4 @@
-import { Box } from '@radix-solid/themes';
+import { Box } from '@wsagency/radix2solid-themes';
 import { MarketingMobileMenu } from './marketing-mobile-menu';
 import { PrimitivesHeader } from './primitives-header';
 import { DocumentNavigation } from './navigation';

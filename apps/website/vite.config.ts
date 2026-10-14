@@ -1,6 +1,7 @@
 import { resolve } from 'node:path';
+import { readFileSync } from 'node:fs';
 import { glob, readFile } from 'node:fs/promises';
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import solid from '@solidjs/vite-plugin';
 import { compile } from '@mdx-js/mdx';
 import matter from 'gray-matter';
@@ -185,6 +186,28 @@ function nativeIntrinsics() {
   };
 }
 
+// License closure: records every package whose code reaches the client chunks (name@version, or the bare
+// name for the Radix2Solid workspace packages). The dot path keeps it out of out/; check-export requires
+// NOTICE.txt to reproduce each one's license.
+function runtimeGraph(): Plugin {
+  return {
+    name: 'runtime-graph', apply: (_, env) => !env.isSsrBuild,
+    generateBundle(_, bundle) {
+      const packages: Record<string, string> = {};
+      const roots = new Set<string>();
+      for (const chunk of Object.values(bundle)) if (chunk.type === 'chunk') for (const [id, module] of Object.entries(chunk.modules)) {
+        const root = module.renderedLength !== 0 && id.split('?')[0]!.match(/^(.*\/node_modules\/(?:@[^/]+\/)?[^/]+|.*\/\.library\/packages\/[^/]+)\//)?.[1];
+        if (root) roots.add(root);
+      }
+      for (const root of roots) {
+        const manifest: { name: string; version: string } = JSON.parse(readFileSync(`${root}/package.json`, 'utf8'));
+        packages[root.includes('/.library/packages/') ? manifest.name : `${manifest.name}@${manifest.version}`] = root;
+      }
+      this.emitFile({ type: 'asset', fileName: '.vite/runtime-graph.json', source: JSON.stringify(packages, null, 2) });
+    }
+  };
+}
+
 export default defineConfig(({ isSsrBuild }) => ({
   plugins: [{
     name: 'trusted-native-mdx', enforce: 'pre',
@@ -195,7 +218,7 @@ export default defineConfig(({ isSsrBuild }) => ({
       const result = await compile(content, { jsx: true, jsxImportSource: '@solidjs/web', remarkPlugins: [[documentTitle, { title: data.metaTitle }], remarkGfm, sourceCode, heroSources, nativeDocumentImports], rehypePlugins: [rehypeSlug], recmaPlugins: [nativeIntrinsics] });
       return { code: `${result.value}\nexport const frontmatter = ${JSON.stringify(data)};`, map: null };
     }
-  }, solid({ ssr: true, extensions: ['.mdx'] })],
+  }, solid({ ssr: true, extensions: ['.mdx'] }), runtimeGraph()],
   resolve: { dedupe: ['solid-js', '@solidjs/web', '@solidjs/signals'] },
   build: {
     outDir: isSsrBuild ? 'dist/server' : 'dist/client', manifest: !isSsrBuild,

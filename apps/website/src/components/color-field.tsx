@@ -1,7 +1,7 @@
 import Color from 'colorjs.io';
 import { createEffect, createMemo, createSignal, onSettled, omit, untrack, type ComponentProps } from 'solid-js';
-import { TextField } from '@radix-solid/themes';
-import { composeEventHandlers, composeRefs } from '@radix-solid/primitives/internal';
+import { TextField } from '@wsagency/radix2solid-themes';
+import { composeEventHandlers, composeRefs } from '@wsagency/radix2solid-primitives/internal';
 import styles from './color-field.module.css';
 
 type ColorFieldProps = Omit<ComponentProps<typeof TextField.Root>, 'value' | 'defaultValue'> & {

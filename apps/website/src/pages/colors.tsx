@@ -1,10 +1,10 @@
 import { ColorsMobileMenu } from '../components/colors-mobile-menu';
-import { Box, Text, Grid, Heading, Container, Section, Separator, Flex, ScrollArea, Button } from "@radix-solid/themes";
+import { Box, Text, Grid, Heading, Container, Section, Separator, Flex, ScrollArea, Button } from "@wsagency/radix2solid-themes";
 import { Footer } from "../components/footer";
 import { ColorsHeader } from "../components/colors-header";
 import { ColorsMarketingButton } from "../components/colors-marketing-button";
 import { SerifHeading } from "../components/serif-heading";
-import { DesktopIcon, EyeOpenIcon, Half2Icon, InputIcon, MoonIcon, TransparencyGridIcon } from "@radix-solid/icons";
+import { DesktopIcon, EyeOpenIcon, Half2Icon, InputIcon, MoonIcon, TransparencyGridIcon } from "@wsagency/radix2solid-icons";
 import { Swatch } from "../components/swatch";
 import { ColorUsageRange } from "../components/color-usage-range";
 import { ColorStepLabel } from "../components/color-step-label";

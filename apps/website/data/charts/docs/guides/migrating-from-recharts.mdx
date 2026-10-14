@@ -1,0 +1,50 @@
+---
+metaTitle: Migrating from Recharts
+metaDescription: What changes, and what does not, when moving a React Recharts app to Solid.
+---
+
+> Native Solid 2 fork of [solid-recharts](https://github.com/yumemi-thomas/solid-recharts) (MIT, © Thomas Guehenneux), derived from [Recharts](https://github.com/recharts/recharts) (MIT, © recharts). Adapted documentation; neither project endorses this fork.
+
+# Migrating from Recharts
+
+<Description>What changes, and what does not, when moving a React Recharts app to Solid.</Description>
+
+Component names, composition and props follow Recharts 3.9.2 as implemented by solid-recharts. Most chart JSX can be moved from a React app with mechanical changes.
+
+## What stays the same
+
+- Component names and nesting: `<LineChart><XAxis /><Line /></LineChart>`
+- `dataKey`, `domain`, `ticks`, `stackId`, `layout`, `margin`, `syncId`, …
+- camelCase SVG styling props: `strokeDasharray`, `fillOpacity`, `strokeWidth`
+- Tooltip, Legend and Label customization through `content` and `formatter` functions
+- Event handlers such as `onClick` and `onMouseEnter` on charts and series
+
+## Mechanical changes
+
+| React (Recharts) | Solid (Radix2Solid Charts) |
+| --- | --- |
+| `import { … } from "recharts"` | `import { … } from "@wsagency/radix2solid-charts"` |
+| `className="…"` | `class="…"` |
+| `data.map((d) => <Cell key={d.id} … />)` | `<For each={data}>{(d) => <Cell … />}</For>` |
+| `style={{ marginTop: 8 }}` | `style={{ "margin-top": "8px" }}` |
+| `{cond ? <Tooltip /> : null}` | `<Show when={cond}><Tooltip /></Show>` |
+| `useState` for chart state | `createSignal` |
+
+## Custom content
+
+Render-prop APIs (`shape`, `content`, `label`, `tick`, `dot`, `activeDot`) accept functions that receive the same props object as in Recharts. Solid components run once, so read reactive values inside the JSX you return. `Sankey` `node` and `link` accept functions only.
+
+```tsx
+import { Bar, BarChart, Rectangle } from "@wsagency/radix2solid-charts";
+
+export default () => <BarChart width={400} height={240} data={[{ name: "A", uv: 12 }, { name: "B", uv: 20 }]}>
+	<Bar dataKey="uv" fill="var(--accent-9)" shape={(props) => <Rectangle {...props} radius={[6, 6, 0, 0]} />} />
+</BarChart>;
+```
+
+## Not available
+
+- `Customized` (render a plain child component instead)
+- React element cloning patterns
+- Treemap update animation: `Treemap` has no `isUpdateAnimationActive` prop; only the entry animation runs
+- Changes released after Recharts 3.9.2, including 3.10.1

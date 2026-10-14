@@ -1,10 +1,10 @@
 
-import { mergeStyles } from "@radix-solid/themes/helpers";
+import { mergeStyles } from "@wsagency/radix2solid-themes/helpers";
 import type { JSX } from "@solidjs/web";
 import { createSignal, onCleanup, createEffect } from "solid-js";
-import { Box, Section, Text, Flex, Grid, Heading, Card } from "@radix-solid/themes";
+import { Box, Section, Text, Flex, Grid, Heading, Card } from "@wsagency/radix2solid-themes";
 import { MarketingCaption } from "./marketing-caption";
-import { Container, Theme } from "@radix-solid/themes";
+import { Container, Theme } from "@wsagency/radix2solid-themes";
 import { HiddenScroll } from "./hidden-scroll";
 import { CodeBlock } from "../code-block";
 enum Highlights {
@@ -328,9 +328,9 @@ const WindowTitle = () => <Flex align="center" justify="center" height="32px">
 		</Text>
 	</Flex>;
 const code = {
-  unstyled: "// Add styles with your preferred CSS technology\nimport type { ComponentProps } from 'solid-js';\nimport { Tooltip, Popover, Dialog } from '@radix-solid/primitives';\n\nconst TooltipContent = (props: ComponentProps<typeof Tooltip.Content>) =>\n  <Tooltip.Content {...props} class=\"TooltipContent\" />;\nconst PopoverContent = (props: ComponentProps<typeof Popover.Content>) =>\n  <Popover.Content {...props} class=\"PopoverContent\" />;\nconst DialogContent = (props: ComponentProps<typeof Dialog.Content>) =>\n  <Dialog.Content {...props} class=\"DialogContent\" />;",
+  unstyled: "// Add styles with your preferred CSS technology\nimport type { ComponentProps } from 'solid-js';\nimport { Tooltip, Popover, Dialog } from '@wsagency/radix2solid-primitives';\n\nconst TooltipContent = (props: ComponentProps<typeof Tooltip.Content>) =>\n  <Tooltip.Content {...props} class=\"TooltipContent\" />;\nconst PopoverContent = (props: ComponentProps<typeof Popover.Content>) =>\n  <Popover.Content {...props} class=\"PopoverContent\" />;\nconst DialogContent = (props: ComponentProps<typeof Dialog.Content>) =>\n  <Dialog.Content {...props} class=\"DialogContent\" />;",
   composable: "// Compose a custom Tooltip component\nexport const StatusTooltip = (props: { state: string; label: string }) => (\n  <Tooltip.Root>\n    <Tooltip.Trigger asChild>\n      {target => target('button', { children: props.state })}\n    </Tooltip.Trigger>\n    <Tooltip.Portal>\n      <TooltipContent>\n        <Tooltip.Arrow />\n        {props.label}\n      </TooltipContent>\n    </Tooltip.Portal>\n  </Tooltip.Root>\n);",
-  customizable: "// Compose a Popover with custom focus and positioning\nimport { createSignal, type Element } from 'solid-js';\nexport const StatusPopover = (props: { children: Element }) => {\n  const [closeButton, setCloseButton] = createSignal<HTMLButtonElement>();\n  return <Popover.Root>\n    <Popover.Trigger>View status</Popover.Trigger>\n    <Popover.Portal>\n      <PopoverContent align=\"start\" collisionPadding={10}\n        onOpenAutoFocus={event => {\n          closeButton()?.focus();\n          event.preventDefault();\n        }}>\n        {props.children}\n        <Popover.Close ref={setCloseButton}>Close</Popover.Close>\n      </PopoverContent>\n    </Popover.Portal>\n  </Popover.Root>;\n};",
+  customizable: "// Compose a Popover with custom focus and positioning\nimport { createSignal, type Element } from 'solid-js';\nexport const StatusPopover = (props: { children: Element }) => {\n  const [closeButton, setCloseButton] = createSignal<HTMLButtonElement>();\n  return <Popover.Root>\n    <Popover.Trigger>View status</Popover.Trigger>\n    <Popover.Portal>\n      <PopoverContent align=\"start\" collisionPadding={10}\n        aria-label=\"Status\" aria-describedby={undefined}\n        onOpenAutoFocus={event => {\n          closeButton()?.focus();\n          event.preventDefault();\n        }}>\n        {props.children}\n        <Popover.Close ref={setCloseButton}>Close</Popover.Close>\n      </PopoverContent>\n    </Popover.Portal>\n  </Popover.Root>;\n};",
   consistent: "// Compose a Dialog with custom focus management\nexport const InfoDialog = (props: { children: Element }) => {\n  const [closeButton, setCloseButton] = createSignal<HTMLButtonElement>();\n  return <Dialog.Root>\n    <Dialog.Trigger>View details</Dialog.Trigger>\n    <Dialog.Portal>\n      <Dialog.Overlay />\n      <DialogContent onOpenAutoFocus={event => {\n        closeButton()?.focus();\n        event.preventDefault();\n      }}>\n        <Dialog.Title>Details</Dialog.Title>\n        <Dialog.Description>Information about this item.</Dialog.Description>\n        {props.children}\n        <Dialog.Close ref={setCloseButton}>Close</Dialog.Close>\n      </DialogContent>\n    </Dialog.Portal>\n  </Dialog.Root>;\n};"
 };
 const allCode = [code.unstyled, code.composable, code.customizable, code.consistent].join("\n\n");

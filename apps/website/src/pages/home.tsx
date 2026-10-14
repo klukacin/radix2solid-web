@@ -1,8 +1,8 @@
 
-import { mergeStyles } from "@radix-solid/themes/helpers";
+import { mergeStyles } from "@wsagency/radix2solid-themes/helpers";
 import type { JSX } from "@solidjs/web";
 import { omit } from "solid-js";
-import { Box, Flex, Theme, Text, Button, Section, Badge } from "@radix-solid/themes";
+import { Box, Flex, Theme, Text, Button, Section, Badge } from "@wsagency/radix2solid-themes";
 import { ThemesHeader } from "../components/themes-header";
 import { ExampleThemesDashboard } from "../components/example-themes-dashboard";
 import * as MagicCurtain from "../components/magic-curtain";
@@ -12,7 +12,7 @@ import { useSiteContext } from "../components/site-context";
 import { SerifHeading } from "../components/serif-heading";
 import { ThemesHeroLayout } from "../components/themes-hero-layout";
 import { MarketingMobileMenu } from "../components/marketing-mobile-menu";
-import { ArrowRightIcon, GridIcon } from "@radix-solid/icons";
+import { ArrowRightIcon, GridIcon } from "@wsagency/radix2solid-icons";
 import { CodeBlock } from "../components/code-block";
 export default function ThemesHome() {
   const site = useSiteContext();
@@ -333,8 +333,8 @@ const redBackgroundImageStyle = {
 //   transform: 'scaleY(-0.5) scaleX(-1) rotate(-15deg)',
 
 const codeExample = `
-import "@radix-solid/themes/styles.css";
-import { Theme, Button } from "@radix-solid/themes";
+import "@wsagency/radix2solid-themes/styles.css";
+import { Theme, Button } from "@wsagency/radix2solid-themes";
 
 export default () => (
 	<Theme>

@@ -1,10 +1,10 @@
 
 import { createSignal } from "solid-js";
-import { Popover as PopoverPrimitive } from "@radix-solid/primitives";
+import { Popover as PopoverPrimitive } from "@wsagency/radix2solid-primitives";
 import { styled } from "../../utils/css";
 import { PrimitivesHeroButton } from "../marketing/primitives-hero-button";
-import { Cross2Icon } from "@radix-solid/icons";
-import { Flex, IconButton, Text, TextField, Grid, Box } from "@radix-solid/themes";
+import { Cross2Icon } from "@wsagency/radix2solid-icons";
+import { Flex, IconButton, Text, TextField, Grid, Box } from "@wsagency/radix2solid-themes";
 import styles from "./primitives-hero-popover.module.css";
 const PopoverContentWrapper = styled("div", styles.ContentWrapper);
 export function PrimitivesHeroPopover() {
@@ -36,7 +36,7 @@ export function PrimitivesHeroPopover() {
         }
       }} onOpenAutoFocus={event => {
         if (!userOpened) event.preventDefault();
-      }} aria-label="Dimensions">
+      }} aria-label="Dimensions" aria-describedby={undefined}>
 					<PopoverPrimitive.Arrow fill="var(--color-panel-solid)" />
 
 					<Text as="div" size="3" weight="bold" mb="2">

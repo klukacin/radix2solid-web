@@ -1,12 +1,12 @@
-import { mergeStyles } from "@radix-solid/themes/helpers";
+import { mergeStyles } from "@wsagency/radix2solid-themes/helpers";
 import type { JSX } from "@solidjs/web";
 import { omit, createSignal } from "solid-js";
 import { SwatchCopyButton as CopyButton } from './swatch-copy-button';
-import { VisuallyHidden, Popover, Box, Heading, Theme, Button, Separator, Grid, Text, Tooltip, Flex, AccessibleIcon, IconButton, Dialog, Reset } from "@radix-solid/themes";
+import { VisuallyHidden, Popover, Box, Heading, Theme, Button, Separator, Grid, Text, Tooltip, Flex, AccessibleIcon, IconButton, Dialog, Reset } from "@wsagency/radix2solid-themes";
 import styles from "./swatch.module.css";
 import * as Colors from "@radix-ui/colors";
 import { useSiteContext } from "./site-context";
-import { Cross2Icon, InfoCircledIcon } from "@radix-solid/icons";
+import { Cross2Icon, InfoCircledIcon } from "@wsagency/radix2solid-icons";
 export type ColorScale = "white" | "black" | "gray" | "mauve" | "slate" | "sage" | "olive" | "sand" | "tomato" | "red" | "ruby" | "crimson" | "pink" | "plum" | "purple" | "violet" | "iris" | "indigo" | "blue" | "cyan" | "teal" | "jade" | "green" | "grass" | "bronze" | "gold" | "brown" | "orange" | "amber" | "yellow" | "lime" | "mint" | "sky";
 type ColorStep = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 const brightColors = ["amber", "yellow", "lime", "mint", "sky"] as const;
@@ -53,6 +53,7 @@ export const Swatch = (p: SwatchProps) => {
           return setContentRef;
         },
         "size": "1",
+        "aria-describedby": undefined,
         get "class"() {
           return styles.SwatchContent;
         },

@@ -1,4 +1,4 @@
-import { Primitive, type PrimitiveProps } from '@radix-solid/primitives/internal';
+import { Primitive, type PrimitiveProps } from '@wsagency/radix2solid-primitives/internal';
 import styles from './box-link.module.css';
 
 export type BoxLinkProps = PrimitiveProps<'a'>;

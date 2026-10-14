@@ -1,5 +1,5 @@
 import { createMemo, createSignal, createUniqueId, onSettled } from 'solid-js';
-import { Button } from '@radix-solid/themes';
+import { Button } from '@wsagency/radix2solid-themes';
 import { SourceCode } from './source-code.js';
 
 const solutions = { 'css-modules': 'CSS Modules', css: 'CSS', tailwind: 'Tailwind CSS' } as const;

@@ -1,4 +1,4 @@
-import { Container, Section } from "@radix-solid/themes";
+import { Container, Section } from "@wsagency/radix2solid-themes";
 import { Footer } from "../components/footer";
 import { AccessibilitySection } from "../components/marketing/accessibility-section";
 import { AdoptionSection } from "../components/marketing/adoption-section";
@@ -10,7 +10,7 @@ import { DeveloperExperienceSection } from "../components/marketing/developer-ex
 import { FancyBackground } from "../components/marketing/fancy-background";
 import { PrimitivesHero } from "../components/marketing/primitives-hero";
 import { StatsSection } from "../components/marketing/stats-section";
-import { Box, Separator } from "@radix-solid/themes";
+import { Box, Separator } from "@wsagency/radix2solid-themes";
 import { PrimitivesHeader } from "../components/primitives-header";
 import { PrimitivesMobileMenu } from "../components/primitives-mobile-menu";
 export default function PrimitivesHome() {

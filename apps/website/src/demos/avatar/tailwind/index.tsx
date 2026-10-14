@@ -1,4 +1,4 @@
-import { Avatar } from "@radix-solid/primitives";
+import { Avatar } from "@wsagency/radix2solid-primitives";
 const AvatarDemo = () => <div class="flex gap-5">
 		<Avatar.Root class="inline-flex size-[45px] select-none items-center justify-center overflow-hidden rounded-full bg-blackA1 align-middle">
 			<Avatar.Image class="size-full rounded-[inherit] object-cover" src="https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80" alt="Colm Tuite" />

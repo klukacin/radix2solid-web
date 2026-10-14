@@ -1,8 +1,8 @@
 
 import type { JSX } from "@solidjs/web";
 import { createUniqueId, omit } from "solid-js";
-import { NavigationMenu, VisuallyHidden } from "@radix-solid/primitives";
-import { CaretDownIcon } from "@radix-solid/icons";
+import { NavigationMenu, VisuallyHidden } from "@wsagency/radix2solid-primitives";
+import { CaretDownIcon } from "@wsagency/radix2solid-icons";
 const NavigationMenuDemo = () => {
   const id = createUniqueId();
   return <NavigationMenu.Root class="relative z-10 flex w-screen justify-center">

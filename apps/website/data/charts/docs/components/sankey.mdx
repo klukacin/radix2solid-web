@@ -1,0 +1,68 @@
+---
+metaTitle: Sankey
+metaDescription: A flow diagram showing how quantities flow between nodes.
+---
+
+import { Sankey, Tooltip, ResponsiveContainer } from "@wsagency/radix2solid-charts";
+
+> Native Solid 2 fork of [solid-recharts](https://github.com/yumemi-thomas/solid-recharts) (MIT, © Thomas Guehenneux), derived from [Recharts](https://github.com/recharts/recharts) (MIT, © recharts). Adapted documentation; neither project endorses this fork.
+
+# Sankey
+
+`Sankey` is a self-contained flow diagram that visualizes how quantities split, merge,
+and flow between stages. Nodes (rectangles) are connected by value-weighted ribbons,
+conveying the magnitude and direction of each flow. It is not placed inside another chart
+container.
+
+```tsx live=true
+() => {
+	const data = {
+		nodes: [{ name: "Visits" }, { name: "Docs" }, { name: "Playground" }, { name: "Install" }],
+		links: [
+			{ source: 0, target: 1, value: 60 },
+			{ source: 0, target: 2, value: 40 },
+			{ source: 1, target: 3, value: 35 },
+			{ source: 2, target: 3, value: 20 },
+		],
+	};
+	return <ResponsiveContainer width="100%" height={300} initialDimension={{ width: 560, height: 300 }}>
+		<Sankey data={data} nodePadding={24}>
+			<Tooltip />
+		</Sankey>
+	</ResponsiveContainer>;
+}
+```
+
+## Props
+
+| Prop              | Type                  | Default          | Description                                           |
+| ----------------- | --------------------- | ---------------- | ----------------------------------------------------- |
+| `data`            | `{ nodes, links }`    | —                | Nodes array + links array (source/target indices)     |
+| `width`, `height` | `number \| "%"`       | —                | Fixed size or percentage inside `ResponsiveContainer` |
+| `margin`          | `{ top, right, ...}`  | `{ 5, 5, 5, 5 }` | Space around the plot area                            |
+| `nodeWidth`       | `number`              | `10`             | Width of each node rectangle (in pixels)              |
+| `nodePadding`     | `number`              | `10`             | Vertical space between nodes at the same depth        |
+| `linkCurvature`   | `number`              | `0.5`            | Bezier curve tension (0 = straight, 1 = max curve)    |
+| `align`           | `"left" \| "justify"` | `"justify"`      | Horizontal alignment of nodes                         |
+| `verticalAlign`   | `"top" \| "justify"`  | `"justify"`      | Vertical alignment within columns                     |
+
+The remaining props follow the Recharts 3.9.2 `Sankey` API (reference commit `b3451050`) that solid-recharts tracks; see the [Recharts Sankey reference](https://recharts.org/en-US/api/Sankey). Changes from Recharts 3.10.1 are tracked but not ported.
+
+## Notes
+
+- **Data shape:** `nodes` is an array of `{ name, ... }` objects. `links` is an array of
+  `{ source, target, value }` where `source` and `target` are node array indices.
+- **Node names:** The `nameKey` prop (default: `"name"`) reads the node label from the
+  node object.
+- **Link width:** Each ribbon's thickness is proportional to its `value`.
+- **Tooltip:** Sankey supports item-type tooltips on nodes and links. Hovering a node or
+  link displays its details, including the flow value.
+- **Custom renderers:** Use the `node` and `link` props (function form) to render custom
+  node/link graphics instead of the defaults.
+- **Handlers:** `onMouseEnter`, `onMouseLeave`, and `onClick` receive the item
+  (`NodeProps` or `LinkProps`) and element type (`"node"` or `"link"`).
+
+## See also
+
+- [ResponsiveContainer](/charts/docs/guides/responsive-and-ssr) — fluid sizing
+- Tooltip — hover info

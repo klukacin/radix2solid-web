@@ -1,5 +1,5 @@
-import { Container, Theme } from '@radix-solid/themes';
-import { CubeIcon, DownloadIcon, FigmaLogoIcon, GitHubLogoIcon } from '@radix-solid/icons';
+import { Container, Theme } from '@wsagency/radix2solid-themes';
+import { CubeIcon, DownloadIcon, FigmaLogoIcon, GitHubLogoIcon } from '@wsagency/radix2solid-icons';
 import { IconsHeader } from '../components/icons-header';
 import { MarketingMobileMenu } from '../components/marketing-mobile-menu';
 import { IconsHero } from '../components/icons/icons-hero';

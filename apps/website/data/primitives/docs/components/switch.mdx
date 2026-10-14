@@ -30,7 +30,7 @@ aria: https://www.w3.org/WAI/ARIA/apg/patterns/switch
 Import all parts and piece them together.
 
 ```jsx
-import { Switch } from "@radix-solid/primitives";
+import { Switch } from "@wsagency/radix2solid-primitives";
 export default () => <Switch.Root>
 		<Switch.Thumb />
 	</Switch.Root>;
@@ -185,7 +185,7 @@ By default, `Switch.Root` renders a visually hidden `input` for form submission.
 - `Switch.unstable_BubbleInput` is the visually hidden input that `Switch.Root` renders by default. Omit it when you don't need form submission.
 
 ```jsx
-import { Switch } from "@radix-solid/primitives";
+import { Switch } from "@wsagency/radix2solid-primitives";
 export default () => <Switch.unstable_Provider name="airplane-mode">
 		<Switch.unstable_Trigger>
 			<Switch.Thumb />

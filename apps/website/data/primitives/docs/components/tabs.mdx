@@ -36,7 +36,7 @@ aria: https://www.w3.org/WAI/ARIA/apg/patterns/tabs
 Import all parts and piece them together.
 
 ```jsx
-import { Tabs } from "@radix-solid/primitives";
+import { Tabs } from "@wsagency/radix2solid-primitives";
 export default () => <Tabs.Root>
 		<Tabs.List>
 			<Tabs.Trigger value="overview">Overview</Tabs.Trigger>
@@ -307,7 +307,7 @@ Contains the content associated with each trigger.
 You can create vertical tabs by using the `orientation` prop.
 
 ```jsx line=2
-import { Tabs } from "@radix-solid/primitives";
+import { Tabs } from "@wsagency/radix2solid-primitives";
 export default () => <Tabs.Root defaultValue="tab1" __orientation__="vertical">
 		<Tabs.List aria-label="tabs example">
 			<Tabs.Trigger value="tab1">One</Tabs.Trigger>

@@ -1,4 +1,4 @@
-import { Switch } from "@radix-solid/primitives";
+import { Switch } from "@wsagency/radix2solid-primitives";
 import styles from "./styles.module.css";
 const SwitchDemo = () => <form>
 		<div style={{

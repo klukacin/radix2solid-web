@@ -1,5 +1,5 @@
 import { createSignal, onSettled } from "solid-js";
-import { Progress } from "@radix-solid/primitives";
+import { Progress } from "@wsagency/radix2solid-primitives";
 import styles from "./styles.module.css";
 const ProgressDemo = () => {
   const [progress, setProgress] = createSignal(13);

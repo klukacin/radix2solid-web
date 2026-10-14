@@ -1,0 +1,41 @@
+.Root {
+	margin: 0;
+	width: min(400px, calc(100vw - 48px));
+	padding: 16px;
+	border-radius: 8px;
+	background-color: white;
+	box-shadow: 0 2px 10px var(--black-a7);
+	color: var(--mauve-12);
+	font-size: 12px;
+}
+
+.Toolbar {
+	display: flex;
+	gap: 4px;
+	margin-bottom: 12px;
+}
+
+.Button {
+	all: unset;
+	padding: 0 12px;
+	height: 28px;
+	border-radius: 4px;
+	font-size: 13px;
+	color: var(--violet-11);
+	background-color: var(--violet-3);
+	&:hover {
+		background-color: var(--violet-4);
+	}
+	&[aria-pressed="true"] {
+		background-color: var(--violet-9);
+		color: white;
+	}
+	&:focus-visible {
+		box-shadow: 0 0 0 2px var(--violet-8);
+	}
+}
+
+.Caption {
+	margin-top: 8px;
+	color: var(--mauve-11);
+}

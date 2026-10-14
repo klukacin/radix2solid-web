@@ -1,5 +1,5 @@
 import { createSignal, onSettled } from 'solid-js';
-import { Badge, Button, Dialog } from '@radix-solid/themes';
+import { Badge, Button, Dialog } from '@wsagency/radix2solid-themes';
 import { routes } from '../routes.js';
 
 const order: Record<string, Record<string, string[]>> = {
@@ -16,10 +16,16 @@ const order: Record<string, Record<string, string[]>> = {
     Typography: ['components/text', 'components/heading', 'components/blockquote', 'components/code', 'components/em', 'components/kbd', 'components/link', 'components/quote', 'components/strong'],
     Components: ['components/alert-dialog', 'components/aspect-ratio', 'components/avatar', 'components/badge', 'components/button', 'components/callout', 'components/card', 'components/checkbox', 'components/checkbox-group', 'components/checkbox-cards', 'components/context-menu', 'components/data-list', 'components/dialog', 'components/dropdown-menu', 'components/hover-card', 'components/icon-button', 'components/inset', 'components/popover', 'components/progress', 'components/radio', 'components/radio-group', 'components/radio-cards', 'components/scroll-area', 'components/segmented-control', 'components/select', 'components/separator', 'components/skeleton', 'components/slider', 'components/spinner', 'components/switch', 'components/table', 'components/tabs', 'components/tab-nav', 'components/text-area', 'components/text-field', 'components/tooltip'],
     Utilities: ['components/accessible-icon', 'components/portal', 'components/reset', 'components/slot', 'components/theme', 'components/visually-hidden'],
+    Recipes: ['recipes/accordion', 'recipes/collapsible', 'recipes/toast', 'recipes/toggle-group', 'recipes/toolbar', 'recipes/profile-menu'],
   },
   colors: {
     Overview: ['overview/installation', 'overview/usage', 'overview/aliasing', 'overview/custom-palettes', 'overview/releases'],
     'Palette composition': ['palette-composition/scales', 'palette-composition/composing-a-palette', 'palette-composition/understanding-the-scale'],
+  },
+  charts: {
+    Overview: ['overview/introduction', 'overview/getting-started', 'overview/releases'],
+    Guides: ['guides/responsive-and-ssr', 'guides/migrating-from-recharts'],
+    Charts: ['components/line-chart', 'components/area-chart', 'components/bar-chart', 'components/composed-chart', 'components/scatter-chart', 'components/pie-chart', 'components/radar-chart', 'components/radial-bar-chart', 'components/funnel-chart', 'components/treemap', 'components/sankey', 'components/sunburst-chart'],
   },
 };
 const curated = Object.fromEntries(Object.entries(order).map(([family, groups]) => [family, Object.entries(groups).map(([label, slugs]) => ({ label, pages: slugs.map(slug => { const path = `/${family}/docs/${slug}`; return { path, page: routes[path] }; }) }))]));
@@ -45,7 +51,7 @@ export function DocumentReferences(props: { path: string }) {
     {metadata.kind !== 'page' && <>
       <a href={`https://github.com/wsagency/radix2solid-web/blob/main/apps/website/data${props.path}.mdx`} target="_blank" rel="noopener noreferrer">View documentation source</a>
       <a href={`https://github.com/wsagency/radix2solid-web/edit/main/apps/website/data${props.path}.mdx`} target="_blank" rel="noopener noreferrer">Edit documentation</a>
-      <a href={`https://github.com/wsagency/${props.path.startsWith('/primitives/docs/') || props.path.startsWith('/themes/docs/') ? 'radix2solid' : 'radix2solid-web'}/issues/new`} target="_blank" rel="noopener noreferrer">Report native issue</a>
+      <a href={`https://github.com/wsagency/${/^\/(?:primitives|themes|charts)\/docs\//.test(props.path) ? 'radix2solid' : 'radix2solid-web'}/issues/new`} target="_blank" rel="noopener noreferrer">Report native issue</a>
     </>}
   </nav>;
 }
@@ -73,7 +79,7 @@ export function MobileNavigation(props: { path: string }) {
     <Dialog.Trigger>{target => target(Button, { class: 'mobile-navigation-trigger', color: 'gray', variant: 'soft', 'aria-label': 'Open navigation', children: 'Menu' })}</Dialog.Trigger>
     <Dialog.Content class="site-modal mobile-navigation" maxWidth="640px">
       <Dialog.Title>Navigation</Dialog.Title><Dialog.Description class="sr-only">Choose a product or documentation page.</Dialog.Description>
-      <nav class="product-navigation" aria-label="Products"><a href="/">Themes</a><a href="/primitives">Primitives</a><a href="/icons">Icons</a><a href="/colors">Colors</a><a href="/blog">Blog</a></nav>
+      <nav class="product-navigation" aria-label="Products"><a href="/">Themes</a><a href="/primitives">Primitives</a><a href="/icons">Icons</a><a href="/charts">Charts</a><a href="/colors">Colors</a><a href="/blog">Blog</a></nav>
       <DocumentNavigation path={props.path} onNavigate={() => setOpen(false)} /><Dialog.Close>{target => target(Button, { color: 'gray', variant: 'soft', 'aria-label': 'Close navigation', children: 'Close' })}</Dialog.Close>
     </Dialog.Content>
   </Dialog.Root>;

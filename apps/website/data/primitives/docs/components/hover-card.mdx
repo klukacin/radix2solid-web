@@ -35,7 +35,7 @@ name: hover-card
 Import all parts and piece them together.
 
 ```jsx
-import { HoverCard } from "@radix-solid/primitives";
+import { HoverCard } from "@wsagency/radix2solid-primitives";
 export default () => <HoverCard.Root>
 		<HoverCard.Trigger />
 		<HoverCard.Portal>
@@ -413,7 +413,7 @@ An optional arrow element to render alongside the hover card. This can be used t
 Use the `openDelay` prop to control the time it takes for the hover card to open.
 
 ```jsx line=2
-import { HoverCard } from "@radix-solid/primitives";
+import { HoverCard } from "@wsagency/radix2solid-primitives";
 export default () => <HoverCard.Root __openDelay__={0}>
 		<HoverCard.Trigger>…</HoverCard.Trigger>
 		<HoverCard.Content>…</HoverCard.Content>
@@ -428,7 +428,7 @@ We expose several CSS custom properties such as `--radix-hover-card-trigger-widt
 
 ```jsx line=7
 // index.tsx
-import { HoverCard } from "@radix-solid/primitives";
+import { HoverCard } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 export default () => <HoverCard.Root>
 		<HoverCard.Trigger>…</HoverCard.Trigger>
@@ -454,7 +454,7 @@ We expose a CSS custom property `--radix-hover-card-content-transform-origin`. U
 
 ```jsx line=6
 // index.tsx
-import { HoverCard } from "@radix-solid/primitives";
+import { HoverCard } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 export default () => <HoverCard.Root>
 		<HoverCard.Trigger>…</HoverCard.Trigger>
@@ -487,7 +487,7 @@ We expose `data-side` and `data-align` attributes. Their values will change at r
 
 ```jsx line=6
 // index.tsx
-import { HoverCard } from "@radix-solid/primitives";
+import { HoverCard } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 export default () => <HoverCard.Root>
 		<HoverCard.Trigger>…</HoverCard.Trigger>

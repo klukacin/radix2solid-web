@@ -1,6 +1,6 @@
-import { mergeStyles } from "@radix-solid/themes/helpers";
+import { mergeStyles } from "@wsagency/radix2solid-themes/helpers";
 import { type ComponentProps, omit } from "solid-js";
-import { Flex, Grid, Text } from "@radix-solid/themes";
+import { Flex, Grid, Text } from "@wsagency/radix2solid-themes";
 type RightClickZoneProps = Extract<ComponentProps<typeof Grid>, { asChild?: false }> & {
   title?: string;
 };

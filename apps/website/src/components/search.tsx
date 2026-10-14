@@ -1,6 +1,6 @@
 import { createContext, createSignal, createUniqueId, onCleanup, onSettled, useContext, type Element } from 'solid-js';
 import MiniSearch from 'minisearch';
-import { Button, Dialog } from '@radix-solid/themes';
+import { Button, Dialog } from '@wsagency/radix2solid-themes';
 import type { SearchRecord } from '../../scripts/build-search-index.js';
 
 let indexPromise: Promise<{ index: MiniSearch<SearchRecord>; records: Map<string, SearchRecord> }> | undefined;

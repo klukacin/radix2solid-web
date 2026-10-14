@@ -1,6 +1,6 @@
-import { CheckIcon } from "@radix-solid/icons";
+import { CheckIcon } from "@wsagency/radix2solid-icons";
 import { MarketingCaption } from "./marketing-caption";
-import { Box, Flex, Grid, Container, Section, Heading, Text } from "@radix-solid/themes";
+import { Box, Flex, Grid, Container, Section, Heading, Text } from "@wsagency/radix2solid-themes";
 import { HiddenScroll } from "./hidden-scroll";
 export const ComponentHighlightsSection = () => {
   return <Section position="relative" overflow="hidden" size={{

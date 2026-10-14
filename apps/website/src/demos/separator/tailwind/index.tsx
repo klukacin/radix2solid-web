@@ -1,4 +1,4 @@
-import { Separator } from "@radix-solid/primitives";
+import { Separator } from "@wsagency/radix2solid-primitives";
 const SeparatorDemo = () => <div class="mx-[15px] w-full max-w-[300px]">
 		<div class="text-[15px] font-medium leading-5 text-white">
 			Radix Primitives

@@ -1,6 +1,6 @@
-import { mergeStyles } from "@radix-solid/themes/helpers";
+import { mergeStyles } from "@wsagency/radix2solid-themes/helpers";
 import { type ComponentProps } from "solid-js";
-import { Heading } from "@radix-solid/themes";
+import { Heading } from "@wsagency/radix2solid-themes";
 export const SerifHeading = (props: Extract<ComponentProps<typeof Heading>, {
   asChild?: false;
 }>) => {

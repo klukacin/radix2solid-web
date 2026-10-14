@@ -110,8 +110,8 @@ This release introduces a number of breaking changes. Please follow the steps be
     - `Table`
     - `Tabs`
     - `TextField`
-- Package internals such as prop definitions and helpers are no longer available from the root `@radix-solid/themes` import entry point.
-  - Import them from `@radix-solid/themes/props` and `@radix-solid/themes/helpers` instead.
+- Package internals such as prop definitions and helpers are no longer available from the root `@wsagency/radix2solid-themes` import entry point.
+  - Import them from `@wsagency/radix2solid-themes/props` and `@wsagency/radix2solid-themes/helpers` instead.
 
 #### Props
 
@@ -190,7 +190,7 @@ If you were using the following tokens for your custom components, make sure to 
     - Improve tree-shaking of individual component parts
     - **[Breaking]** Drop named exports for multi-part components
       - Note: Our new approach allows dot notation to work reliably in server components too
-    - **[Breaking]** Remove component prop definitions and internal helpers from the root `@radix-solid/themes` import entry point and export them from `@radix-solid/themes/props` and `@radix-solid/themes/helpers` to make it possible to build your own component library on top of Radix Themes using the same techniques.
+    - **[Breaking]** Remove component prop definitions and internal helpers from the root `@wsagency/radix2solid-themes` import entry point and export them from `@wsagency/radix2solid-themes/props` and `@wsagency/radix2solid-themes/helpers` to make it possible to build your own component library on top of Radix Themes using the same techniques.
     - Add a wildcard entry point to the package to allow direct access to the package internals as an escape hatch if you have a complex tooling setup that can’t support modern module resolution rules
     - Add extra CSS file exports for advanced use-cases:
       - Export individual `tokens.css`, `components.css`, and `utilities.css` files in case you need fine-grained control of the CSS precedence. For example, this allows to import Radix Themes `utilities.css` after your own CSS, and everything else before that.

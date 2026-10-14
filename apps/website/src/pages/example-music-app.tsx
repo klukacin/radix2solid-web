@@ -1,5 +1,5 @@
-import { Box, Flex, Heading, Link, Separator, Theme } from '@radix-solid/themes';
-import { ExternalLinkIcon } from '@radix-solid/icons';
+import { Box, Flex, Heading, Link, Separator, Theme } from '@wsagency/radix2solid-themes';
+import { ExternalLinkIcon } from '@wsagency/radix2solid-icons';
 import { ExampleThemesMusicApp } from '../components/example-themes-music-app';
 
 export default function ExamplePage() {

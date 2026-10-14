@@ -1,7 +1,7 @@
 
 import { type ComponentProps, omit, createSignal, type Element, For } from "solid-js";
-import { ArrowDownIcon, ArrowUpIcon, CheckIcon, CopyIcon, Cross2Icon, DotsHorizontalIcon, DrawingPinFilledIcon, DrawingPinIcon, OpenInNewWindowIcon, PlusIcon, Share2Icon } from "@radix-solid/icons";
-import { Avatar, Badge, Box, Button, Card, Checkbox, DropdownMenu, Flex, Grid, Heading, IconButton, Link, Separator, Strong, Switch, Text, TextField, Theme } from "@radix-solid/themes";
+import { ArrowDownIcon, ArrowUpIcon, CheckIcon, CopyIcon, Cross2Icon, DotsHorizontalIcon, DrawingPinFilledIcon, DrawingPinIcon, OpenInNewWindowIcon, PlusIcon, Share2Icon } from "@wsagency/radix2solid-icons";
+import { Avatar, Badge, Box, Button, Card, Checkbox, DropdownMenu, Flex, Grid, Heading, IconButton, Link, Separator, Strong, Switch, Text, TextField, Theme } from "@wsagency/radix2solid-themes";
 import { Marker } from "./marker";
 import { allPeople, email } from "./people";
 type ExampleLayoutProps = Extract<ComponentProps<typeof Flex>, {

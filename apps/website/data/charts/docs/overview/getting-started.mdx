@@ -1,0 +1,76 @@
+---
+metaTitle: Getting started
+metaDescription: Install the native Charts package and render your first chart.
+---
+
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "@wsagency/radix2solid-charts";
+
+> Native Solid 2 fork of [solid-recharts](https://github.com/yumemi-thomas/solid-recharts) (MIT, © Thomas Guehenneux), derived from [Recharts](https://github.com/recharts/recharts) (MIT, © recharts). Adapted documentation; neither project endorses this fork.
+
+# Getting started
+
+<Description>Install the native Charts package and render your first chart.</Description>
+
+## 1. Install the package
+
+Install the published release candidate [`@wsagency/radix2solid-charts@0.1.0-rc.2`](https://www.npmjs.com/package/@wsagency/radix2solid-charts) into your Solid 2 application:
+
+```bash
+pnpm add -E @wsagency/radix2solid-charts@0.1.0-rc.2
+```
+
+Charts requires `solid-js` and `@solidjs/web` `2.0.0-rc.15` with the matching `@solidjs/signals`, `@solidjs/compiler` and `@solidjs/babel-plugin` `2.0.0-rc.15`, compiled by `@solidjs/vite-plugin` `3.0.0-next.50`. It has no dependency on Themes; install [Themes](/themes/docs/overview/getting-started) as well if you want the token colors used below. The [runnable Charts sandbox](/sandboxes/charts-css-modules.tar.gz) is a complete application with the exact workspace overrides and release-age exceptions for these Solid versions.
+
+For a local archive installation, download [`wsagency-radix2solid-charts-0.1.0-rc.2.tgz`](/packages/wsagency-radix2solid-charts-0.1.0-rc.2.tgz) (or pack `packages/charts` yourself), then run:
+
+```bash
+pnpm add ./wsagency-radix2solid-charts-0.1.0-rc.2.tgz
+```
+
+## 2. Render a chart
+
+Wrap a chart in `ResponsiveContainer` to fill its parent, or give the chart a fixed `width` and `height`. Series colors can be any CSS color, including Themes tokens such as `var(--accent-9)`.
+
+```tsx live=true
+() => {
+	const data = [
+		{ month: "Jan", visitors: 4000, signups: 2400 },
+		{ month: "Feb", visitors: 3000, signups: 1398 },
+		{ month: "Mar", visitors: 2000, signups: 3800 },
+		{ month: "Apr", visitors: 2780, signups: 3908 },
+	];
+	return <ResponsiveContainer width="100%" height={280} initialDimension={{ width: 560, height: 280 }}>
+		<BarChart data={data} title="Visitors and signups">
+			<CartesianGrid strokeDasharray="3 3" stroke="var(--gray-a6)" vertical={false} />
+			<XAxis dataKey="month" />
+			<YAxis />
+			<Tooltip />
+			<Legend />
+			<Bar dataKey="visitors" fill="var(--accent-9)" />
+			<Bar dataKey="signups" fill="var(--teal-9)" />
+		</BarChart>
+	</ResponsiveContainer>;
+}
+```
+
+## The composable model
+
+| Piece | Role |
+| --- | --- |
+| `LineChart`, `BarChart`, … | Chart container: owns layout, scales and interaction state |
+| `Line`, `Bar`, `Area`, … | A graphical series bound to a `dataKey` |
+| `XAxis`, `YAxis` | Axes, categorical or numerical, several per chart |
+| `CartesianGrid` | Background grid lines |
+| `Tooltip`, `Legend` | Hover information and the series legend |
+
+Components register themselves with the chart context. In the browser you can add, remove or reorder them and the chart redraws. Server rendering is different: with automatic domains or axis sizes, the server HTML does not match the client. For server-rendered Cartesian charts, follow the complete bounded recipe in [Server geometry needs explicit axes](../guides/responsive-and-ssr#server-geometry-needs-explicit-axes).
+
+## Accessibility
+
+Pass `title` and `desc` to name and describe the chart's SVG. `accessibilityLayer` (on by default for cartesian and polar charts) makes the chart focusable and lets arrow keys move the active tooltip between data points. Charts are images of data: when the numbers matter, also provide them as text or a table.
+
+## Next steps
+
+- [Responsive charts and SSR](../guides/responsive-and-ssr)
+- [Migrating from Recharts](../guides/migrating-from-recharts)
+- [Download the runnable sandbox](/sandboxes/charts-css-modules.tar.gz)

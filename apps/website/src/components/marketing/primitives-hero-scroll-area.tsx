@@ -1,6 +1,6 @@
-import { Box, Text } from "@radix-solid/themes";
+import { Box, Text } from "@wsagency/radix2solid-themes";
 import { styled } from "../../utils/css";
-import { ScrollArea as ScrollAreaPrimitive } from "@radix-solid/primitives";
+import { ScrollArea as ScrollAreaPrimitive } from "@wsagency/radix2solid-primitives";
 import styles from "./primitives-hero-scroll-area.module.css";
 const StyledScrollArea = styled(ScrollAreaPrimitive.Root, styles.ScrollArea);
 const StyledViewport = styled(ScrollAreaPrimitive.Viewport, styles.Viewport);

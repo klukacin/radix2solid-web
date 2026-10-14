@@ -37,12 +37,14 @@ aria: https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal
 Import all parts and piece them together.
 
 ```jsx
-import { Popover } from "@radix-solid/primitives";
+import { Popover } from "@wsagency/radix2solid-primitives";
 export default () => <Popover.Root>
 		<Popover.Trigger />
 		<Popover.Anchor />
 		<Popover.Portal>
 			<Popover.Content>
+				<Popover.Title />
+				<Popover.Description />
 				<Popover.Close />
 				<Popover.Arrow />
 			</Popover.Content>
@@ -192,6 +194,10 @@ When used, portals the content part into the `body`.
 ### Content
 
 The component that pops out when the popover is open.
+
+Like `Dialog.Content`, `Popover.Content` sets `aria-labelledby` and `aria-describedby` to the `Popover.Title` and `Popover.Description` parts, using IDs that `Popover.Root` allocates up front. If a popover has no Title, name Content with a nonblank `aria-label` (or your own `aria-labelledby`). If it has no Description, pass `aria-describedby={undefined}`. Passing either relationship to Content replaces the default, and passing it as `undefined` removes it. A Title or Description with its own `id` must be linked from Content with the same ID.
+
+**Breaking in 0.1.0-rc.2:** Content no longer collects part IDs or appends them to the relationships you pass.
 
 <PropsTable
 	data={[
@@ -463,6 +469,56 @@ The component that pops out when the popover is open.
 	]}
 />
 
+### Title
+
+An optional accessible title for the popover. `Popover.Content` is labelled by it. Without it, give Content a nonblank `aria-label`. A custom `id` replaces the Root ID, so link it with `aria-labelledby` on `Popover.Content`.
+
+<PropsTable
+	data={[
+		{
+			name: "asChild",
+			required: false,
+			type: "boolean",
+			default: "false",
+			description: (
+				<>
+					Render a different host with a target factory such as{" "}
+					<Code>{"target => target('h2', { children: 'Title' })"}</Code>.
+					<br />
+					<br />
+					Read our <a href="../guides/composition">Composition</a> guide for
+					more details.
+				</>
+			),
+		},
+	]}
+/>
+
+### Description
+
+An optional accessible description for the popover. `Popover.Content` is described by it. Without it, pass `aria-describedby={undefined}` to `Popover.Content`. A custom `id` replaces the Root ID, so link it with `aria-describedby` on `Popover.Content`.
+
+<PropsTable
+	data={[
+		{
+			name: "asChild",
+			required: false,
+			type: "boolean",
+			default: "false",
+			description: (
+				<>
+					Render a different host with a target factory such as{" "}
+					<Code>{"target => target('p', { children: 'Description' })"}</Code>.
+					<br />
+					<br />
+					Read our <a href="../guides/composition">Composition</a> guide for
+					more details.
+				</>
+			),
+		},
+	]}
+/>
+
 ### Arrow
 
 An optional arrow element to render alongside the popover. This can be used to help visually link the anchor with the `Popover.Content`. Must be rendered inside `Popover.Content`.
@@ -535,7 +591,7 @@ We expose several CSS custom properties such as `--radix-popover-trigger-width` 
 
 ```jsx line=7
 // index.tsx
-import { Popover } from "@radix-solid/primitives";
+import { Popover } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 export default () => <Popover.Root>
 		<Popover.Trigger>…</Popover.Trigger>
@@ -561,7 +617,7 @@ We expose a CSS custom property `--radix-popover-content-transform-origin`. Use 
 
 ```jsx line=7
 // index.tsx
-import { Popover } from "@radix-solid/primitives";
+import { Popover } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 export default () => <Popover.Root>
 		<Popover.Trigger>…</Popover.Trigger>
@@ -596,7 +652,7 @@ We expose `data-side` and `data-align` attributes. Their values will change at r
 
 ```jsx line=7
 // index.tsx
-import { Popover } from "@radix-solid/primitives";
+import { Popover } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 export default () => <Popover.Root>
 		<Popover.Trigger>…</Popover.Trigger>
@@ -648,7 +704,7 @@ You can anchor the content to another element if you do not want to use the trig
 
 ```jsx line=5,6,7,8,9,10
 // index.tsx
-import { Popover } from "@radix-solid/primitives";
+import { Popover } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 export default () => <Popover.Root>
 		<Popover.Anchor __asChild__>{target => target("div", {
@@ -721,7 +777,7 @@ This example abstracts the `Popover.Arrow` part and sets a default `sideOffset` 
 import { Popover, PopoverTrigger, PopoverContent } from "./your-popover";
 export default () => <Popover>
 		<PopoverTrigger>Popover trigger</PopoverTrigger>
-		<PopoverContent>Popover content</PopoverContent>
+		<PopoverContent aria-label="Popover" aria-describedby={undefined}>Popover content</PopoverContent>
 	</Popover>;
 ```
 
@@ -731,7 +787,7 @@ export default () => <Popover>
 import { omit, type ComponentProps } from "solid-js";
 // your-popover.tsx
 
-import { Popover as PopoverPrimitive } from "@radix-solid/primitives";
+import { Popover as PopoverPrimitive } from "@wsagency/radix2solid-primitives";
 export const Popover = PopoverPrimitive.Root;
 export const PopoverTrigger = PopoverPrimitive.Trigger;
 export const PopoverContent = (p: Extract<ComponentProps<typeof PopoverPrimitive.Content>, {

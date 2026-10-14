@@ -55,7 +55,7 @@ Wraps the control that will open the dialog.
 
 ### Content
 
-Contains the content of the dialog. This component is based on the `div` element.
+Contains the content of the dialog. This component is based on the `div` element. It links `Title` and `Description` through IDs allocated by `Root`; see the [Alert Dialog primitive](/primitives/docs/components/alert-dialog#content) for explicit `aria-labelledby`/`aria-describedby` overrides, custom part IDs and the 0.1.0-rc.2 migration.
 
 <ThemesPropsTable defs="alertDialogContentPropDefs" />
 
@@ -91,7 +91,7 @@ Use it in conjunction with the `width`, `minWidth` and `maxWidth` props to contr
           "variant": "soft",
           children: <>Size 1</>
         })}</AlertDialog.Trigger>
-		<AlertDialog.Content __size__="1" maxWidth="300px">
+		<AlertDialog.Content __size__="1" maxWidth="300px" aria-label="Size 1" aria-describedby={undefined}>
 			<Text as="p" trim="both" size="1">
 				The quick brown fox jumps over the lazy dog.
 			</Text>
@@ -103,7 +103,7 @@ Use it in conjunction with the `width`, `minWidth` and `maxWidth` props to contr
           "variant": "soft",
           children: <>Size 2</>
         })}</AlertDialog.Trigger>
-		<AlertDialog.Content __size__="2" maxWidth="400px">
+		<AlertDialog.Content __size__="2" maxWidth="400px" aria-label="Size 2" aria-describedby={undefined}>
 			<Text as="p" trim="both" size="2">
 				The quick brown fox jumps over the lazy dog.
 			</Text>
@@ -115,7 +115,7 @@ Use it in conjunction with the `width`, `minWidth` and `maxWidth` props to contr
           "variant": "soft",
           children: <>Size 3</>
         })}</AlertDialog.Trigger>
-		<AlertDialog.Content __size__="3" maxWidth="500px">
+		<AlertDialog.Content __size__="3" maxWidth="500px" aria-label="Size 3" aria-describedby={undefined}>
 			<Text as="p" trim="both" size="3">
 				The quick brown fox jumps over the lazy dog.
 			</Text>
@@ -127,7 +127,7 @@ Use it in conjunction with the `width`, `minWidth` and `maxWidth` props to contr
           "variant": "soft",
           children: <>Size 4</>
         })}</AlertDialog.Trigger>
-		<AlertDialog.Content __size__="4">
+		<AlertDialog.Content __size__="4" aria-label="Size 4" aria-describedby={undefined}>
 			<Text as="p" trim="both" size="4">
 				The quick brown fox jumps over the lazy dog.
 			</Text>

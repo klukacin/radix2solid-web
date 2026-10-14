@@ -1,0 +1,31 @@
+---
+metaTitle: Toolbar
+metaDescription: A Primitives toolbar rendered with Themes buttons, icon buttons and separators.
+---
+
+import { createSignal } from "solid-js";
+import { Toolbar } from "@wsagency/radix2solid-primitives";
+import { FontBoldIcon, FontItalicIcon, StrikethroughIcon } from "@wsagency/radix2solid-icons";
+
+# Toolbar
+
+<Description>A Primitives toolbar rendered with Themes buttons, icon buttons and separators.</Description>
+
+The [Toolbar primitive](/primitives/docs/components/toolbar) provides one tab stop with arrow-key navigation between its items. Each item renders a Themes component through `asChild`, and the container uses Themes tokens directly.
+
+```tsx live=true
+() => {
+	const [marks, setMarks] = createSignal(["bold"]);
+	return <Toolbar.Root aria-label="Formatting options" style={{ display: "flex", "align-items": "center", gap: "var(--space-2)", padding: "var(--space-2)", "border-radius": "var(--radius-4)", background: "var(--color-panel-solid)", "box-shadow": "var(--shadow-2)" }}>
+		<Toolbar.ToggleGroup type="multiple" value={marks()} onValueChange={setMarks} aria-label="Text formatting" style={{ display: "flex", gap: "var(--space-1)" }}>
+			<Toolbar.ToggleItem value="bold" aria-label="Bold" asChild>{target => target(IconButton, { get variant() { return marks().includes("bold") ? "solid" : "soft"; }, children: <FontBoldIcon /> })}</Toolbar.ToggleItem>
+			<Toolbar.ToggleItem value="italic" aria-label="Italic" asChild>{target => target(IconButton, { get variant() { return marks().includes("italic") ? "solid" : "soft"; }, children: <FontItalicIcon /> })}</Toolbar.ToggleItem>
+			<Toolbar.ToggleItem value="strikethrough" aria-label="Strike through" asChild>{target => target(IconButton, { get variant() { return marks().includes("strikethrough") ? "solid" : "soft"; }, children: <StrikethroughIcon /> })}</Toolbar.ToggleItem>
+		</Toolbar.ToggleGroup>
+		<Toolbar.Separator style={{ width: "1px", "align-self": "stretch", background: "var(--gray-a6)" }} />
+		<Toolbar.Button asChild>{target => target(Button, { variant: "soft", color: "gray", children: "Share" })}</Toolbar.Button>
+	</Toolbar.Root>;
+}
+```
+
+The unstyled demo with every styling solution and a runnable sandbox is on the [Toolbar primitive page](/primitives/docs/components/toolbar).

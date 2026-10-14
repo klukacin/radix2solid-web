@@ -1,7 +1,7 @@
 
-import { Dialog as DialogPrimitive, Label } from "@radix-solid/primitives";
-import { Cross2Icon } from "@radix-solid/icons";
-import { Flex, TextField, Text, IconButton, Box } from "@radix-solid/themes";
+import { Dialog as DialogPrimitive, Label } from "@wsagency/radix2solid-primitives";
+import { Cross2Icon } from "@wsagency/radix2solid-icons";
+import { Flex, TextField, Text, IconButton, Box } from "@wsagency/radix2solid-themes";
 import { PrimitivesHeroButton } from "./primitives-hero-button";
 export function PrimitivesHeroDialog() {
   // The initially open demo must not take focus; user reopens use native autofocus.
@@ -11,7 +11,7 @@ export function PrimitivesHeroDialog() {
         children: <>Edit Profile</>
       })}</DialogPrimitive.Trigger>
 
-			<DialogPrimitive.Content style={{
+			<DialogPrimitive.Content aria-describedby={undefined} style={{
       "outline": 0 as const,
       "position": "absolute",
       "top": "50%",

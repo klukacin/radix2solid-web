@@ -1,7 +1,7 @@
 
 import { createEffect, createSignal } from "solid-js";
-import { Box, DropdownMenu, Flex, IconButton, Text, Tooltip } from "@radix-solid/themes";
-import { CopyIcon } from "@radix-solid/icons";
+import { Box, DropdownMenu, Flex, IconButton, Text, Tooltip } from "@wsagency/radix2solid-themes";
+import { CopyIcon } from "@wsagency/radix2solid-icons";
 import * as Colors from "@radix-ui/colors";
 import Color from 'colorjs.io';
 type Scale = Record<string, string>;

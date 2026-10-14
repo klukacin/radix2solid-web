@@ -1,5 +1,5 @@
-import { unstable_PasswordToggleField as PasswordToggleField } from "@radix-solid/primitives";
-import { EyeClosedIcon, EyeOpenIcon } from "@radix-solid/icons";
+import { unstable_PasswordToggleField as PasswordToggleField } from "@wsagency/radix2solid-primitives";
+import { EyeClosedIcon, EyeOpenIcon } from "@wsagency/radix2solid-icons";
 const PasswordToggleFieldDemo = () => <PasswordToggleField.Root>
 		<div class="flex flex-nowrap items-center justify-center rounded-[4px] text-white bg-black-a2 shadow-[0_0_0_1px_var(--black-a6)] px-[0.75em] pr-[9px] h-[36px] gap-2 hover:shadow-[0_0_0_1px_black] focus-within:shadow-[0_0_0_2px_black]">
 			<PasswordToggleField.Input class="all-[unset] box-border h-[18px] text-[15px] text-inherit leading-[1] selection:bg-blackA6 selection:text-white" />

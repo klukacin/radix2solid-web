@@ -36,7 +36,7 @@ aria: https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal
 Import all parts and piece them together.
 
 ```jsx
-import { Dialog } from "@radix-solid/primitives";
+import { Dialog } from "@wsagency/radix2solid-primitives";
 
 export default () => (
 	<Dialog.Root>
@@ -226,6 +226,10 @@ A layer that covers the inert portion of the view when the dialog is open.
 
 Contains content to be rendered in the open dialog.
 
+`Dialog.Content` sets `aria-labelledby` to `Dialog.Title` and `aria-describedby` to `Dialog.Description` using IDs that `Dialog.Root` allocates up front, so it never inspects its children. Passing `aria-labelledby` or `aria-describedby` to Content replaces that default. Passing either one as `undefined` removes that relationship. A nonblank `aria-label` names Content instead of the title, while an `undefined` or empty `aria-label` keeps the title. A Title or Description with its own `id` isn't linked automatically: pass the same ID to Content, e.g. `<Dialog.Content aria-labelledby="profile-title">` with `<Dialog.Title id="profile-title">`.
+
+**Breaking in 0.1.0-rc.2:** Content no longer collects part IDs or appends them to the relationships you pass. Add Content ARIA for custom part IDs, list the title ID yourself when combining it with an external label, and pass `aria-describedby={undefined}` when there is no Description.
+
 <PropsTable
 	data={[
 		{
@@ -354,7 +358,7 @@ The button that closes the dialog.
 
 An accessible title to be announced when the dialog is opened.
 
-If you want to hide the title, use our [Visually Hidden](../utilities/visually-hidden) utility: `<VisuallyHidden.Root asChild>{target => target(Dialog.Title, { children: "Title" })}</VisuallyHidden.Root>`.
+If you want to hide the title, use our [Visually Hidden](../utilities/visually-hidden) utility: `<VisuallyHidden.Root asChild>{target => target(Dialog.Title, { children: "Title" })}</VisuallyHidden.Root>`. A custom `id` replaces the Root ID, so link it with `aria-labelledby` on `Dialog.Content`.
 
 <PropsTable
 	data={[
@@ -381,7 +385,7 @@ If you want to hide the title, use our [Visually Hidden](../utilities/visually-h
 
 An optional accessible description to be announced when the dialog is opened.
 
-If you want to hide the description, use our [Visually Hidden](../utilities/visually-hidden) utility: `<VisuallyHidden.Root asChild>{target => target(Dialog.Description, { children: "Description" })}</VisuallyHidden.Root>`. To remove the description entirely, omit this part and pass `aria-describedby={undefined}` to `Dialog.Content`.
+If you want to hide the description, use our [Visually Hidden](../utilities/visually-hidden) utility: `<VisuallyHidden.Root asChild>{target => target(Dialog.Description, { children: "Description" })}</VisuallyHidden.Root>`. To remove the description entirely, omit this part and pass `aria-describedby={undefined}` to `Dialog.Content`. A custom `id` replaces the Root ID, so link it with `aria-describedby` on `Dialog.Content`.
 
 <PropsTable
 	data={[
@@ -412,7 +416,7 @@ Use the controlled props to programmatically close the Dialog after an async ope
 
 ```jsx line=4,7,10,15,17
 import { createSignal } from "solid-js";
-import { Dialog } from "@radix-solid/primitives";
+import { Dialog } from "@wsagency/radix2solid-primitives";
 
 const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -424,7 +428,7 @@ export default () => {
 			<Dialog.Trigger>Open</Dialog.Trigger>
 			<Dialog.Portal>
 				<Dialog.Overlay />
-				<Dialog.Content>
+				<Dialog.Content aria-label="Submit form" aria-describedby={undefined}>
 					<form
 						onSubmit={(event) => {
 							wait().then(() => setOpen(false));
@@ -447,7 +451,7 @@ Move the content inside the overlay to render a dialog with overflow.
 
 ```jsx
 // index.tsx
-import { Dialog } from "@radix-solid/primitives";
+import { Dialog } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 
 export default () => {
@@ -492,7 +496,7 @@ Customise the element that your dialog portals into.
 
 ```tsx line=5,10,16
 import { createSignal } from "solid-js";
-import { Dialog } from "@radix-solid/primitives";
+import { Dialog } from "@wsagency/radix2solid-primitives";
 
 export default () => {
 	const [container, setContainer] = createSignal<HTMLDivElement | null>(null);
@@ -563,7 +567,7 @@ import { Dialog, DialogTrigger, DialogContent } from "./your-dialog";
 export default () => (
 	<Dialog>
 		<DialogTrigger>Dialog trigger</DialogTrigger>
-		<DialogContent>Dialog Content</DialogContent>
+		<DialogContent aria-label="Dialog" aria-describedby={undefined}>Dialog Content</DialogContent>
 	</Dialog>
 );
 ```
@@ -574,8 +578,8 @@ export default () => (
 // your-dialog.tsx
 import { omit } from "solid-js";
 import type { ComponentProps } from "@solidjs/web";
-import { Dialog as DialogPrimitive } from "@radix-solid/primitives";
-import { Cross1Icon } from "@radix-solid/icons";
+import { Dialog as DialogPrimitive } from "@wsagency/radix2solid-primitives";
+import { Cross1Icon } from "@wsagency/radix2solid-icons";
 
 export function DialogContent(props: Extract<ComponentProps<typeof DialogPrimitive.Content>, { asChild?: false }>) {
 	return (

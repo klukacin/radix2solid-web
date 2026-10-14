@@ -1,5 +1,5 @@
-import { Checkbox } from "@radix-solid/primitives";
-import { CheckIcon } from "@radix-solid/icons";
+import { Checkbox } from "@wsagency/radix2solid-primitives";
+import { CheckIcon } from "@wsagency/radix2solid-icons";
 const CheckboxDemo = () => <form>
 		<div class="flex items-center">
 			<Checkbox.Root class="flex size-[25px] appearance-none items-center justify-center rounded bg-white shadow-[0_2px_10px] shadow-blackA4 outline-none hover:bg-violet3 focus:shadow-[0_0_0_2px_black]" defaultChecked id="c1">

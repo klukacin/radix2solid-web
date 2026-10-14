@@ -1,5 +1,5 @@
-import { Popover } from "@radix-solid/primitives";
-import { MixerHorizontalIcon, Cross2Icon } from "@radix-solid/icons";
+import { Popover } from "@wsagency/radix2solid-primitives";
+import { MixerHorizontalIcon, Cross2Icon } from "@wsagency/radix2solid-icons";
 import styles from "./styles.module.css";
 const PopoverDemo = () => <Popover.Root>
 		<Popover.Trigger asChild>{target => target("button", {
@@ -10,7 +10,7 @@ const PopoverDemo = () => <Popover.Root>
 			</>
     })}</Popover.Trigger>
 		<Popover.Portal>
-			<Popover.Content class={styles.Content} sideOffset={5}>
+			<Popover.Content class={styles.Content} sideOffset={5} aria-label="Dimensions" aria-describedby={undefined}>
 				<div style={{
         "display": "flex",
         "flex-direction": "column",

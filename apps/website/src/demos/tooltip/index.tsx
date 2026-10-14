@@ -1,5 +1,5 @@
-import { Tooltip } from "@radix-solid/primitives";
-import { PlusIcon } from "@radix-solid/icons";
+import { Tooltip } from "@wsagency/radix2solid-primitives";
+import { PlusIcon } from "@wsagency/radix2solid-icons";
 import styles from "./styles.module.css";
 const TooltipDemo = () => {
   return <Tooltip.Provider>

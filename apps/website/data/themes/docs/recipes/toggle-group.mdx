@@ -1,0 +1,31 @@
+---
+metaTitle: Toggle group
+metaDescription: A Primitives toggle group rendered with Themes icon buttons.
+---
+
+import { createSignal } from "solid-js";
+import { ToggleGroup } from "@wsagency/radix2solid-primitives";
+import { TextAlignLeftIcon, TextAlignCenterIcon, TextAlignRightIcon } from "@wsagency/radix2solid-icons";
+
+# Toggle group
+
+<Description>A Primitives toggle group rendered with Themes icon buttons.</Description>
+
+Themes has no toggle group. Compose the [Toggle Group primitive](/primitives/docs/components/toggle-group) with Themes `IconButton`: the primitive owns roving focus, `aria-pressed` and keyboard behavior, and the button takes its variant from the selected value, so accent color, radius and scaling follow the surrounding `Theme`.
+
+```tsx live=true
+() => {
+	const [align, setAlign] = createSignal("center");
+	return <ToggleGroup.Root type="single" value={align()} onValueChange={value => { if (value) setAlign(value); }} aria-label="Text alignment">
+		<Flex gap="1">
+			<ToggleGroup.Item value="left" aria-label="Left aligned" asChild>{target => target(IconButton, { get variant() { return align() === "left" ? "solid" : "soft"; }, children: <TextAlignLeftIcon /> })}</ToggleGroup.Item>
+			<ToggleGroup.Item value="center" aria-label="Center aligned" asChild>{target => target(IconButton, { get variant() { return align() === "center" ? "solid" : "soft"; }, children: <TextAlignCenterIcon /> })}</ToggleGroup.Item>
+			<ToggleGroup.Item value="right" aria-label="Right aligned" asChild>{target => target(IconButton, { get variant() { return align() === "right" ? "solid" : "soft"; }, children: <TextAlignRightIcon /> })}</ToggleGroup.Item>
+		</Flex>
+	</ToggleGroup.Root>;
+}
+```
+
+Ignoring an empty `onValueChange` value keeps one option selected, as in a text-alignment control. `target` reads its props once, so signal-derived props such as `variant` are getters. Use `type="multiple"` with a `string[]` signal for independent toggles.
+
+The unstyled demo with CSS Modules, plain CSS and Tailwind variants and a runnable sandbox is on the [Toggle Group primitive page](/primitives/docs/components/toggle-group).

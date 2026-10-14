@@ -1,6 +1,6 @@
 import { createContext, createEffect, createSignal, onSettled, useContext, type Element } from 'solid-js';
 import { isServer } from '@solidjs/web';
-import { useThemeContext } from '@radix-solid/themes';
+import { useThemeContext } from '@wsagency/radix2solid-themes';
 
 type Appearance = 'light' | 'dark';
 type Preference = Appearance | 'system';

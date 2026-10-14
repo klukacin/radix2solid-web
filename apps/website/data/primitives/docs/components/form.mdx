@@ -42,7 +42,7 @@ name: form
 Import all parts and piece them together.
 
 ```jsx
-import { Form } from "@radix-solid/primitives";
+import { Form } from "@wsagency/radix2solid-primitives";
 export default () => <Form.Root>
 		<Form.Field name="email">
 			<Form.Label />
@@ -427,7 +427,7 @@ Here is an example styling the `Label` part.
 ```jsx line=6
 //index.tsx
 
-import { Form } from "@radix-solid/primitives";
+import { Form } from "@wsagency/radix2solid-primitives";
 export default () => <Form.Root>
 		<Form.Field name="email">
 			<Form.Label __class__="FormLabel">Email</Form.Label>
@@ -474,7 +474,7 @@ Pass your application's submit function. It resolves to invalid-field flags; req
 
 ```tsx line=5,6,7,8,12,17,18,20,21,22,23,41,42,43,44
 import { createSignal } from "solid-js";
-import { Form } from "@radix-solid/primitives";
+import { Form } from "@wsagency/radix2solid-primitives";
 type ServerErrors = { email: boolean; password: boolean };
 function Page(props: { submit: (data: FormData) => Promise<ServerErrors> }) {
   const [serverErrors, setServerErrors] = createSignal<ServerErrors>({

@@ -1,9 +1,9 @@
-import { composeEventHandlers } from '@radix-solid/primitives/internal';
+import { composeEventHandlers } from '@wsagency/radix2solid-primitives/internal';
 
 import type { JSX } from "@solidjs/web";
 import { type Element, omit, onSettled } from "solid-js";
-import { Box, Text, Link, Flex, Container, Heading } from "@radix-solid/themes";
-import { ArrowLeftIcon, ArrowRightIcon } from "@radix-solid/icons";
+import { Box, Text, Link, Flex, Container, Heading } from "@wsagency/radix2solid-themes";
+import { ArrowLeftIcon, ArrowRightIcon } from "@wsagency/radix2solid-icons";
 import { Carousel, CarouselSlideList, CarouselSlide, CarouselNext, CarouselPrevious } from "./carousel";
 import { PrimitivesHeroDialog } from "./primitives-hero-dialog";
 import { PrimitivesHeroPopover } from "./primitives-hero-popover";
@@ -15,7 +15,7 @@ import { PrimitivesHeroAccordion } from "./primitives-hero-accordion";
 import { PrimitivesHeroRadioGroup } from "./primitives-hero-radio-group";
 import { PrimitivesHeroToggleGroup } from "./primitives-hero-toggle-group";
 import { PrimitivesHeroSwitch } from "./primitives-hero-switch";
-import { Button, Section } from "@radix-solid/themes";
+import { Button, Section } from "@wsagency/radix2solid-themes";
 import { SerifHeading } from "../serif-heading";
 import { HiddenScroll } from "./hidden-scroll";
 import styles from "./primitives-hero.module.css";

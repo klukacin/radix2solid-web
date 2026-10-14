@@ -35,7 +35,7 @@ When components are stateful, their state will be exposed in a `data-state` attr
 You can style a component part by targeting the `class` that you provide.
 
 ```jsx line=2,4
-import { Accordion } from "@radix-solid/primitives";
+import { Accordion } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 export const AccordionDemo = () => <Accordion.Root type="single">
 		<Accordion.Item __class__="AccordionItem" value="item-1" />
@@ -64,7 +64,7 @@ Native Solid supports style objects. Use them for dynamic values and CSS classes
 ### Styling a part
 
 ```jsx line=3
-import { Accordion } from "@radix-solid/primitives";
+import { Accordion } from "@wsagency/radix2solid-primitives";
 export const AccordionDemo = () => <Accordion.Root type="single">
 		<Accordion.Item __class__="AccordionItem" value="item-1" style={{ "border-bottom": "var(--accordion-border-width, 1px) solid gainsboro" }} />
 	</Accordion.Root>;
@@ -86,7 +86,7 @@ Extend a primitive with a native Solid component. Preserve its reactive props an
 
 ```tsx
 import { type ComponentProps } from "solid-js";
-import { Accordion as AccordionPrimitive } from "@radix-solid/primitives";
+import { Accordion as AccordionPrimitive } from "@wsagency/radix2solid-primitives";
 const AccordionItem = (p: Extract<ComponentProps<typeof AccordionPrimitive.Item>, {
   asChild?: false;
 }>) => <AccordionPrimitive.Item {...p} ref={p.ref} />;

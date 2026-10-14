@@ -1,5 +1,5 @@
-import { AccessibleIcon, Avatar, Box, Flex, Grid, Section, Container, Heading, Card, Text, Link } from "@radix-solid/themes";
-import { ArrowRightIcon } from "@radix-solid/icons";
+import { AccessibleIcon, Avatar, Box, Flex, Grid, Section, Container, Heading, Card, Text, Link } from "@wsagency/radix2solid-themes";
+import { ArrowRightIcon } from "@wsagency/radix2solid-icons";
 import { CaseStudyLogo } from "./case-study-logo";
 import { LogoLink } from "./logo-link";
 import { MarketingCaption } from "./marketing-caption";

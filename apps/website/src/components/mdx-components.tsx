@@ -1,8 +1,8 @@
 import { createMemo, omit, onSettled, type Element } from 'solid-js';
 import type { JSX } from '@solidjs/web';
-import * as Themes from '@radix-solid/themes';
-import { ExternalLinkIcon, InfoCircledIcon, Link2Icon } from '@radix-solid/icons';
-import { ArrowRightIcon, BookmarkIcon, ExclamationTriangleIcon, CopyIcon, MagnifyingGlassIcon, ChatBubbleIcon, Share2Icon, Link1Icon, SunIcon, MoonIcon, DotsHorizontalIcon, PlusIcon, EyeOpenIcon, EyeClosedIcon, GearIcon, DividerHorizontalIcon, CheckIcon, Cross1Icon, ChevronDownIcon, ChevronUpIcon, TextAlignLeftIcon, TextAlignCenterIcon, TextAlignRightIcon, CubeIcon } from '@radix-solid/icons';
+import * as Themes from '@wsagency/radix2solid-themes';
+import { ExternalLinkIcon, InfoCircledIcon, Link2Icon } from '@wsagency/radix2solid-icons';
+import { ArrowRightIcon, BookmarkIcon, ExclamationTriangleIcon, CopyIcon, MagnifyingGlassIcon, ChatBubbleIcon, Share2Icon, Link1Icon, SunIcon, MoonIcon, DotsHorizontalIcon, PlusIcon, EyeOpenIcon, EyeClosedIcon, GearIcon, DividerHorizontalIcon, CheckIcon, Cross1Icon, ChevronDownIcon, ChevronUpIcon, TextAlignLeftIcon, TextAlignCenterIcon, TextAlignRightIcon, CubeIcon } from '@wsagency/radix2solid-icons';
 import { ThemesPropsTable } from './themes-props-table.js';
 import { SourceCode } from './source-code.js';
 import { HeroCodeBlock } from './hero-code-block.js';

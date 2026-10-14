@@ -1,4 +1,4 @@
-import { Box, Code, Text, Table } from "@radix-solid/themes";
+import { Box, Code, Text, Table } from "@wsagency/radix2solid-themes";
 export function ThemesBreakpointsTable() {
   return <Box my="5" asChild>{target => target(Table.Root, {
       "variant": "surface",

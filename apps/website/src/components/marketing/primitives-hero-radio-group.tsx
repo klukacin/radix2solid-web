@@ -1,6 +1,6 @@
-import { Text } from "@radix-solid/themes";
+import { Text } from "@wsagency/radix2solid-themes";
 import { styled } from "../../utils/css";
-import { RadioGroup as RadioGroupPrimitive } from "@radix-solid/primitives";
+import { RadioGroup as RadioGroupPrimitive } from "@wsagency/radix2solid-primitives";
 import styles from "./primitives-hero-radio-group.module.css";
 export const RadioCards = styled(RadioGroupPrimitive.Root, styles.Cards);
 const StyledRadioButton = styled("div", styles.RadioButton);

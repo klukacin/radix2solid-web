@@ -1,5 +1,5 @@
-import { IconButton, Tooltip } from '@radix-solid/themes';
-import { MoonIcon, SunIcon } from '@radix-solid/icons';
+import { IconButton, Tooltip } from '@wsagency/radix2solid-themes';
+import { MoonIcon, SunIcon } from '@wsagency/radix2solid-icons';
 import { useSiteContext } from './site-context.js';
 
 export function ThemeToggle() {

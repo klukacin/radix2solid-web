@@ -16,7 +16,7 @@ DOM-rendering primitive parts accept `asChild`. Supply a function that calls its
 Keep the default element unless a different semantic host is appropriate. A tooltip can decorate a focusable link instead of its default button:
 
 ```tsx line=4-6
-import { Tooltip } from '@radix-solid/primitives';
+import { Tooltip } from '@wsagency/radix2solid-primitives';
 
 export default () => <Tooltip.Provider><Tooltip.Root>
   <Tooltip.Trigger __asChild__>{target => target('a', {
@@ -50,7 +50,7 @@ Native DOM props use `class`, `for` and `tabindex`, not React's `className`, `ht
 A native ref is a normal prop; spreading the complete props object forwards it. There is no `forwardRef` wrapper. For a caller-owned ref, assign the real host:
 
 ```tsx line=7-9
-import { Dialog } from '@radix-solid/primitives';
+import { Dialog } from '@wsagency/radix2solid-primitives';
 import { MyButton } from './my-button';
 
 export default () => {
@@ -75,7 +75,7 @@ The primitive's own ref and your component's ref are composed onto the same host
 Nest target factories, not pre-rendered children. Every boundary must still request and return exactly one target:
 
 ```tsx line=5-8
-import { Dialog, Tooltip } from '@radix-solid/primitives';
+import { Dialog, Tooltip } from '@wsagency/radix2solid-primitives';
 import { MyButton } from './my-button';
 
 export default () => <Dialog.Root><Tooltip.Provider><Tooltip.Root>

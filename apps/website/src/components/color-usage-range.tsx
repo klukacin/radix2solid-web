@@ -1,5 +1,5 @@
 import { omit, type ComponentProps } from "solid-js";
-import { Flex, Text, Box } from "@radix-solid/themes";
+import { Flex, Text, Box } from "@wsagency/radix2solid-themes";
 export const ColorUsageRange = (p: Exclude<ComponentProps<typeof Flex>, {
   asChild: true;
 }>) => <Flex direction="column" mb="2" {...omit(p, "children")}>

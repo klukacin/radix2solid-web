@@ -327,7 +327,7 @@ In this example, using solid-colored `indigo` components will now reference your
 
 ### Custom palette
 
-You can use the [custom color palette tool](/colors/custom) to generate a custom palette based just on a couple reference colors. Once you are happy with the result, paste the generated CSS into your project. You can rename the generated colors to match the accent that you want to use in your theme.
+You can use the [custom color palette tool](/colors/custom) to generate a custom palette based just on a couple reference colors. Once you are happy with the result, paste the generated CSS into your project. The tool's copied scales are raw Radix Colors variables on global `:root`/`.light` or `.dark` selectors. Accent variables use the name of the closest built-in scale, or `custom` for low-saturation colors; gray variables use `gray`. Its copied background and its downloaded palette also target `.radix-themes` roots, and the download adds a `[data-accent-color='custom']` block that maps `--accent-*` to `--custom-*`. None of it is scoped to one `Theme`. You can rename the generated colors to match the accent that you want to use in your theme, which replaces that accent for the whole page. To keep the built-in accents and add yours beside them, follow [Custom accent](#custom-accent) instead.
 
 To generate dark theme colors, toggle the appearance to use the dark theme. Make sure to paste the generated CSS after your light theme color overrides.
 
@@ -348,6 +348,38 @@ To generate dark theme colors, toggle the appearance to use the dark theme. Make
 	</Box>
 	{<a href="/colors/custom">Create a custom palette →</a>}
 </Text>
+
+### Custom accent
+
+To use a generated palette as an accent without replacing a built-in one, set `accentColor="custom"` and name the palette with `customAccent`. Every physical theme root, including the roots that Themes renders inside portals, gets a `data-custom-accent` attribute with that name, and nested themes inherit it.
+
+```jsx
+<Theme accentColor="custom" customAccent="calm">
+	<Button>Save</Button>
+	<Badge color="custom">Calm</Badge>
+</Theme>
+```
+
+Themes ships no colors for a custom accent. Provide the complete light and dark sets of the 28 `--custom-*` tokens yourself: `--custom-1` to `--custom-12`, `--custom-a1` to `--custom-a12`, `--custom-contrast`, `--custom-surface`, `--custom-indicator` and `--custom-track`. Generate both appearances with the [custom palette tool](/colors/custom), rename the generated scale variables to `--custom-*`, and paste them under these selectors:
+
+```css
+.radix-themes[data-custom-accent="calm"] {
+	/* The complete light set of the 28 --custom-* tokens */
+}
+
+.radix-themes[data-custom-accent="calm"]:is(.dark, .dark-theme),
+:is(.dark, .dark-theme) .radix-themes[data-custom-accent="calm"]:not(.light, .light-theme) {
+	/* The complete dark set of the same 28 tokens */
+}
+```
+
+- `customAccent` must be a CSS-safe identifier (a letter followed by letters, digits, `_` or `-`). An invalid name, or `accentColor="custom"` with no name to inherit, throws an error that names the problem.
+- Add one pair of rule sets per palette, for example a second pair for `data-custom-accent="brand-b"`.
+- Keep the tool's wide-gamut blocks: put the same two selectors inside its `@supports (color: color(display-p3 1 1 1))` and `@media (color-gamut: p3)` wrappers in place of the global `:root`/`.dark` selectors, so P3 displays get the full-saturation values.
+- Generate palettes ahead of time or when a user picks a color, never while components render.
+- With a custom accent, `grayColor="auto"` resolves to `gray`.
+- Scope the palette to the attribute selector. A class on an ancestor element or inline variables on one root do not reach content rendered in portals.
+
 
 ### Color aliasing
 
@@ -402,17 +434,17 @@ If you’d prefer to reduce your CSS bundle size and have access just to the col
 
 ```ts
 // Base theme tokens
-import "@radix-solid/themes/tokens/base.css";
+import "@wsagency/radix2solid-themes/tokens/base.css";
 
 // Include just the colors you use, for example `ruby`, `teal`, and `slate`.
 // Remember to import the gray tint that matches your theme setting.
-import "@radix-solid/themes/tokens/colors/ruby.css";
-import "@radix-solid/themes/tokens/colors/teal.css";
-import "@radix-solid/themes/tokens/colors/slate.css";
+import "@wsagency/radix2solid-themes/tokens/colors/ruby.css";
+import "@wsagency/radix2solid-themes/tokens/colors/teal.css";
+import "@wsagency/radix2solid-themes/tokens/colors/slate.css";
 
 // Rest of the CSS
-import "@radix-solid/themes/components.css";
-import "@radix-solid/themes/utilities.css";
+import "@wsagency/radix2solid-themes/components.css";
+import "@wsagency/radix2solid-themes/utilities.css";
 ```
 
 Please note that the colors you didn’t import will still be accepted by the `color` prop in React. Also, make sure that your developer tooling [preserves](/themes/docs/overview/styling#css-import-order) the order of the imported CSS files.

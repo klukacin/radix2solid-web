@@ -1,6 +1,6 @@
 import { createContext, createSignal, onCleanup, useContext, type Element } from 'solid-js';
-import { Flex, Text, Theme } from '@radix-solid/themes';
-import { Toast } from '@radix-solid/primitives';
+import { Flex, Text, Theme } from '@wsagency/radix2solid-themes';
+import { Toast } from '@wsagency/radix2solid-primitives';
 import styles from './copy-toast.module.css';
 
 interface CopyToastContextValue { copyIcon: (button: HTMLButtonElement) => Promise<void> }

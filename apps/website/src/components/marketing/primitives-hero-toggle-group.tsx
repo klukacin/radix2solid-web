@@ -1,7 +1,7 @@
 import { styled } from "../../utils/css";
-import { TextAlignCenterIcon, TextAlignLeftIcon, TextAlignRightIcon } from "@radix-solid/icons";
+import { TextAlignCenterIcon, TextAlignLeftIcon, TextAlignRightIcon } from "@wsagency/radix2solid-icons";
 import styles from "./primitives-hero-toggle-group.module.css";
-import { ToggleGroup as ToggleGroupPrimitive } from "@radix-solid/primitives";
+import { ToggleGroup as ToggleGroupPrimitive } from "@wsagency/radix2solid-primitives";
 const ToggleGroup = styled(ToggleGroupPrimitive.Root, styles.ToggleGroup);
 const ToggleGroupItem = styled(ToggleGroupPrimitive.Item, styles.Item);
 export function PrimitivesHeroToggleGroup() {

@@ -3,9 +3,9 @@ import { PrimitivesHeader } from "../components/primitives-header";
 import { PrimitivesMobileMenu } from "../components/primitives-mobile-menu";
 import { CaseStudyLogo } from "../components/marketing/case-study-logo";
 import { LogoLink } from "../components/marketing/logo-link";
-import { AccessibleIcon } from "@radix-solid/themes";
-import { ArrowTopRightIcon } from "@radix-solid/icons";
-import { Box, Container, Flex, Grid, Heading, Link, Section, Separator, Text } from "@radix-solid/themes";
+import { AccessibleIcon } from "@wsagency/radix2solid-themes";
+import { ArrowTopRightIcon } from "@wsagency/radix2solid-icons";
+import { Box, Container, Flex, Grid, Heading, Link, Section, Separator, Text } from "@wsagency/radix2solid-themes";
 export default function CaseStudy() {
   return <>
 			<PrimitivesMobileMenu />

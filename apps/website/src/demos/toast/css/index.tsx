@@ -1,5 +1,5 @@
 import { createSignal, onSettled } from "solid-js";
-import { Toast } from "@radix-solid/primitives";
+import { Toast } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 const ToastDemo = () => {
   const [open, setOpen] = createSignal(false);

@@ -37,7 +37,7 @@ aria: https://www.w3.org/WAI/ARIA/apg/patterns/accordion
 Import all parts and piece them together.
 
 ```jsx
-import { Accordion } from "@radix-solid/primitives";
+import { Accordion } from "@wsagency/radix2solid-primitives";
 export default () => <Accordion.Root type="single">
 		<Accordion.Item value="item-1">
 			<Accordion.Header>
@@ -461,8 +461,8 @@ You can add extra decorative elements, such as chevrons, and rotate it when the 
 
 ```jsx line=10
 // index.tsx
-import { Accordion } from "@radix-solid/primitives";
-import { ChevronDownIcon } from "@radix-solid/icons";
+import { Accordion } from "@wsagency/radix2solid-primitives";
+import { ChevronDownIcon } from "@wsagency/radix2solid-icons";
 import "./styles.css";
 export default () => <Accordion.Root type="single">
 		<Accordion.Item value="item-1">
@@ -504,7 +504,7 @@ Use the `--radix-accordion-content-width` and/or `--radix-accordion-content-heig
 
 ```jsx line=7
 // index.tsx
-import { Accordion } from "@radix-solid/primitives";
+import { Accordion } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 export default () => <Accordion.Root type="single">
 		<Accordion.Item value="item-1">

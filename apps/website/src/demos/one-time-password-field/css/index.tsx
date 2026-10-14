@@ -1,4 +1,4 @@
-import { unstable_OneTimePasswordField as OneTimePasswordField } from "@radix-solid/primitives";
+import { unstable_OneTimePasswordField as OneTimePasswordField } from "@wsagency/radix2solid-primitives";
 const OneTimePasswordFieldDemo = () => <OneTimePasswordField.Root class="OTPRoot">
 		<OneTimePasswordField.Input class="OTPInput" />
 		<OneTimePasswordField.Input class="OTPInput" />

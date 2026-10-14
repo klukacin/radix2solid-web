@@ -1,4 +1,4 @@
-import { Slider } from "@radix-solid/primitives";
+import { Slider } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 const SliderDemo = () => <form>
 		<Slider.Root class="SliderRoot" defaultValue={[50]} max={100} step={1}>

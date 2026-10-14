@@ -35,7 +35,7 @@ aria: https://www.w3.org/TR/wai-aria/#aria-live
 Import the component.
 
 ```jsx
-import { Toast } from "@radix-solid/primitives";
+import { Toast } from "@wsagency/radix2solid-primitives";
 export default () => <Toast.Provider>
 		<Toast.Root>
 			<Toast.Title />
@@ -508,7 +508,7 @@ Combine `--radix-toast-swipe-move-[x|y]` and `--radix-toast-swipe-end-[x|y]` CSS
 
 ```jsx line=4,5
 // index.tsx
-import { Toast } from "@radix-solid/primitives";
+import { Toast } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 export default () => <Toast.Provider __swipeDirection__="right">
 		<Toast.Root __class__="ToastRoot">...</Toast.Root>
@@ -679,7 +679,7 @@ export default (props: { onUpgrade: () => void }) => <ToastProvider>
 ```jsx
 import { omit, type ComponentProps, type Element } from "solid-js";
 // your-toast.tsx
-import { Toast as ToastPrimitive, Slot } from "@radix-solid/primitives";
+import { Toast as ToastPrimitive, Slot } from "@wsagency/radix2solid-primitives";
 export const ToastProvider = ToastPrimitive.Provider;
 export const ToastViewport = ToastPrimitive.Viewport;
 type Props = Omit<Extract<ComponentProps<typeof ToastPrimitive.Root>, { asChild?: false }>, "title" | "children"> &
@@ -723,7 +723,7 @@ export default () => {
 ```tsx
 // your-imperative-toast.tsx
 import { createSignal, For, onSettled, omit, type ComponentProps } from 'solid-js';
-import { Toast as ToastPrimitive } from '@radix-solid/primitives';
+import { Toast as ToastPrimitive } from '@wsagency/radix2solid-primitives';
 export const ToastProvider = ToastPrimitive.Provider;
 export const ToastViewport = ToastPrimitive.Viewport;
 type Props = Extract<ComponentProps<typeof ToastPrimitive.Root>, { asChild?: false }> & {

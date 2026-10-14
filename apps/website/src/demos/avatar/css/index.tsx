@@ -1,4 +1,4 @@
-import { Avatar } from "@radix-solid/primitives";
+import { Avatar } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 const AvatarDemo = () => <div style={{
   "display": "flex",

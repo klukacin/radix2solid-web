@@ -1,9 +1,9 @@
 
 import { type Element } from "solid-js";
-import * as Icons from "@radix-solid/icons";
-import { Grid, Tooltip, Heading, Box, IconButton, Flex } from "@radix-solid/themes";
+import * as Icons from "@wsagency/radix2solid-icons";
+import { Grid, Tooltip, Heading, Box, IconButton, Flex } from "@wsagency/radix2solid-themes";
 import { useCopyToast } from "./copy-toast";
-import { Tooltip as TooltipPrimitive } from "@radix-solid/primitives";
+import { Tooltip as TooltipPrimitive } from "@wsagency/radix2solid-primitives";
 import styles from "./all-icons.module.css";
 export const AllIcons = function AllIcons() {
   return <TooltipPrimitive.Provider disableHoverableContent>

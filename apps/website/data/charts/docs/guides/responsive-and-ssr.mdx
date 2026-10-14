@@ -1,0 +1,93 @@
+---
+metaTitle: Responsive charts and SSR
+metaDescription: Size charts to their container and render them on the server.
+---
+
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from "@wsagency/radix2solid-charts";
+
+> Native Solid 2 fork of [solid-recharts](https://github.com/yumemi-thomas/solid-recharts) (MIT, © Thomas Guehenneux), derived from [Recharts](https://github.com/recharts/recharts) (MIT, © recharts). Adapted documentation; neither project endorses this fork.
+
+# Responsive charts and SSR
+
+<Description>Size charts to their container and render them on the server.</Description>
+
+## ResponsiveContainer
+
+`ResponsiveContainer` measures its parent with a `ResizeObserver` and passes the size to the chart. The parent must have a defined size: a fixed height, or a flex or grid track. A parent with `height: auto` and a percentage height renders a 0×0 chart.
+
+```tsx live=true
+() => {
+	const data = [
+		{ day: "Mon", load: 32 },
+		{ day: "Tue", load: 48 },
+		{ day: "Wed", load: 41 },
+		{ day: "Thu", load: 64 },
+		{ day: "Fri", load: 55 },
+	];
+	return <div style={{ height: "220px" }}>
+		<ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 560, height: 220 }} debounce={50}>
+			<AreaChart data={data} title="Server load by weekday">
+				<XAxis dataKey="day" />
+				<YAxis />
+				<Tooltip />
+				<Area type="monotone" dataKey="load" stroke="var(--accent-9)" fill="var(--accent-a4)" />
+			</AreaChart>
+		</ResponsiveContainer>
+	</div>;
+}
+```
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `width`, `height` | `number \| string` | — | Pixels or a percentage of the parent |
+| `aspect` | `number` | — | Keep a width-to-height ratio |
+| `minWidth`, `minHeight`, `maxHeight` | `number \| string` | — | Bounds while resizing |
+| `debounce` | `number` | `0` | Milliseconds to wait before applying a new size |
+| `onResize` | `(width, height) => void` | — | Called after a resize |
+| `initialDimension` | `{ width, height }` | — | Size used before the first measurement, including on the server |
+
+## Server rendering
+
+A server has no layout, so a responsive chart cannot measure itself there. Give the server something to draw:
+
+- A chart with a fixed `width` and `height` renders real SVG on the server, and its root SVG hydrates in place. Animated series may still replace their own paths in the browser, and the server geometry is only final under the recipe below.
+- A `ResponsiveContainer` with `initialDimension` renders at that size on the server, then measures and redraws on the client.
+- A `ResponsiveContainer` without `initialDimension` renders an empty measurement state on the server and draws on the client. This is intentional: the package does not invent dimensions.
+
+### Server geometry needs explicit axes
+
+The server renders a chart in one pass, before axes and series have registered with each other. Charts that rely on automatic domains or automatic axis sizes are not supported on the server: their client render is correct, but their server HTML is not. With an automatic Y domain, for example, two stacked `Bar` series are drawn against different domains and numeric Y-axis ticks are missing; with automatic axis sizes, category labels do not line up with the bars.
+
+The following bounded recipe for Cartesian charts is regression-tested to give the same tick positions and series geometry before and after hydration:
+
+1. Declare the axes before the series, the category axis first. Do not reorder them.
+2. Reserve the axis gutters in the chart's `margin`, and set the axes' own size to zero (`height={0}` on `XAxis`, `width={0}` on `YAxis`) so the space is not reserved twice.
+3. Give the category axis `scale="band"`, so its labels sit at the centers of the bars.
+4. Give the value axis an explicit `domain` and `allowDataOverflow`, so the bound you set is authoritative. Values outside it are clipped to the plot area rather than widening the axis, so choose a domain that covers your largest stacked total.
+5. Set `interval={0}` on both axes. The browser measures label text and hides labels that would overlap; the server cannot measure text, so it keeps every label. With `interval={0}` both keep every label at the same position. Make sure your labels fit without overlapping.
+
+```tsx
+import { ComposedChart, XAxis, YAxis, Bar } from "@wsagency/radix2solid-charts";
+
+const data = [
+	{ name: "A", low: 10, high: 20 },
+	{ name: "B", low: 20, high: 30 },
+];
+
+export function StackedTotals() {
+	return <ComposedChart width={500} height={300} margin={{ top: 5, right: 5, bottom: 35, left: 65 }} data={data}>
+		<XAxis dataKey="name" scale="band" height={0} interval={0} />
+		<YAxis domain={[0, 50]} allowDataOverflow width={0} interval={0} />
+		<Bar dataKey="low" stackId="sum" fill="var(--accent-9, royalblue)" isAnimationActive={false} />
+		<Bar dataKey="high" stackId="sum" fill="var(--teal-9, teal)" isAnimationActive={false} />
+	</ComposedChart>;
+}
+```
+
+On the server this renders the A and B labels centered under their bars, the value ticks 0, 15, 30, 45 and 50, and the four stacked bars at their final positions, all inside the 430 × 260 plot area that the margin leaves. After hydration the labels, ticks and bars keep the same positions.
+
+Every chart example on this site uses `initialDimension`, so the exported HTML and the Markdown twin of each page contain a server-rendered chart. Most of those examples use automatic domains, so their server geometry and numeric ticks are not final; the client redraws them when it activates.
+
+## Theming
+
+Series accept any CSS color. Themes tokens (`var(--accent-9)`, `var(--gray-a6)`, …) follow the nearest `Theme`, so a chart inside a dark or custom-accent theme updates without new props. Charts does not depend on Themes; outside a `Theme`, give token colors a plain fallback (`var(--accent-9, royalblue)`), as the recipe above does.

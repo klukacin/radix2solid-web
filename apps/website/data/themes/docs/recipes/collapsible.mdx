@@ -1,0 +1,35 @@
+---
+metaTitle: Collapsible
+metaDescription: A Primitives collapsible inside a Themes card.
+---
+
+import { createSignal } from "solid-js";
+import { Collapsible } from "@wsagency/radix2solid-primitives";
+import { RowSpacingIcon, Cross2Icon } from "@wsagency/radix2solid-icons";
+
+# Collapsible
+
+<Description>A Primitives collapsible inside a Themes card.</Description>
+
+The [Collapsible primitive](/primitives/docs/components/collapsible) owns `aria-expanded`, `aria-controls` and the hidden state; Themes `Card`, `Text` and `IconButton` provide the look.
+
+```tsx live=true
+() => {
+	const [open, setOpen] = createSignal(false);
+	return <Card style={{ width: "300px" }}>
+		<Collapsible.Root open={open()} onOpenChange={setOpen}>
+			<Flex align="center" justify="between" mb="2">
+				<Text size="2" weight="bold">@wsagency starred 3 repositories</Text>
+				<Collapsible.Trigger asChild>{target => target(IconButton, { variant: "soft", size: "1", get ["aria-label"]() { return open() ? "Hide repositories" : "Show repositories"; }, get children() { return open() ? <Cross2Icon /> : <RowSpacingIcon />; } })}</Collapsible.Trigger>
+			</Flex>
+			<Text as="p" size="2">radix2solid-primitives</Text>
+			<Collapsible.Content>
+				<Text as="p" size="2" mt="1">radix2solid-themes</Text>
+				<Text as="p" size="2" mt="1">radix2solid-charts</Text>
+			</Collapsible.Content>
+		</Collapsible.Root>
+	</Card>;
+}
+```
+
+The unstyled demo with every styling solution and a runnable sandbox is on the [Collapsible primitive page](/primitives/docs/components/collapsible).

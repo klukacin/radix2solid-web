@@ -1,5 +1,5 @@
-import { Checkbox } from "@radix-solid/primitives";
-import { CheckIcon } from "@radix-solid/icons";
+import { Checkbox } from "@wsagency/radix2solid-primitives";
+import { CheckIcon } from "@wsagency/radix2solid-icons";
 import styles from "./styles.module.css";
 const CheckboxDemo = () => <form>
 		<div style={{

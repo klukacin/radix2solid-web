@@ -1,11 +1,11 @@
 import type { JSX } from "@solidjs/web";
-import { mergeStyles } from "@radix-solid/themes/helpers";
+import { mergeStyles } from "@wsagency/radix2solid-themes/helpers";
 import { omit, createSignal } from "solid-js";
 import { SwatchCopyButton as CopyButton } from './swatch-copy-button';
-import { VisuallyHidden, Popover, Box, Heading, Theme, Button, Separator, Grid, Text, Tooltip, Flex, AccessibleIcon, IconButton, Dialog, Reset } from "@radix-solid/themes";
+import { VisuallyHidden, Popover, Box, Heading, Theme, Button, Separator, Grid, Text, Tooltip, Flex, AccessibleIcon, IconButton, Dialog, Reset } from "@wsagency/radix2solid-themes";
 import styles from "./custom-swatch.module.css";
 import { useSiteContext } from "./site-context";
-import { Cross2Icon, InfoCircledIcon } from "@radix-solid/icons";
+import { Cross2Icon, InfoCircledIcon } from "@wsagency/radix2solid-icons";
 const brightColors = ["amber", "yellow", "lime", "mint", "sky"];
 type CustomSwatchProps = JSX.IntrinsicElements["button"] & {
   scale: string;
@@ -47,6 +47,7 @@ export const CustomSwatch = (p: CustomSwatchProps) => {
           return setContentRef;
         },
         "size": "1",
+        "aria-describedby": undefined,
         get "class"() {
           return styles.CustomSwatchContent;
         },

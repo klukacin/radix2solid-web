@@ -1,6 +1,6 @@
-import { mergeStyles } from "@radix-solid/themes/helpers";
+import { mergeStyles } from "@wsagency/radix2solid-themes/helpers";
 import { omit, type ComponentProps } from "solid-js";
-import { Text } from "@radix-solid/themes";
+import { Text } from "@wsagency/radix2solid-themes";
 type CaptionProps = Omit<Extract<ComponentProps<typeof Text>, { as: 'div'; asChild?: false }>, 'as'>;
 export const MarketingCaption = (p: CaptionProps) => <Text as="div" size={{
   initial: "3"

@@ -1,4 +1,4 @@
-import { Separator } from "@radix-solid/primitives";
+import { Separator } from "@wsagency/radix2solid-primitives";
 import styles from "./styles.module.css";
 const SeparatorDemo = () => <div style={{
   "width": "100%",

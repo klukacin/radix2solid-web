@@ -1,4 +1,4 @@
-import { Text, Box } from "@radix-solid/themes";
+import { Text, Box } from "@wsagency/radix2solid-themes";
 const steps = ["App background", "Subtle background", "UI element background", "Hovered UI element background", "Active / Selected UI element background", "Subtle borders and separators", "UI element border and focus rings", "Hovered UI element border", "Solid backgrounds", "Hovered solid backgrounds", "Low-contrast text", "High-contrast text"];
 export function UseCasesTable() {
   return <Box asChild my="5">{target => target("table", {

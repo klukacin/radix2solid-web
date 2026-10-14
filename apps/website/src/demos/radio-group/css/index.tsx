@@ -1,4 +1,4 @@
-import { RadioGroup } from "@radix-solid/primitives";
+import { RadioGroup } from "@wsagency/radix2solid-primitives";
 import "./styles.css";
 const RadioGroupDemo = () => <form>
 		<RadioGroup.Root class="RadioGroupRoot" defaultValue="default" aria-label="View density">

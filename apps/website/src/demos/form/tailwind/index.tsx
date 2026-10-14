@@ -1,4 +1,4 @@
-import { Form } from "@radix-solid/primitives";
+import { Form } from "@wsagency/radix2solid-primitives";
 const FormDemo = () => <Form.Root class="w-[260px]">
 		<Form.Field class="mb-2.5 grid" name="email">
 			<div class="flex items-baseline justify-between">

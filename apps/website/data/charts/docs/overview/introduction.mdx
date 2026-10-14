@@ -1,0 +1,56 @@
+---
+metaTitle: Introduction
+metaDescription: Composable SVG charts for native Solid 2 that accept Radix Themes tokens as colors.
+---
+
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "@wsagency/radix2solid-charts";
+
+> Native Solid 2 fork of [solid-recharts](https://github.com/yumemi-thomas/solid-recharts) (MIT, © Thomas Guehenneux), derived from [Recharts](https://github.com/recharts/recharts) (MIT, © recharts). Adapted documentation; neither project endorses this fork.
+
+# Introduction
+
+<Description>Composable SVG charts for native Solid 2 that accept Radix Themes tokens as colors.</Description>
+
+`@wsagency/radix2solid-charts` is the charting package of Radix2Solid. It is a source copy of [solid-recharts](https://github.com/yumemi-thomas/solid-recharts) `2.0.0-beta.1` (commit `b1f9c67`), a Solid port of the [Recharts](https://recharts.org) component model, compiled with the same native Solid 2 toolchain as Primitives, Icons and Themes.
+
+You declare a chart container, its axes, grid, tooltip and series as JSX children. Colors take any CSS value. Charts does not read Themes by itself, and its built-in defaults are fixed colors. Pass Themes tokens such as `var(--accent-9)`, as the examples on this site do, and those colors follow the surrounding `Theme`'s accent color and light or dark appearance.
+
+```tsx live=true
+() => {
+	const data = [
+		{ month: "Jan", visitors: 4000 },
+		{ month: "Feb", visitors: 3000 },
+		{ month: "Mar", visitors: 2000 },
+		{ month: "Apr", visitors: 2780 },
+		{ month: "May", visitors: 1890 },
+		{ month: "Jun", visitors: 2390 },
+	];
+	return <ResponsiveContainer width="100%" height={240} initialDimension={{ width: 560, height: 240 }}>
+		<LineChart data={data} title="Visitors by month">
+			<CartesianGrid strokeDasharray="3 3" stroke="var(--gray-a6)" />
+			<XAxis dataKey="month" />
+			<YAxis />
+			<Tooltip />
+			<Line type="monotone" dataKey="visitors" stroke="var(--accent-9)" strokeWidth={2} />
+		</LineChart>
+	</ResponsiveContainer>;
+}
+```
+
+## Chart families
+
+The package exports the twelve chart families inherited from solid-recharts: [LineChart](../components/line-chart), [AreaChart](../components/area-chart), [BarChart](../components/bar-chart), [ComposedChart](../components/composed-chart), [ScatterChart](../components/scatter-chart), [PieChart](../components/pie-chart), [RadarChart](../components/radar-chart), [RadialBarChart](../components/radial-bar-chart), [FunnelChart](../components/funnel-chart), [Treemap](../components/treemap), [Sankey](../components/sankey) and [SunburstChart](../components/sunburst-chart). Axes, grids, reference lines and areas, `Brush`, `ErrorBar`, `Tooltip`, `Legend`, labels, shapes, hooks and animation controllers are exported too.
+
+## Upstream and parity
+
+| Source | Version | Commit |
+| --- | --- | --- |
+| [solid-recharts](https://github.com/yumemi-thomas/solid-recharts), imported source | `2.0.0-beta.1` | `b1f9c6729eefb42caf96d2162ad8c71c2c5520e3` |
+| [Recharts](https://github.com/recharts/recharts), reference that solid-recharts tracks | `3.9.2` | `b3451050c027a23957ffa50a2665c9119df21e47` |
+| Recharts, newer release tracked but not ported | `3.10.1` | `ffb918798051ef040bb7f9922d3850c9c189f39f` |
+
+The props of each chart follow the Recharts 3.9.2 reference as implemented by solid-recharts. This page makes no claim of complete Recharts parity: React-only APIs such as `Customized` and element cloning are not part of the Solid API, and Recharts 3.10.1 changes are not ported. The package's `UPSTREAM.md` records the provenance and every local patch.
+
+## Licensing
+
+The package is MIT licensed. Its `LICENSE` keeps the solid-recharts copyright (© Thomas Guehenneux) and the Recharts copyright (© recharts). Neither project endorses this fork. Its runtime dependencies `d3-scale` and `d3-shape` stay external and install as separate ISC-licensed packages. The package's `NOTICE` reproduces the license of each resolved D3 package (`d3-scale`, `d3-shape` and their dependencies, including `internmap`); when your bundler inlines them, keep those notices with your build.
