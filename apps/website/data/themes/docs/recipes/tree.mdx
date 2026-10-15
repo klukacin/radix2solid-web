@@ -1,0 +1,24 @@
+---
+metaTitle: Tree
+metaDescription: A styled hierarchy keeping focused, selected, activated and expanded keys separate.
+---
+
+import TreeDemo from "../../../../src/demos/tree";
+
+# Tree
+
+<Description>A hierarchy explorer, not an application filesystem or router.</Description>
+
+```tsx live=true
+() => <Card style={{ width: "min(100%, 480px)" }}><TreeDemo /></Card>
+```
+
+The outline marks keyboard focus; filled rows mark accepted selection. Arrows only move focus except branch-opening/closing arrows; Space selects, Enter activates once. The disclosure button changes expansion without activating its row. The two Readme labels have distinct stable keys, and the disabled Shared parent does not disable its enabled descendant.
+
+Turn off acceptance controls to inspect rejected expansion or selection proposals. **Protected action** cancels activation before incrementing the counter or selecting. Reorder source children to exercise keyed focus with updated visible order. Collapse Source while a child is selected: the selected key remains, although no hidden row is tabbable. External collapse must not steal focus from its button; a collapse that actually hides a focused descendant repairs focus inside the tree.
+
+The RTL control reverses logical branch arrows, not selected identity. Native Tree owns all navigation and repair; the recipe owns only application state and rendering. Extra folder glyphs, if you add them, are presentation and do not create a primitive dependency.
+
+For an ordinary sidebar of links, prefer a [disclosure list](/themes/docs/recipes/collapsible). Tree deliberately excludes arbitrary embedded tab controls, routing, loading, filesystem operations, virtualization and multi-selection. Partial-data ARIA metadata remains the author's responsibility.
+
+See [all parts, keyboard details and three standalone styling downloads](/primitives/docs/components/tree). Requires the [rc.3 source candidate](/themes/docs/overview/getting-started), not the previously published rc.2.

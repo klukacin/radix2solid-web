@@ -10,21 +10,32 @@ const site = resolve(import.meta.dirname, '..');
 const output = resolve(site, 'out/sandboxes');
 const coverage: { sandboxes: string[] } = JSON.parse(await readFile(resolve(site, 'coverage-manifest.json'), 'utf8'));
 const archives = (await readdir(output)).filter(name => name.endsWith('.tar.gz')).sort();
-assert.equal(archives.length, 95, 'All 95 advertised archives must be exercised.');
+assert.equal(archives.length, 110, 'All 110 advertised archives must exist.');
 assert.deepEqual(archives, [...coverage.sandboxes].sort());
+const requested = process.argv.slice(2);
+for (const archive of requested) assert(archives.includes(archive), `Unknown requested archive: ${archive}`);
+const selectedArchives = requested.length ? archives.filter(archive => requested.includes(archive)) : archives;
 const scratch = await mkdtemp(resolve(tmpdir(), 'radix2solid-sandboxes-'));
 const logRoot = resolve(site, '../../.artifacts/sandboxes');
 await mkdir(logRoot, { recursive: true });
 const logs = await mkdtemp(resolve(logRoot, 'run-'));
 const failures: string[] = [];
 let cursor = 0;
-const representatives: Record<string, 'dialog' | 'toast' | 'select' | 'charts'> = {
+type RuntimeFamily = 'dialog' | 'toast' | 'select' | 'charts' | 'combobox' | 'command' | 'tree' | 'splitter' | 'icons-extra';
+const representatives: Record<string, RuntimeFamily> = {
   'dialog-css.tar.gz': 'dialog',
   'toast-css-modules.tar.gz': 'toast',
   'select-tailwind.tar.gz': 'select',
-  'charts-css-modules.tar.gz': 'charts'
+  'charts-css-modules.tar.gz': 'charts',
+  'combobox-css-modules.tar.gz': 'combobox',
+  'combobox-css.tar.gz': 'combobox',
+  'combobox-tailwind.tar.gz': 'combobox',
+  'command-css.tar.gz': 'command',
+  'tree-tailwind.tar.gz': 'tree',
+  'splitter-css-modules.tar.gz': 'splitter',
+  'icons-extra-css-modules.tar.gz': 'icons-extra'
 };
-async function checkRuntime(project: string, family: 'dialog' | 'toast' | 'select' | 'charts', log: FileHandle) {
+async function checkRuntime(project: string, family: RuntimeFamily, log: FileHandle) {
   const server = await preview({ root: project, configFile: false, preview: { host: '127.0.0.1', port: 0 } });
   try {
     const address = server.httpServer.address();
@@ -62,6 +73,49 @@ async function checkRuntime(project: string, family: 'dialog' | 'toast' | 'selec
           await page.getByRole('button', { name: 'Bar', exact: true }).click();
           await expect(page.getByRole('button', { name: 'Bar', exact: true })).toHaveAttribute('aria-pressed', 'true');
           await expect(chart.locator('.recharts-bar-rectangle')).toHaveCount(12);
+        } else if (family === 'combobox') {
+          const input = page.getByRole('combobox', { name: 'Destination', exact: true });
+          await input.fill('Paris');
+          await input.press('ArrowDown');
+          await input.press('Enter');
+          await page.getByRole('button', { name: 'Book destination', exact: true }).click();
+          await expect(page.getByLabel('Submitted destination', { exact: true })).toContainText('paris; count: 1');
+          await input.fill('Unmatched');
+          assert.equal(await page.getByRole('form', { name: 'Destination booking', exact: true }).evaluate(node => new FormData(node as HTMLFormElement).has('destination')), false);
+          await input.press('Escape');
+          await page.getByRole('checkbox', { name: 'Accept value proposals', exact: true }).uncheck();
+          const form = page.getByRole('form', { name: 'Destination booking', exact: true });
+          await form.evaluate(node => (node as HTMLFormElement).reset());
+          await expect(page.getByRole('status', { name: 'Accepted destination', exact: true })).toHaveText('Key: paris');
+          await expect(page.getByRole('status', { name: 'Destination query', exact: true })).toHaveText('Query: empty');
+          await expect(input).toHaveValue('');
+          assert.equal(await form.evaluate(node => new FormData(node as HTMLFormElement).has('destination')), false);
+        } else if (family === 'command') {
+          const input = page.getByRole('combobox', { name: 'Inline actions', exact: true });
+          await input.fill('Create note');
+          await input.press('Enter');
+          await expect(page.getByLabel('Command action count', { exact: true })).toHaveText('Actions: 1');
+          await expect(page.getByLabel('Command form submissions', { exact: true })).toHaveText('Form submissions: 0');
+        } else if (family === 'tree') {
+          const item = page.getByRole('treeitem', { name: 'Readme', exact: true });
+          await item.focus();
+          await item.press('Space');
+          await expect(page.getByLabel('Tree selected key', { exact: true })).toHaveText('Selected: docs-readme');
+          await expect(page.getByLabel('Tree activations', { exact: true })).toHaveText('Activations: 0');
+        } else if (family === 'splitter') {
+          const handle = page.getByRole('separator', { name: 'Workspace sidebar', exact: true });
+          await expect(handle).not.toHaveAttribute('aria-disabled', 'true');
+          await handle.focus();
+          await handle.press('ArrowRight');
+          await expect(page.getByLabel('Splitter commit count', { exact: true })).toHaveText('Commits: 1');
+          await handle.press('Enter');
+          await expect(page.getByRole('button', { name: 'Sidebar action', exact: true })).not.toBeVisible();
+          await expect(page.getByLabel('Splitter commit count', { exact: true })).toHaveText('Commits: 1');
+        } else if (family === 'icons-extra') {
+          const icon = page.getByRole('img', { name: 'Open project folder', exact: true });
+          await expect(icon).toHaveAttribute('viewBox', '0 0 24 24');
+          await expect(icon).toHaveAttribute('width', '24');
+          await expect(icon.locator('title')).toHaveText('Open project folder');
         } else {
           const select = page.getByRole('combobox', { name: 'Food', exact: true });
           await select.click();
@@ -83,8 +137,8 @@ async function checkRuntime(project: string, family: 'dialog' | 'toast' | 'selec
 try {
   // Two independent installs/builds at a time; each extracted archive owns its workspace and lock.
   await Promise.all(Array.from({ length: 2 }, async () => {
-    while (cursor < archives.length) {
-      const archive = archives[cursor++];
+    while (cursor < selectedArchives.length) {
+      const archive = selectedArchives[cursor++];
       const project = resolve(scratch, archive.replace(/\.tar\.gz$/, ''));
       const log = await open(resolve(logs, `${archive}.log`), 'w');
       try {
@@ -106,18 +160,23 @@ try {
         assert.doesNotMatch(workspace, /minimumReleaseAge:|playwright|^packages:/m, `${archive}: workspace must not relax the global age gate or carry host-only entries`);
         const manifest: { dependencies: Record<string, string>; devDependencies: Record<string, string> } = JSON.parse(await readFile(resolve(project, 'package.json'), 'utf8'));
         assert.equal(manifest.devDependencies['@solidjs/vite-plugin'], '3.0.0-next.50', `${archive}: plugin must match the RC15 tuple`);
-        const products = archive.startsWith('charts-') ? ['primitives', 'icons', 'themes', 'charts'] : ['primitives', 'icons', 'themes'];
+        const products = archive.startsWith('charts-') ? ['primitives', 'icons', 'themes', 'charts']
+          : archive.startsWith('icons-extra-') ? ['primitives', 'icons', 'themes', 'icons-extra'] : ['primitives', 'icons', 'themes'];
         assert.deepEqual(Object.keys(manifest.dependencies).filter(name => name.startsWith('@wsagency/')).sort(), products.map(name => `@wsagency/radix2solid-${name}`).sort(), `${archive}: unexpected dependencies`);
         for (const name of ['solid-js', '@solidjs/web']) assert.equal(manifest.dependencies[name], '2.0.0-rc.15', `${archive}: ${name} must match the RC15 tuple`);
         for (const name of products) {
           const spec = manifest.dependencies[`@wsagency/radix2solid-${name}`];
-          assert.match(spec, new RegExp(`^file:\\./vendor/wsagency-radix2solid-${name}-0\\.1\\.0-rc\\.2\\.tgz$`), `${archive}: ${name} tarball name`);
+          assert.match(spec, new RegExp(`^file:\\./vendor/wsagency-radix2solid-${name}-0\\.1\\.0-rc\\.3\\.tgz$`), `${archive}: ${name} tarball name`);
           await readFile(resolve(project, spec.slice('file:'.length)));
         }
         for (const file of products.flatMap(name => name === 'charts' ? ['LICENSE-charts', 'NOTICE-charts'] : [`LICENSE-${name}`])) await readFile(resolve(project, file));
-        assert.match(workspace, /^ {2}'@wsagency\/radix2solid-primitives': "file:\.\/vendor\/wsagency-radix2solid-primitives-0\.1\.0-rc\.2\.tgz"$/m, `${archive}: themes' transitive primitives must be overridden to the bundled tarball`);
+        assert.match(workspace, /^ {2}'@wsagency\/radix2solid-primitives': "file:\.\/vendor\/wsagency-radix2solid-primitives-0\.1\.0-rc\.3\.tgz"$/m, `${archive}: themes' transitive primitives must be overridden to the bundled tarball`);
         await exec('pnpm', ['install', '--no-frozen-lockfile']);
         await exec('pnpm', ['build']);
+        for (const name of products) {
+          const installed = JSON.parse(await readFile(resolve(project, `node_modules/@wsagency/radix2solid-${name}/package.json`), 'utf8'));
+          assert.equal(installed.version, '0.1.0-rc.3', `${archive}: installed ${name} candidate version`);
+        }
         // The installed lock must resolve one coherent tuple and the local primitives tarball.
         const lock = await readFile(resolve(project, 'pnpm-lock.yaml'), 'utf8');
         const resolved = new Set([...lock.matchAll(/^ {2}'?((?:@solidjs\/(?:web|signals|compiler|babel-plugin|vite-plugin))|solid-js)@([^(':\s]+)/gm)].map(match => `${match[1]}@${match[2]}`));
@@ -135,4 +194,4 @@ try {
   }));
 } finally { await rm(scratch, { recursive: true, force: true }); }
 assert.deepEqual(failures, [], `Archive consumer failures; raw logs: ${logs}`);
-console.log(`All ${archives.length} real archives independently installed and built; runtime interactions: ${Object.keys(representatives).length} representative families × 3 engines. Raw logs: ${logs}.`);
+console.log(`${selectedArchives.length}/${archives.length} real archives independently installed and built; runtime interactions: ${selectedArchives.filter(archive => representatives[archive]).length} representative archives × 3 engines. Raw logs: ${logs}.`);

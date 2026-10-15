@@ -1,0 +1,12 @@
+.CommandDemo { display: grid; gap: 12px; width: min(100%, 440px); color: var(--gray-12, #202020); font: 14px/1.5 system-ui, sans-serif; }
+.CommandInput { box-sizing: border-box; width: 100%; padding: 10px 12px; border: 1px solid var(--gray-7, #aaa); border-radius: 6px; background: var(--color-panel-solid, white); color: inherit; font: inherit; }
+.CommandList { padding: 6px; max-height: 240px; overflow: auto; }
+.CommandItem { padding: 8px 12px; border-radius: 4px; cursor: default; }
+.CommandItem[aria-selected="true"] { background: var(--accent-4, #e4ddff); outline: 1px solid var(--accent-9, #6e56cf); }
+.CommandItem[data-disabled] { opacity: .5; }
+.CommandLabel { padding: 6px 12px; color: var(--gray-11, #666); }
+.CommandButton { border: 1px solid var(--gray-7, #aaa); border-radius: 6px; padding: 8px 12px; background: var(--color-panel-solid, white); color: inherit; font: inherit; }
+.CommandInput:focus-visible, .CommandButton:focus-visible { outline: 2px solid var(--accent-9, #6e56cf); outline-offset: 2px; }
+.CommandOverlay { position: fixed; inset: 0; z-index: 60; background: #0007; }
+.CommandContent { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 61; box-sizing: border-box; width: min(90vw, 480px); max-height: 85vh; overflow: auto; padding: 24px; border-radius: 12px; background: var(--color-panel-solid, white); color: var(--gray-12, #202020); box-shadow: 0 12px 40px #0004; }
+@media (forced-colors: active) { .CommandItem[aria-selected="true"] { outline: 2px solid Highlight; } }

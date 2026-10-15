@@ -1,0 +1,45 @@
+---
+metaTitle: Combobox
+metaDescription: A styled destination chooser with honest accepted-key and form state.
+---
+
+import ComboboxDemo from "../../../../src/demos/combobox";
+import { Combobox } from "@wsagency/radix2solid-primitives";
+
+# Combobox
+
+<Description>A native chooser in a Themes card, with query, accepted key and actual submission visible.</Description>
+
+```tsx live=true
+() => <Card style={{ width: "min(100%, 480px)" }}>
+  <ComboboxDemo />
+</Card>
+```
+
+Choose Paris with arrows and Enter, then submit the form. Enter commits a suggestion without submitting. Type a different draft: the accepted key can still read `paris`, but it is not a successful form field. Both the submit button and `requestSubmit()` validate the focusable input. Clear explicitly removes the key.
+
+Turn off **Accept value proposals** to observe parent refusal, or remove Paris from the data after accepting it. Key, query and submitted output are deliberately separate. Prevent reset to see that cancelled reset does not clear the draft; otherwise reset requests the initial null/empty state. No application-side filtering, focus navigation or synthetic hidden-field workaround is used.
+
+The accepted-state readouts use non-resettable elements with `role="status"`. Native form reset replaces the children of form-associated `<output>` elements, including reactive rendering markers. Keep these display-only readouts non-resettable (or outside the reset form); do not intercept reset or rewrite the accepted query to repair the display.
+
+The input defaults to HTML `autocomplete="off"` so browser form-history suggestions do not compete with this custom list or consume Enter before it reaches the list. Leave that default in this recipe. It is consumer-overridable, including through a target factory, and is distinct from the input's `aria-autocomplete="list"` accessibility semantics.
+
+## External form ownership
+
+Root `form` associates both native validation and the successful key field. Use a unique form ID in your application. This optional external example is independent of the required booking form above.
+
+```tsx live=true
+() => <Box>
+  <form id="external-destination-form" aria-label="External destination form" onSubmit={event => event.preventDefault()}>
+    <Button type="submit">Submit external destination</Button>
+  </form>
+  <Combobox.Root items={[{ value: "oslo", label: "Oslo" }]} defaultValue="oslo" name="externalDestination" form="external-destination-form">
+    <Combobox.Input aria-label="External destination" />
+    <Combobox.Clear aria-label="Clear external destination">Clear</Combobox.Clear>
+  </Combobox.Root>
+</Box>
+```
+
+Read-only is not a required-validation substitute: native read-only inputs are barred from constraint validation, though unresolved keys still cannot submit. Always validate authorization and accepted keys on the server.
+
+See the [complete API and three standalone styling downloads](/primitives/docs/components/combobox), including data labels, controlled reconciliation, IME, SSR and focus behavior. Install the real [rc.3 source candidate archives](/themes/docs/overview/getting-started), not rc.2 for these new primitives.

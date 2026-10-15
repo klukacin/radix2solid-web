@@ -27,6 +27,15 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium firefox webkit
       - run: pnpm check
+      - name: Retain browser failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-failures-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .artifacts/playwright/
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 7
       # Deploys the exact out/ validated by `pnpm check` above; skips if main moved on.
       - if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |

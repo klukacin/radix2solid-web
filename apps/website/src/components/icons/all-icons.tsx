@@ -1,13 +1,14 @@
 
 import { type Element } from "solid-js";
 import * as Icons from "@wsagency/radix2solid-icons";
+import { FolderIcon, FolderOpenIcon } from "@wsagency/radix2solid-icons-extra";
 import { Grid, Tooltip, Heading, Box, IconButton, Flex } from "@wsagency/radix2solid-themes";
 import { useCopyToast } from "./copy-toast";
 import { Tooltip as TooltipPrimitive } from "@wsagency/radix2solid-primitives";
 import styles from "./all-icons.module.css";
 export const AllIcons = function AllIcons() {
   return <TooltipPrimitive.Provider disableHoverableContent>
-			<Grid class={styles.IconsContainer}>
+			<Grid class={styles.IconsContainer} role="region" aria-label="Original Radix icons">
 				<Box>
 					<Typography />
 					<Music />
@@ -25,6 +26,13 @@ export const AllIcons = function AllIcons() {
 					<Alignment />
 				</Box>
 			</Grid>
+      <Box px="4" pb="6" role="region" aria-label="Extra icons">
+        <Heading as="h3" size="3" mb="3">Extra icons · 2 original additions</Heading>
+        <Group>
+          <CopyButton label="Folder"><FolderIcon /></CopyButton>
+          <CopyButton label="Folder Open"><FolderOpenIcon /></CopyButton>
+        </Group>
+      </Box>
 		</TooltipPrimitive.Provider>;
 };
 const Group = (p: {
@@ -66,6 +74,9 @@ const Abstract = () => {
 				<CopyButton label="Hamburger Menu">
 					<Icons.HamburgerMenuIcon />
 				</CopyButton>
+				<CopyButton label="Filter">
+					<Icons.FilterIcon />
+				</CopyButton>
 				<CopyButton label="Cross 1">
 					<Icons.Cross1Icon />
 				</CopyButton>
@@ -104,6 +115,12 @@ const Abstract = () => {
 				</CopyButton>
 				<CopyButton label="Question Mark Circled">
 					<Icons.QuestionMarkCircledIcon />
+				</CopyButton>
+				<CopyButton label="Exclamation Mark">
+					<Icons.ExclamationMarkIcon />
+				</CopyButton>
+				<CopyButton label="Exclamation Circled">
+					<Icons.ExclamationCircledIcon />
 				</CopyButton>
 				<CopyButton label="Info Circled">
 					<Icons.InfoCircledIcon />
@@ -152,6 +169,9 @@ const Abstract = () => {
 				</CopyButton>
 				<CopyButton label="Exit Full Screen">
 					<Icons.ExitFullScreenIcon />
+				</CopyButton>
+				<CopyButton label="Minimize">
+					<Icons.MinimizeIcon />
 				</CopyButton>
 				<CopyButton label="Drag Handle Vertical">
 					<Icons.DragHandleVerticalIcon />
@@ -429,6 +449,9 @@ const Borders = () => {
 				<CopyButton label="Border Style">
 					<Icons.BorderStyleIcon />
 				</CopyButton>
+				<CopyButton label="Border Width">
+					<Icons.BorderWidthIcon />
+				</CopyButton>
 				<CopyButton label="Border Solid">
 					<Icons.BorderSolidIcon />
 				</CopyButton>
@@ -520,6 +543,24 @@ const Components = () => {
 				</CopyButton>
 				<CopyButton label="Dashboard">
 					<Icons.DashboardIcon />
+				</CopyButton>
+				<CopyButton label="Panel Left">
+					<Icons.PanelLeftIcon />
+				</CopyButton>
+				<CopyButton label="Panel Left Minimized">
+					<Icons.PanelLeftMinimizedIcon />
+				</CopyButton>
+				<CopyButton label="Panel Right">
+					<Icons.PanelRightIcon />
+				</CopyButton>
+				<CopyButton label="Panel Right Minimized">
+					<Icons.PanelRightMinimizedIcon />
+				</CopyButton>
+				<CopyButton label="Panel Bottom">
+					<Icons.PanelBottomIcon />
+				</CopyButton>
+				<CopyButton label="Panel Bottom Minimized">
+					<Icons.PanelBottomMinimizedIcon />
 				</CopyButton>
 				<CopyButton label="Activity Log">
 					<Icons.ActivityLogIcon />
@@ -922,6 +963,9 @@ const Objects = () => {
 				<CopyButton label="Globe">
 					<Icons.GlobeIcon />
 				</CopyButton>
+				<CopyButton label="Globe 2">
+					<Icons.Globe2Icon />
+				</CopyButton>
 				<CopyButton label="Sun">
 					<Icons.SunIcon />
 				</CopyButton>
@@ -958,6 +1002,9 @@ const Objects = () => {
 				<CopyButton label="Person">
 					<Icons.PersonIcon />
 				</CopyButton>
+				<CopyButton label="People">
+					<Icons.PeopleIcon />
+				</CopyButton>
 				<CopyButton label="Eye Open">
 					<Icons.EyeOpenIcon />
 				</CopyButton>
@@ -984,6 +1031,12 @@ const Objects = () => {
 				</CopyButton>
 				<CopyButton label="Desktop">
 					<Icons.DesktopIcon />
+				</CopyButton>
+				<CopyButton label="Server">
+					<Icons.ServerIcon />
+				</CopyButton>
+				<CopyButton label="Database">
+					<Icons.DatabaseIcon />
 				</CopyButton>
 				<CopyButton label="Laptop">
 					<Icons.LaptopIcon />

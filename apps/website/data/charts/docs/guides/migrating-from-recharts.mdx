@@ -9,7 +9,7 @@ metaDescription: What changes, and what does not, when moving a React Recharts a
 
 <Description>What changes, and what does not, when moving a React Recharts app to Solid.</Description>
 
-Component names, composition and props follow Recharts 3.9.2 as implemented by solid-recharts. Most chart JSX can be moved from a React app with mechanical changes.
+Component names, composition and base props follow Recharts 3.9.2 as implemented by solid-recharts, with the [selected A1–A13 and B1/B2 next-suite adaptations](/charts/docs/overview/releases). Most chart JSX can be moved from a React app with mechanical changes; this is not full Recharts 3.10.1 parity.
 
 ## What stays the same
 
@@ -42,9 +42,19 @@ export default () => <BarChart width={400} height={240} data={[{ name: "A", uv: 
 </BarChart>;
 ```
 
+## Selected next-suite APIs
+
+- `Legend` accepts `position?: CartesianPosition` and `offset?: number` (default `0`). Position overrides `align`/`verticalAlign`; its default `layout="auto"` is vertical for left/right and inside-left/right, horizontal otherwise. Only the position-set default-mount path adds wrapper-owned server legend HTML, preserving a zero measured box in first-client styles before browser measurement. No-position and explicit custom-portal legends retain the existing DOM-only path. Inside legends reserve no plot space. See [LineChart](/charts/docs/components/line-chart).
+- `XAxis height="auto"` starts at 30px on the server and first client render, then measures rotated ticks and string labels after mount. Requested numeric heights and tick positions remain unchanged, but corrected shared server plot clips can change SSR markup. Automatic height is not server-final geometry; see [SSR](/charts/docs/guides/responsive-and-ssr).
+- `Sankey` accepts `title`, `desc`, and `accessibilityLayer`; see its [live accessible example](/charts/docs/components/sankey).
+
+### Controlled Brush is intentionally different
+
+A Brush with controlled `startIndex`/`endIndex` keeps its dragged slide position after mouseup even when the parent leaves those props unchanged, and retains controlled indices across data changes. This preserves imported Recharts behavior; it is not the parent-authoritative refusal contract used by the new Combobox, Command, Tree, and Splitter Primitives. Do not use a refused Brush update as a guard for an action.
+
 ## Not available
 
 - `Customized` (render a plain child component instead)
 - React element cloning patterns
 - Treemap update animation: `Treemap` has no `isUpdateAnimationActive` prop; only the entry animation runs
-- Changes released after Recharts 3.9.2, including 3.10.1
+- Full Recharts 3.10.1 parity, CartesianGrid theme support, and canary APIs. Only the named selected adaptations and two ReduceCSSCalc fixes are in the next-suite candidate.

@@ -26,7 +26,7 @@ container.
 		],
 	};
 	return <ResponsiveContainer width="100%" height={300} initialDimension={{ width: 560, height: 300 }}>
-		<Sankey data={data} nodePadding={24}>
+		<Sankey data={data} nodePadding={24} title="Documentation flow" desc="Visits flow through docs and playground to installation." accessibilityLayer>
 			<Tooltip />
 		</Sankey>
 	</ResponsiveContainer>;
@@ -45,8 +45,13 @@ container.
 | `linkCurvature`   | `number`              | `0.5`            | Bezier curve tension (0 = straight, 1 = max curve)    |
 | `align`           | `"left" \| "justify"` | `"justify"`      | Horizontal alignment of nodes                         |
 | `verticalAlign`   | `"top" \| "justify"`  | `"justify"`      | Vertical alignment within columns                     |
+| `title`           | `string`              | —                | Accessible title rendered in the root SVG             |
+| `desc`            | `string`              | —                | Accessible description rendered in the root SVG       |
+| `accessibilityLayer` | `boolean`           | `true`           | Defaults the root SVG to `role="application"` and `tabIndex={0}` |
+| `role`            | SVG ARIA role         | `"application"` when accessibility layer is enabled | Explicit role overrides the layer default |
+| `tabIndex`        | `number`              | `0` when accessibility layer is enabled | Explicit numeric value overrides the layer default |
 
-The remaining props follow the Recharts 3.9.2 `Sankey` API (reference commit `b3451050`) that solid-recharts tracks; see the [Recharts Sankey reference](https://recharts.org/en-US/api/Sankey). Changes from Recharts 3.10.1 are tracked but not ported.
+The base API follows Recharts 3.9.2 (reference commit `b3451050`), with the selected next-suite `title`, `desc`, and `accessibilityLayer` additions. The supplied accessible name and description are present in server HTML and retained through hydration. These additions do not imply full Recharts 3.10.1 parity or screen-reader certification. See the [release scope](/charts/docs/overview/releases) and [Recharts Sankey reference](https://recharts.org/en-US/api/Sankey).
 
 ## Notes
 

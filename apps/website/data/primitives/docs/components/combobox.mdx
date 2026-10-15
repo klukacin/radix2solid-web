@@ -1,0 +1,115 @@
+---
+metaTitle: Combobox
+metaDescription: An editable single-key chooser with independent query and accepted value.
+aria: https://www.w3.org/WAI/ARIA/apg/patterns/combobox/
+---
+
+import ComboboxDemo from "../../../../src/demos/combobox";
+
+# Combobox
+
+<Description>An editable single-key chooser. Suggestions do not become selections until accepted.</Description>
+
+<HeroContainer><ComboboxDemo /></HeroContainer>
+<HeroCodeBlock folder="Combobox" />
+
+This native Solid component is part of the **0.1.0-rc.3 source candidate**, not the previously published rc.2. Use the [candidate installation instructions](/primitives/docs/overview/getting-started). The [Themes recipe](/themes/docs/recipes/combobox) adds presentation without a second filtering or focus engine.
+
+## Imports and anatomy
+
+```tsx
+import { Combobox } from "@wsagency/radix2solid-primitives";
+// Alternatively: import * as Combobox from "@wsagency/radix2solid-primitives/combobox";
+
+export default () => <Combobox.Root items={[{ value: "paris", label: "Paris" }]} name="destination">
+  <Combobox.Input aria-label="Destination" />
+  <Combobox.Trigger aria-label="Show destinations">Show</Combobox.Trigger>
+  <Combobox.Clear aria-label="Clear destination">Clear</Combobox.Clear>
+  <Combobox.Portal>
+    <Combobox.Content>
+      <Combobox.List aria-label="Destinations">
+        <Combobox.Group>
+          <Combobox.Label>Europe</Combobox.Label>
+          <Combobox.Item value="paris">
+            <Combobox.ItemText>Paris</Combobox.ItemText>
+            <Combobox.ItemIndicator>Selected</Combobox.ItemIndicator>
+          </Combobox.Item>
+        </Combobox.Group>
+      </Combobox.List>
+      <Combobox.Empty>No destinations match.</Combobox.Empty>
+    </Combobox.Content>
+  </Combobox.Portal>
+</Combobox.Root>;
+```
+
+## API reference
+
+### Root
+
+| Prop | Type / default | Meaning |
+| --- | --- | --- |
+| `items` | `readonly ComboboxItem[]`, required | Complete data records, including selected records whose rows are filtered out. |
+| `value`, `defaultValue` | `string \| null`, default `null` | Accepted key, independently controlled from the query. |
+| `onValueChange` | `(value: string \| null) => void` | Proposal, not confirmation of parent acceptance. |
+| `query`, `defaultQuery` | `string` | Visible text; absent default derives from the initial accepted item's label, otherwise empty. |
+| `onQueryChange` | `(query: string) => void` | Query proposal. A controlled query stays parent-authoritative. |
+| `open`, `defaultOpen` | `boolean`, default `false` | Suggestion popup state. |
+| `onOpenChange` | `(open: boolean) => void` | Open-state proposal. |
+| `filter` | `(item, query) => boolean` or `false` | Default is case-insensitive label substring matching against trimmed query, preserving order. `false` disables it. |
+| `disabled`, `readOnly`, `required` | `boolean`, default `false` | Interaction and form participation; see the read-only validation caveat below. |
+| `name`, `form` | `string` | Successful key field name and optional external form ID. Root owns both associations. |
+| `dir` | `"ltr" \| "rtl"` | Text direction. |
+
+`ComboboxItem` is `{ value: string; label: string; disabled?: boolean }`. Keys must be nonempty, unique and stable; invalid keys are configuration errors. Plain-text labels may repeat. Data supplies the server-rendered selected label: rich `ItemText` children never redefine it.
+
+### Parts
+
+| Part | Responsibility |
+| --- | --- |
+| `Input` | Native text input, `role="combobox"`, `aria-autocomplete="list"`; supply a label or accessible name. Forward descriptions and input attributes here, but leave submission name/form to Root. |
+| `Trigger` | Optional named `type="button"`, excluded from tab sequence; toggles without taking input focus. |
+| `Portal` | Native portal server/client lifecycle, not a promise of server-rendered popup options. |
+| `Content` | Nonmodal layer anchored to Input, with existing Popper positioning props such as `sideOffset`, and explicit labels/descriptions. |
+| `List` | Root-owned listbox ID containing rendered options/groups. |
+| `Item` | Required `value` matching Root data. Root supplies label, matching and disabled state. Accepts consumer events/ref/target-factory `asChild`. |
+| `ItemText` | Label presentation only. |
+| `ItemIndicator` | Committed-selection presentation, distinct from the active suggestion. |
+| `Group`, `Label` | Accessible option grouping. |
+| `Empty` | Non-option status when no matching options are rendered. Place beside `List` inside `Content`, never inside the listbox. |
+| `Clear` | Optional named button requesting null key, empty query and close, then input focus. Disabled/read-only prevents mutation. |
+
+## Query is not a value
+
+Typing changes the query and opens suggestions, not the accepted key. Filtering never selects. Trigger shows current-query matches without accepting the first result. Enter on an active option requests its key and label and closes; the same Enter cannot submit the surrounding form. Pointer activation uses the same commitment path. Enter without an active option is a normal submission attempt, subject to validity.
+
+Escape and blur leaving the whole input/popup request the accepted label and close; neither accepts an active suggestion. Clearing text over a selected key remains an unresolved draft. Use `Clear` to request null explicitly.
+
+All three controlled channels remain authoritative. A parent may reject key, text or open proposals independently. A rejected key paired with an accepted query stays invalid: callbacks are not proof that the new key was accepted. Accepted programmatic/asynchronous keys request their data label; controlled query can refuse reconciliation. No-op proposals are suppressed.
+
+Removing or disabling the accepted record requests null once per transition, never a neighboring value. If the parent refuses, that key remains unresolved and cannot submit. The last known label may remain as a draft. An initially unknown key has no derived label. Keep the selected record in Root data when only filtering its row.
+
+## Native forms
+
+A resolved field is either null plus empty text, or an existing enabled key whose label exactly equals the visible query. Only the latter produces a successful named field. Unmatched text, a removed/disabled key, and an empty draft over a nonnull key omit the successful field even in direct `FormData` or validation-bypassing `form.submit()`.
+
+The visible input is the focusable validation target. Ordinary submit and `requestSubmit()` reject unresolved text and required null selection, with consistent `aria-invalid`. The visible text is never submitted as the key. Client validation is not server authorization.
+
+Set Root `form` for an external form: it associates both validation input and successful field. Conflicting Input `name`/`form` does not establish a second owner. Native input/change and accepted-key changes do not double-dispatch change events.
+
+Reset restores captured initial key/query, closes and clears active suggestion. Controlled reset requests initial state and reflects accepted props if the parent refuses. Preventing reset leaves state alone. A removed initial key is invalid, not replaced automatically.
+
+Disabled fields do not interact or submit. Read-only fields remain focusable/copyable and submit a resolved key, but cannot edit/open/clear/select. **Native read-only inputs do not participate in constraint validation**: required does not guarantee validation in that mode. Unresolved keys still never submit.
+
+## Keyboard, accessibility and server rendering
+
+Input retains DOM focus. Up/Down activate enabled visible options without wrapping; opening Down starts at the first, Up at the last. `aria-activedescendant` only names a mounted visible option. `aria-selected` represents the active suggestion, while the item state/indicator represents commitment. Reorder/removal reconciles against visible DOM order.
+
+Tab stays native; options/Trigger are not extra tab stops. Home/End, Left/Right, Ctrl/Meta editing and IME composition remain input editing, including RTL. Composition Enter does not commit. Content is nonmodal: no Select-style focus trap and no automatic option focus. Active scrolling does not move input focus; touch scrolling must remain possible.
+
+`Combobox.Input` defaults the native HTML `autocomplete` attribute to `"off"` so browser form-history suggestions do not compete with the custom list or intercept its Enter key. This is separate from `aria-autocomplete="list"`, which describes the custom suggestions to assistive technology. Consumers may override HTML `autocomplete`, including through a target factory; doing so can re-enable competing browser history behavior. Keep the default for this custom-list recipe.
+
+SSR renders the selected label from data, deterministic IDs, initial invalid state and correct successful-field participation without measurements. Browser custom validity begins during hydration, not before JavaScript; portal options follow the native portal lifecycle. Hydration preserves the input and text.
+
+No freeform keys, multiple selection, tokens, virtualization, asynchronous loader or fuzzy-search engine are included. Use [Select](/primitives/docs/components/select) for noneditable choice and [Command](/primitives/docs/components/command) for actions. DOM/browser checks are not a blanket screen-reader certification.
+
+[Native source](https://github.com/wsagency/radix2solid/tree/main/packages/primitives/src/combobox)

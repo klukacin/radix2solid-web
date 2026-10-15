@@ -16,6 +16,7 @@
     "@mdx-js/mdx": "3.1.1",
     "@wsagency/radix2solid-charts": "workspace:*",
     "@wsagency/radix2solid-icons": "workspace:*",
+    "@wsagency/radix2solid-icons-extra": "workspace:*",
     "@wsagency/radix2solid-primitives": "workspace:*",
     "@wsagency/radix2solid-themes": "workspace:*",
     "@radix-ui/colors": "3.0.0",

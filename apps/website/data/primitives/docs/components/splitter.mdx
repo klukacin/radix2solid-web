@@ -1,0 +1,102 @@
+---
+metaTitle: Splitter
+metaDescription: A measured two-pane layout with accepted-size commits and independent collapse state.
+aria: https://www.w3.org/WAI/ARIA/apg/patterns/windowsplitter/
+---
+
+import SplitterDemo from "../../../../src/demos/splitter";
+
+# Splitter
+
+<Description>Two constrained panes, one named separator, and no optimistic controlled resizing.</Description>
+
+<HeroContainer><SplitterDemo /></HeroContainer>
+<HeroCodeBlock folder="Splitter" />
+
+New in the **0.1.0-rc.3 source candidate**. Use [candidate archives](/primitives/docs/overview/getting-started), not the previously published rc.2. [Themes layout recipe](/themes/docs/recipes/splitter).
+
+## Imports and anatomy
+
+```tsx
+import { Splitter } from "@wsagency/radix2solid-primitives";
+// Alternatively: import * as Splitter from "@wsagency/radix2solid-primitives/splitter";
+
+export default () => <Splitter.Root unit="%" defaultSize={40} style={{ width: "100%", height: "240px" }}>
+  <Splitter.Panel side="primary" minSize={20} collapsible>Sidebar</Splitter.Panel>
+  <Splitter.Handle aria-label="Sidebar" style={{ width: "24px" }} />
+  <Splitter.Panel side="secondary" minSize={20}>Content</Splitter.Panel>
+</Splitter.Root>;
+```
+
+Exactly one primary Panel, Handle and secondary Panel must belong directly to each Root in that logical order. Wrong order, duplicate or missing parts are configuration errors. Nest another Root inside a Panel, not as a third sibling panel.
+
+## API reference
+
+### Root
+
+| Prop | Type / default |
+| --- | --- |
+| `orientation` | `"horizontal" \| "vertical"`, default horizontal; describes pane flow, not separator orientation. |
+| `dir` | `"ltr" \| "rtl"`; RTL reverses horizontal visual flow, not logical primary identity. |
+| `unit` | `"%" \| "px"`, default `%`; applies to sizes, bounds, step and callbacks. |
+| `size`, `defaultSize` | `number`; defaults to 50 only in percent mode. Pixels require an explicit initial size. |
+| `onSizeChange` | `(proposal: number) => void`; constrained user proposal before acceptance. |
+| `onSizeCommit` | `(acceptedSize: number) => void`; effective rendered accepted size after a completed changed resize. |
+| `step` | Positive number; default 1 percent or 10 pixels. Shift multiplies by ten. |
+| `disabled` | `boolean`, default false; disables Handle interaction, not external state updates. |
+| `collapsed`, `defaultCollapsed` | `boolean`, default false; separate from retained expanded size. |
+| `onCollapsedChange` | `(proposal: boolean) => void`; collapse/restore proposals only. |
+
+### Panel
+
+Required `side="primary" | "secondary"`. `minSize` defaults to zero. `maxSize` defaults to 100 in percent mode and unbounded in pixels. Primary alone supports `collapsible` and `collapsedSize` (default zero). Collapsed size cannot exceed primary minimum. Standard IDs, refs and native attributes apply.
+
+All numbers must be finite; sizes and bounds nonnegative, step positive, maxima at least minima. Percent values lie in 0–100. Changing units requires coherent conversion by the application: stored pixels are never silently reinterpreted as percentages.
+
+### Handle
+
+One focusable `role="separator"` with an accessible name matching the primary pane, via `aria-label` or `aria-labelledby`. Root generates `aria-controls` for primary Panel. Standard refs/events and native target-factory `asChild` apply. Give it a usable touch target, focus indicator and forced-colors styling.
+
+Horizontal flow produces a vertical separator; vertical flow produces a horizontal separator. Disabled Root removes it from the tab sequence. Unmeasured, zero-area or infeasible layouts keep it focusable but aria-disabled, with no actions including Enter.
+
+## Geometry and constraints
+
+Available size is the Root inner axis size **after subtracting handle and gaps**, not its outer border box. Percentages use that available size. Both panes constrain the primary interval: the lower bound is the larger of primary minimum and available minus secondary maximum; the upper bound is the smaller of primary maximum and available minus secondary minimum, within available space. Primary is clamped to that interval; secondary gets the remainder. Fractions are retained; pointer updates are not keyboard-step quantized.
+
+Infeasible bounds preserve each pane's own constraints rather than inventing a feasible range. Minima may overflow; maxima may leave trailing space. `data-constraint-state` is `overflow`, `underflow` or `satisfied`. Handle disables all actions until feasibility returns, while external state changes remain possible. No negative, NaN or unordered ARIA range is emitted.
+
+Measurement/constraint changes recompute effective layout from accepted state without user proposal or commit callbacks. A controlled size temporarily constrained by available room remains the parent's request and can regain its size later. Zero-area layout does not divide by zero or emit speculative actions.
+
+## Proposals versus commits
+
+`onSizeChange` proposes constrained user size. Controlled layout remains based on supplied `size`; a parent rejecting proposals must not see the pane jump. Equal-to-current effective proposals are suppressed.
+
+A completed pointer gesture commits once only if effective accepted size differs from gesture start; a keyboard resize commits once only if accepted layout changed. Commit never contains a rejected proposal. Acceptance is observed at the native flush/render boundary, not assumed from synchronous callback reads. A later async external update does not retroactively create a commit.
+
+Pointer cancellation, lost capture, disable or unmount end without a commit and do not roll back already accepted live changes. External accepted size changes during a drag terminate it, except normal acknowledgement of that drag's proposal. Geometry, unit, axis, direction or constraint changes also terminate stale gestures.
+
+## Collapse is not a resize
+
+Only primary is collapsible. Collapse preserves expanded size, renders `collapsedSize`, and notifies only `onCollapsedChange`. **Neither accepted nor rejected collapse/restore emits `onSizeChange` or `onSizeCommit`.** External size changes while collapsed set future expanded size. Restore constrains retained size against current bounds. Refusal leaves layout and focus unchanged.
+
+Enter toggles only an actionable, collapsible Handle. Arrows/Home/End and drag resizing are inactive while collapsed; there is no drag-to-collapse threshold, snap zone, double-click reset or implicit drag-to-expand.
+
+The primary track and Panel remain mounted; descendants become hidden/inert so retained child state survives without hidden tab stops. A nonzero rail does not keep those descendants interactive. Render an interactive rail separately. Before accepted collapse hides focused primary content, focus moves to Handle; outside focus is not stolen. If you hide Handle yourself, provide and focus an external restore control first.
+
+## Keyboard, pointer and accessibility
+
+Arrows move the divider physically. Horizontal Left/Right account for direction and primary location; vertical Up/Down resize. Other-axis arrows stay native. Home/End request feasible primary minimum/maximum regardless of direction. Composition and Ctrl/Meta/Alt shortcuts are ignored; consumer preventDefault suppresses internal behavior.
+
+Only the primary pointer/button begins a gesture. Handle captures its pointer and ignores additional pointers; nested Roots remain isolated. Drag motion is relative to gesture-start geometry, avoiding thick-handle jumps. Touch-action suppression belongs to the Handle, not scrolling panels or a permanent document-wide cursor rule.
+
+After measurement, value/min/max ARIA describe effective accepted size in Root units, not proposals. Collapsed ranges include collapsed size and expanded reachable maximum. Default value text names pixels or percent; override `aria-valuetext` for localization. Finite provisional server ARIA is not final measured geometry.
+
+## SSR and exclusions
+
+Before measurement, percentage tracks use deterministic native fractions and ARIA reports provisional values constrained by each panel's own bounds; infeasible percentage bounds do not promise exact pre-JavaScript pixels. Pixel layout reserves the primary's own-bound size and leaves the remainder to secondary. The complete cross-panel intersection requires measured available space. Handle stays disabled until positive geometry is available.
+
+After positive measurement, available-space conversion, both-panel bounds and overflow/underflow are exact. Measurement may reconcile layout and ARIA but emits no user proposal or commit. Hydration preserves nodes and initial CSS; no hidden fallback replaces the layout. Owner-scoped observers/capture resources clean up independently for nested Roots.
+
+No N-pane redistribution, persistence engine, layout registry or imperative resize service is included. The ARIA window-splitter guidance itself has unfinished review/example work; role/value checks are not assistive-technology certification.
+
+[Native source](https://github.com/wsagency/radix2solid/tree/main/packages/primitives/src/splitter)

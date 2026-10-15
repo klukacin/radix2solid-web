@@ -15,6 +15,11 @@ import { AvatarIconFallback } from "../components/avatar-icon-fallback";
 import { TabNavDemo } from "../components/tab-nav-demo";
 import { chartFamilies } from "../components/chart-previews";
 import { HeroCodeBlock } from "../components/hero-code-block";
+import ComboboxDemo from "../demos/combobox";
+import CommandDemo from "../demos/command";
+import TreeDemo from "../demos/tree";
+import SplitterDemo from "../demos/splitter";
+import ChartsDemo from "../demos/charts";
 // "custom" needs a consumer-supplied palette, so the colour grids show only the built-in scales.
 const accentColors = themeAccentColors.filter((color): color is Exclude<typeof color, "custom"> => color !== "custom");
 const chartSources = import.meta.glob<string>("../demos/charts/**/*.{tsx,css,cjs}", {
@@ -22,6 +27,10 @@ const chartSources = import.meta.glob<string>("../demos/charts/**/*.{tsx,css,cjs
   import: "default",
   eager: true
 });
+const comboboxSources = import.meta.glob<string>("../demos/combobox/**/*.{tsx,css,cjs}", { query: "?raw", import: "default", eager: true });
+const commandSources = import.meta.glob<string>("../demos/command/**/*.{tsx,css,cjs}", { query: "?raw", import: "default", eager: true });
+const treeSources = import.meta.glob<string>("../demos/tree/**/*.{tsx,css,cjs}", { query: "?raw", import: "default", eager: true });
+const splitterSources = import.meta.glob<string>("../demos/splitter/**/*.{tsx,css,cjs}", { query: "?raw", import: "default", eager: true });
 export default function ComponentsPage() {
   const site = useSiteContext();
   return <>
@@ -4328,11 +4337,33 @@ export default function ComponentsPage() {
 							</Flex>
 						</PlaygroundSection>
 
+            <PlaygroundSection>
+              <PlaygroundSectionTitle id="combobox" href="/themes/docs/recipes/combobox">Combobox</PlaygroundSectionTitle>
+              <Card class={styles.NativeRecipe}><ComboboxDemo /></Card>
+              <HeroCodeBlock folder="Combobox" sources={comboboxSources} />
+            </PlaygroundSection>
+            <PlaygroundSection>
+              <PlaygroundSectionTitle id="command" href="/themes/docs/recipes/command">Command</PlaygroundSectionTitle>
+              <Card class={styles.NativeRecipe}><CommandDemo /></Card>
+              <HeroCodeBlock folder="Command" sources={commandSources} />
+            </PlaygroundSection>
+            <PlaygroundSection>
+              <PlaygroundSectionTitle id="tree" href="/themes/docs/recipes/tree">Tree</PlaygroundSectionTitle>
+              <Card class={styles.NativeRecipe}><TreeDemo /></Card>
+              <HeroCodeBlock folder="Tree" sources={treeSources} />
+            </PlaygroundSection>
+            <PlaygroundSection>
+              <PlaygroundSectionTitle id="splitter" href="/themes/docs/recipes/splitter">Splitter</PlaygroundSectionTitle>
+              <Card class={styles.NativeRecipe}><SplitterDemo /></Card>
+              <HeroCodeBlock folder="Splitter" sources={splitterSources} />
+            </PlaygroundSection>
+
 						<PlaygroundSection>
 							<PlaygroundSectionTitle id="charts" href="/charts/docs/overview/introduction">Charts</PlaygroundSectionTitle>
 							<Text as="p" size="2" color="gray">
 								Real charts from <Code size="2">@wsagency/radix2solid-charts</Code>. Their colors are this page's Themes tokens, so the theme panel's accent and appearance apply live. Hover or focus a chart for its tooltip.
 							</Text>
+              <ChartsDemo />
 							<Grid columns={{
                 initial: "1",
                 sm: "2",

@@ -1,0 +1,86 @@
+---
+metaTitle: Tree
+metaDescription: A single-selection hierarchy with separate focus, selection, expansion and activation.
+aria: https://www.w3.org/WAI/ARIA/apg/patterns/treeview/
+---
+
+import TreeDemo from "../../../../src/demos/tree";
+
+# Tree
+
+<Description>Navigate a hierarchy without confusing focus, selection, expansion or activation.</Description>
+
+<HeroContainer><TreeDemo /></HeroContainer>
+<HeroCodeBlock folder="Tree" />
+
+A native **0.1.0-rc.3 source-candidate** primitive. The previously published rc.2 does not include Tree; use [candidate installation](/primitives/docs/overview/getting-started). [Styled explorer recipe](/themes/docs/recipes/tree).
+
+## Imports and anatomy
+
+```tsx
+import { Tree } from "@wsagency/radix2solid-primitives";
+// Alternatively: import * as Tree from "@wsagency/radix2solid-primitives/tree";
+
+export default () => <Tree.Root aria-label="Files" defaultExpandedValues={["source"]}>
+  <Tree.Item value="source" textValue="Source" hasChildren>
+    <Tree.ExpandTrigger aria-label="Toggle Source">Expand</Tree.ExpandTrigger>
+    <Tree.ItemText>Source</Tree.ItemText>
+    <Tree.ItemIndicator>Selected or expanded</Tree.ItemIndicator>
+    <Tree.ItemGroup>
+      <Tree.Item value="readme" textValue="Readme"><Tree.ItemText>Readme</Tree.ItemText></Tree.Item>
+    </Tree.ItemGroup>
+  </Tree.Item>
+</Tree.Root>;
+```
+
+## API reference
+
+| Part | Props and responsibility |
+| --- | --- |
+| `Root` | `selectionMode: "single" \| "none"` (default single); `value/defaultValue: string \| null` (default null); `onValueChange(value)`; `expandedValues/defaultExpandedValues: readonly string[]` (default empty); `onExpandedValuesChange(values)`; `dir`; required accessible name. |
+| `Item` | Required stable `value` and plain-text `textValue`; `disabled?: boolean`; `hasChildren?: boolean` (default false); cancellable `onActivate(event)`; native positional ARIA attributes. The treeitem itself is focusable. |
+| `ItemText` | Visual label and accessible-name reference; rich children do not replace `textValue` for typeahead. |
+| `ItemIndicator` | Presentation for selected/expanded state, not independent state. |
+| `ItemGroup` | Nested hierarchy owned by nearest Item; descendants render only for accepted expansion, with native presence/`forceMount` conventions. |
+| `ExpandTrigger` | Optional explicitly named button with `tabIndex=-1`; changes expansion, not selection or activation. |
+
+Native refs, consumer cancellation and target-factory `asChild` apply. Keys are nonempty, unique within Root and stable across reorder. Duplicate registered keys are errors; the primitive cannot certify unrendered data without evaluating children, so authors own data-wide uniqueness.
+
+`hasChildren` declares a branch even before children arrive. ItemGroup supplies explicit parent context; there is no descendant prewalk. Leaves omit `aria-expanded`.
+
+## Four independent operations
+
+- Arrows and typeahead move focus, not selection or activation.
+- Space requests selection in single mode; it never toggles a selected key off. Programmatic null clears it. In none mode Space is consumed without action.
+- Enter or primary click on the item's own row emits one cancellable activation, then requests selection if not cancelled. It does not expand. Consumer side effects already executed cannot be undone by later cancellation.
+- ExpandTrigger and branch-arrow operations expand/collapse without selecting or activating. Descendant activation does not activate ancestors.
+
+Controlled callbacks are proposals; only accepted props change selection/expansion. No optimistic state appears on rejection. Expanded arrays contain unique keys, retaining existing order and appending new keys. No-op changes do not notify. `selectionMode="none"` omits `aria-selected` and ignores selection callbacks without erasing stored state; switching back reflects that state.
+
+## Keyboard and disabled nodes
+
+One tab stop enters the surviving focused visible enabled item, then selected visible enabled item, then first enabled item. Root takes the tab stop when none is available. Tab leaves normally. Up/Down traverse enabled visible preorder without wrapping; Home/End reach the ends.
+
+In LTR, Right expands a closed branch or moves into its first enabled visible descendant; Left collapses an open branch or moves to the nearest enabled ancestor. RTL reverses these logical branch keys. Leaves do not expand. ExpandTrigger events are not item-navigation events.
+
+Plain printable characters use case-insensitive `textValue` prefix matching, starting after the current item and wrapping for matches. Repeated characters cycle. The buffer clears after 1000ms or on leaving the tree. Ctrl/Meta/Alt editing and composition do not activate typeahead. Consumer prevention wins.
+
+Disabled applies **only to that node**, not its subtree. An expanded disabled parent can contain enabled, reachable descendants. Disabled nodes cannot focus, select, activate or expand by user input; the application can change expansion. Ancestor navigation skips disabled ancestors. There is no separate read-only prop.
+
+## Dynamic data and focus repair
+
+Navigation follows visible DOM preorder after reorder even without re-registration; focus and selection stay keyed. Closing groups are excluded immediately, including retained exit-animation/force-mounted descendants, which cannot remain tab stops.
+
+Accepted collapse evacuates focused descendants to the enabled branch, then enabled ancestor, next outside item, previous item, or Root. Refused collapse does not move focus. External changes never steal focus from outside the tree. Removing/disabling a focused item repairs to a surviving enabled ancestor, next/previous position, then Root; when focus is outside, only the future tab stop changes.
+
+Hidden or absent selected keys remain selected state, without selecting a neighbor or automatically expanding. Clear permanently deleted keys explicitly. Expansion keys can similarly survive absent branches; this does not imply a cache or loader.
+
+## Partial data, SSR and boundaries
+
+Complete nested DOM provides hierarchy positions. For partial sibling data, supply correct native `aria-level`, `aria-posinset` and `aria-setsize` from your data; unknown total is `-1`. Levels/positions are positive; known sizes are positive with position no greater than size. The primitive must not guess unseen siblings. Use `hasChildren`, `aria-busy` and supplied children for an unloaded branch boundary, not a built-in loading service.
+
+SSR emits accepted hierarchy, labels, selection and deterministic IDs without client registration or child prewalk. Hydration preserves nodes; registration establishes focus order without rebuilding the hierarchy. Tree is not a form field: no name, required or reset contract. Serialization is application-owned.
+
+This is not a filesystem, router, virtualizer, multi-selection engine or permission service. For ordinary navigation links or rows with arbitrary tabbable controls, prefer a [Collapsible disclosure list](/themes/docs/recipes/collapsible). Visible focus and selected state need different styling. Browser/role assertions are not screen-reader certification.
+
+[Native source](https://github.com/wsagency/radix2solid/tree/main/packages/primitives/src/tree)

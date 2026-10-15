@@ -55,10 +55,10 @@ One of our main goals is to provide the best possible developer experience. Radi
 
 ### Incremental adoption
 
-This native Solid 2 fork is published as [`@wsagency/radix2solid-primitives@0.1.0-rc.2`](https://www.npmjs.com/package/@wsagency/radix2solid-primitives), not the React `radix-ui` package. Named imports and native component subpaths are tree-shakeable. A [release-candidate tarball](/packages/wsagency-radix2solid-primitives-0.1.0-rc.2.tgz) remains available for local installation; see [Getting started](./getting-started) for the required Solid RC15 compiler tuple.
+This native Solid 2 fork uses `@wsagency/radix2solid-primitives`, not the React `radix-ui` package. Named imports and native component subpaths are tree-shakeable. Download the [next-suite candidate archive](/packages/wsagency-radix2solid-primitives-0.1.0-rc.3.tgz); npm publication of rc.3 is not claimed. See [Getting started](./getting-started) for the required Solid RC15 compiler tuple.
 
 ```bash
-npm install -E @wsagency/radix2solid-primitives@0.1.0-rc.2
+npm install ./wsagency-radix2solid-primitives-0.1.0-rc.3.tgz
 ```
 
 ```tsx
@@ -72,6 +72,9 @@ import * as Dialog from "@wsagency/radix2solid-primitives/dialog";
 import * as DropdownMenu from "@wsagency/radix2solid-primitives/dropdown-menu";
 import * as Tooltip from "@wsagency/radix2solid-primitives/tooltip";
 ```
+
+The next suite adds native [Combobox](../components/combobox), [Command](../components/command), [Tree](../components/tree), and [Splitter](../components/splitter). Their controlled state remains parent-authoritative: callbacks propose changes, and refused proposals do not change committed public state. Action handlers must guard authorization before side effects; refusing a later close or selection update is not an action veto. Their [Themes recipes](/themes/playground#combobox) add styling without introducing new Themes exports.
+
 
 ## Community
 

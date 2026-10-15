@@ -26,10 +26,10 @@ and `Tooltip` register themselves into it.
 	return <ResponsiveContainer width="100%" height={300} initialDimension={{ width: 560, height: 300 }}>
 		<BarChart data={data} title="Monthly visitors and signups">
 			<CartesianGrid strokeDasharray="3 3" stroke="var(--gray-a6)" vertical={false} />
-			<XAxis dataKey="month" />
+			<XAxis dataKey="month" height="auto" angle={-35} label="Reporting month" />
 			<YAxis />
 			<Tooltip />
-			<Legend />
+			<Legend position="bottom" offset={8} layout="auto" />
 			<Bar dataKey="visitors" fill="var(--accent-9)" radius={[4, 4, 0, 0]} />
 			<Bar dataKey="signups" fill="var(--teal-9)" radius={[4, 4, 0, 0]} />
 		</BarChart>
@@ -48,7 +48,7 @@ and `Tooltip` register themselves into it.
 | `syncId`                    | `string`                       | —                | Sync tooltip/brush across charts sharing the id     |
 | `onClick`, `onMouseMove`, … | `function`                     | —                | Chart-level mouse events with the active payload    |
 
-The remaining props follow the Recharts 3.9.2 `BarChart` API (reference commit `b3451050`) that solid-recharts tracks; see the [Recharts BarChart reference](https://recharts.org/en-US/api/BarChart). Changes from Recharts 3.10.1 are tracked but not ported.
+The base API follows Recharts 3.9.2 (reference commit `b3451050`), with the [selected next-suite additions](/charts/docs/overview/releases); this is not full Recharts 3.10.1 parity. See the [Recharts BarChart reference](https://recharts.org/en-US/api/BarChart).
 
 ## Notes
 
@@ -56,6 +56,15 @@ The remaining props follow the Recharts 3.9.2 `BarChart` API (reference commit `
 - Set the same `stackId` on two or more `Bar` children to stack them.
 - Use the `radius` prop to round the top corners: `radius={[4, 4, 0, 0]}`.
 - Set `syncId` on two charts to mirror tooltips and brushes between them.
+
+## Legend and axis layout
+
+This example places the legend outside the plot with `position="bottom"` and `offset={8}`. `position` accepts the exported `CartesianPosition` type and overrides `align`/`verticalAlign`; omitted position preserves their existing behavior. `offset` defaults to `0`. `layout` defaults to `"auto"`: vertical for `left`, `right`, `insideLeft`, and `insideRight`, horizontal otherwise.
+
+Outside legends reserve their measured size; inside legends reserve none. With `position` supplied and the default mount, the wrapper renders legend HTML on the server, and the first client styles retain its zero measured box before measurement. Outside placement adjusts after browser measurement; inside placement is measurement-independent. No-position legends and explicit custom portals retain the existing DOM-only path, without server legend markup. The [playground](/themes/playground#charts) switches between inside and outside placement.
+
+`XAxis height="auto"` uses a 30px server/first-client fallback, then measures rotated tick labels and the string `label`. The rounded height includes the tallest tick, `tickSize`, `tickMargin`, and the label's height plus 5px when present. Custom render-function labels do not use auto measurement. Pass custom JSX through a render function, not as a raw JSX label value. Requested numeric heights and tick positions are unchanged, but corrected server plot clips can change SSR markup. Automatic height is not server-final geometry. See [LineChart's layout details](/charts/docs/components/line-chart#legend-placement-and-automatic-axis-height) and [SSR](/charts/docs/guides/responsive-and-ssr).
+
 
 ## See also
 

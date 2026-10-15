@@ -39,12 +39,12 @@ for (const path of upstreamRoutes) if (!routePaths.includes(path)) errors.add(`m
 for (const path of nativeRoutes) if (upstreamRoutes.has(path) || !routePaths.includes(path)) errors.add(`invalid native route: ${path}`);
 for (const path of routePaths) if (!upstreamRoutes.has(path) && !nativeRoutes.has(path)) errors.add(`unexpected native route: ${path}`);
 const markdownFiles = new Set([...expected].filter(file => file !== '404.html').map(file => file.replace(/\.html$/, '.md')));
-// Public package downloads use the actual packed names of the four prepared native packages.
-const packageFiles = ['primitives', 'icons', 'themes', 'charts'].map(name => {
+// Public downloads use the actual packed names of the five prepared native packages.
+const packageFiles = ['primitives', 'icons', 'themes', 'charts', 'icons-extra'].map(name => {
   const manifest: { name: string; version: string } = JSON.parse(readFileSync(resolve(import.meta.dirname, `../../../.library/packages/${name}/package.json`), 'utf8'));
   return `packages/${manifest.name.slice(1).replace('/', '-')}-${manifest.version}.tgz`;
 });
-const publicFiles = new Set(['_headers', 'search-index.json', 'NOTICE.txt', 'WEBSITE-LICENSE.txt', 'favicon.png', 'favicon-black.svg', 'favicon-white.svg', ...packageFiles]);
+const publicFiles = new Set(['_headers', 'search-index.json', 'NOTICE.txt', 'WEBSITE-LICENSE.txt', 'favicon.png', 'favicon-black.svg', 'favicon-white.svg', 'icons-extra/folder.svg', 'icons-extra/folder-open.svg', ...packageFiles]);
 for (const file of packageFiles) if (!existsSync(resolve(output, file))) errors.add(`missing package download: out/${file}`);
 // D3 license closure: the downloadable Charts tarball imports D3 as a dependency and ships its attribution, so
 // its license files carry every resolved D3 package's own LICENSE verbatim and keep the solid-recharts and
@@ -65,6 +65,16 @@ for (const section of chartsLicenseFiles.flatMap(file => file.split(/--- .+? ---
 }
 const chartsMit = chartsLicenseFiles.find(text => text.includes('Thomas Guehenneux'))?.split(/--- .+? ---/)[0].trim();
 if (chartsMit && !notice.includes(chartsMit)) errors.add('NOTICE.txt lacks the packed Charts MIT LICENSE');
+const extraTarball = resolve(output, packageFiles[4]);
+if (existsSync(extraTarball)) {
+  const extraLicense = normalize(execFileSync('tar', ['-xzOf', extraTarball, 'package/LICENSE'], { encoding: 'utf8' }));
+  if (!notice.includes(extraLicense)) errors.add('NOTICE.txt lacks the packed Extra icons LICENSE');
+  for (const asset of ['folder', 'folder-open']) {
+    const svg = readFileSync(resolve(output, `icons-extra/${asset}.svg`), 'utf8');
+    if (!svg.includes('viewBox="0 0 24 24"')) errors.add(`Extra icon ${asset} lost its native viewBox`);
+    if (svg !== execFileSync('tar', ['-xzOf', extraTarball, `package/icons/${asset}.svg`], { encoding: 'utf8' })) errors.add(`Extra icon ${asset} download differs from its package`);
+  }
+}
 const d3Packages = new Map<string, string>();
 const visit = (from: string, name: string) => {
   // D3 `exports` hide `./package.json`, so walk Node's node_modules lookup paths; realpath follows pnpm links.
