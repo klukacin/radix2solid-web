@@ -27,8 +27,8 @@ export default () => <Command.Root>
       <Command.Label>Workspace</Command.Label>
       <Command.Item value="note" textValue="Create note" onSelect={() => console.log("Create note")}>Create note</Command.Item>
     </Command.Group>
-    <Command.Empty>No matching actions.</Command.Empty>
   </Command.List>
+  <Command.Empty>No matching actions.</Command.Empty>
 </Command.Root>;
 ```
 
@@ -41,13 +41,13 @@ export default () => <Command.Root>
 | `List` | Results listbox with a Root-owned ID. Supply an accessible name. |
 | `Group`, `Label` | Named result group, not a separate cursor. |
 | `Item` | Required stable `value` identity and plain-text `textValue`; optional `disabled` and cancellable `onSelect(event)`. Native refs, consumer events and target-factory `asChild` apply. |
-| `Empty` | Non-option status when zero result options are rendered, not when all results are disabled. |
+| `Empty` | Non-option status when zero result options are rendered, not when all results are disabled. Place beside `List` under `Root`, never inside the listbox. |
 
 ## Caller-owned filtering
 
 Command never filters or ranks strings. Read controlled search and render your application results, as the demo does with ordinary label substring matching. Remote results are child updates, not a built-in loader. Search changes reset the active suggestion to the first enabled rendered result after that update. Other reorder preserves active identity; removal picks the next/previous enabled visible result or none.
 
-All-disabled results remain visible results, with no active suggestion; they do not show Empty. Loading is a separate application status. There is no fuzzy-search dependency, persisted selection, router or action scheduler.
+All-disabled results remain visible results, with no active suggestion; they do not show Empty. Loading is a separate application status, also placed beside `List` rather than inside it. There is no fuzzy-search dependency, persisted selection, router or action scheduler.
 
 ## Exactly-once actions and cancellation
 

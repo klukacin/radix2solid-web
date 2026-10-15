@@ -43,8 +43,8 @@ export default function ComboboxDemo() {
                   <Combobox.ItemIndicator> ✓</Combobox.ItemIndicator>
                 </Combobox.Item>)}
             </Combobox.Group>
-            <Combobox.Empty class={styles.Label}>No destinations match.</Combobox.Empty>
           </Combobox.List>
+          <Combobox.Empty class={styles.Label}>No destinations match.</Combobox.Empty>
         </Combobox.Content>
       </Combobox.Portal>
     </Combobox.Root>

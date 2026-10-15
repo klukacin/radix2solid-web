@@ -43,8 +43,8 @@ export default function CommandDemo() {
               <Command.Item class={styles.Item} value={action.value} textValue={action.label} disabled={action.disabled}
                 onSelect={event => select(event, action.value, false)}>{action.label}</Command.Item>)}
           </Command.Group>
-          <Command.Empty class={styles.Label}>No matching actions.</Command.Empty>
         </Command.List>
+        <Command.Empty class={styles.Label}>No matching actions.</Command.Empty>
       </Command.Root>
     </form>
     <Dialog.Root open={open()} onOpenChange={next => {
@@ -65,8 +65,8 @@ export default function CommandDemo() {
               {actions.filter(action => action.label.toLowerCase().includes(search().trim().toLowerCase())).map(action =>
                 <Command.Item class={styles.Item} value={action.value} textValue={action.label} disabled={action.disabled}
                   onSelect={event => select(event, action.value, true)}>{action.label}</Command.Item>)}
-              <Command.Empty class={styles.Label}>No matching actions.</Command.Empty>
             </Command.List>
+            <Command.Empty class={styles.Label}>No matching actions.</Command.Empty>
           </Command.Root>
           <Dialog.Close class={styles.Button}>Close palette</Dialog.Close>
         </Dialog.Content>

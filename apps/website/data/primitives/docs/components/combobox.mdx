@@ -35,8 +35,8 @@ export default () => <Combobox.Root items={[{ value: "paris", label: "Paris" }]}
             <Combobox.ItemIndicator>Selected</Combobox.ItemIndicator>
           </Combobox.Item>
         </Combobox.Group>
-        <Combobox.Empty>No destinations match.</Combobox.Empty>
       </Combobox.List>
+      <Combobox.Empty>No destinations match.</Combobox.Empty>
     </Combobox.Content>
   </Combobox.Portal>
 </Combobox.Root>;
@@ -75,7 +75,7 @@ export default () => <Combobox.Root items={[{ value: "paris", label: "Paris" }]}
 | `ItemText` | Label presentation only. |
 | `ItemIndicator` | Committed-selection presentation, distinct from the active suggestion. |
 | `Group`, `Label` | Accessible option grouping. |
-| `Empty` | Non-option status when no matching options are rendered. |
+| `Empty` | Non-option status when no matching options are rendered. Place beside `List` inside `Content`, never inside the listbox. |
 | `Clear` | Optional named button requesting null key, empty query and close, then input focus. Disabled/read-only prevents mutation. |
 
 ## Query is not a value

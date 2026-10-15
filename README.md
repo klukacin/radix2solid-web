@@ -65,7 +65,7 @@ If the pinned source has not been published yet, a real local sibling clone is a
 
 ```sh
 git clone --no-hardlinks ../radix2solid .library
-git -C .library checkout --detach 5a088e887877194476964b883373757ac0fbc36d
+git -C .library checkout --detach 90f129ec6786c0d46ccca8e261438556db2eb9b7
 node scripts/prepare-library.ts
 pnpm install --frozen-lockfile
 pnpm check

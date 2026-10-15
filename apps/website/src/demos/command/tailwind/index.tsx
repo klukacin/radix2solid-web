@@ -43,8 +43,8 @@ export default function CommandDemo() {
               <Command.Item class={"cursor-default rounded px-3 py-2 aria-selected:bg-violet-100 aria-selected:outline aria-selected:outline-1 aria-selected:outline-violet-600 data-[disabled]:opacity-50"} value={action.value} textValue={action.label} disabled={action.disabled}
                 onSelect={event => select(event, action.value, false)}>{action.label}</Command.Item>)}
           </Command.Group>
-          <Command.Empty class={"px-3 py-1.5 text-gray-600"}>No matching actions.</Command.Empty>
         </Command.List>
+        <Command.Empty class={"px-3 py-1.5 text-gray-600"}>No matching actions.</Command.Empty>
       </Command.Root>
     </form>
     <Dialog.Root open={open()} onOpenChange={next => {
@@ -65,8 +65,8 @@ export default function CommandDemo() {
               {actions.filter(action => action.label.toLowerCase().includes(search().trim().toLowerCase())).map(action =>
                 <Command.Item class={"cursor-default rounded px-3 py-2 aria-selected:bg-violet-100 aria-selected:outline aria-selected:outline-1 aria-selected:outline-violet-600 data-[disabled]:opacity-50"} value={action.value} textValue={action.label} disabled={action.disabled}
                   onSelect={event => select(event, action.value, true)}>{action.label}</Command.Item>)}
-              <Command.Empty class={"px-3 py-1.5 text-gray-600"}>No matching actions.</Command.Empty>
             </Command.List>
+            <Command.Empty class={"px-3 py-1.5 text-gray-600"}>No matching actions.</Command.Empty>
           </Command.Root>
           <Dialog.Close class={"rounded border border-gray-400 bg-white px-3 py-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-violet-600"}>Close palette</Dialog.Close>
         </Dialog.Content>
