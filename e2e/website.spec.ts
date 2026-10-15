@@ -22,6 +22,19 @@ const test = base.extend<{ unsplash: void }>({
 
 const origin = `http://127.0.0.1:${process.env.WEBSITE_PREVIEW_PORT ?? 4149}`;
 
+const observeChartLoading = (page: Page, timeline: unknown[]) => {
+  page.on('domcontentloaded', () => timeline.push({ event: 'domcontentloaded', time: Date.now() }));
+  page.on('load', () => timeline.push({ event: 'load', time: Date.now() }));
+  page.on('requestfinished', request => {
+    if (request.url().startsWith(`${origin}/assets/`)) {
+      timeline.push({ event: 'asset-finished', time: Date.now(), url: request.url(), timing: request.timing() });
+    }
+  });
+  page.on('requestfailed', request => {
+    timeline.push({ event: 'request-failed', time: Date.now(), url: request.url(), failure: request.failure() });
+  });
+};
+
 const captureNextSuiteChart = (page: Page) => page.evaluate(() => {
   const position = document.querySelector<HTMLSelectElement>('select[aria-label="Legend position"]');
   const demo = position?.closest('figure');
@@ -448,6 +461,7 @@ test('next suite Charts displays selected legend axis and Sankey APIs', async ({
   let release!: () => void;
   const ready = new Promise<void>(resolve => { release = resolve; });
   const timeline: unknown[] = [];
+  observeChartLoading(page, timeline);
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
   await page.route(/\/assets\/.*\.js(?:\?.*)?$/, async route => { await ready; await route.continue(); });
@@ -471,15 +485,18 @@ test('next suite Charts displays selected legend axis and Sankey APIs', async ({
     await expect(position).toBeVisible();
     await expect(axis).toHaveCount(1);
     const serverAxisY = Number(await axis.getAttribute('y1'));
-    timeline.push(await captureNextSuiteChart(page));
+    timeline.push({ phase: 'server', time: Date.now(), axisY: serverAxisY });
     await expect(flow).toHaveAccessibleName('Documentation flow');
     await expectNativeSankeyDescription();
     await flow.evaluate(node => Reflect.set(window, '__nextSuiteServerSankey', node));
     release();
     await page.waitForLoadState('load');
+    // Window load can precede the awaited route module and native hydration.
+    await expect(page.getByRole('button', { name: 'Toggle theme', exact: true }).first()).toBeEnabled();
+    timeline.push({ phase: 'site-ready', time: Date.now() });
     await expect.poll(async () => {
       const axisY = Number(await axis.getAttribute('y1'));
-      timeline.push(await captureNextSuiteChart(page));
+      timeline.push({ phase: 'axis-poll', time: Date.now(), axisY });
       return axisY;
     }).toBeLessThan(serverAxisY);
     const outsideAxisY = Number(await axis.getAttribute('y1'));
@@ -517,6 +534,8 @@ test('next suite Charts remeasures auto axis when actual local fonts finish load
   let releaseFonts!: () => void;
   const fontsReleased = new Promise<void>(resolve => { releaseFonts = resolve; });
   const requests: { url: string; time: number }[] = [];
+  const timeline: unknown[] = [];
+  observeChartLoading(page, timeline);
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
   await page.route(`${origin}/fonts/**`, async route => {
@@ -526,9 +545,7 @@ test('next suite Charts remeasures auto axis when actual local fonts finish load
   });
   const position = page.getByRole('combobox', { name: 'Legend position', exact: true });
   const demo = page.locator('figure').filter({ has: position });
-  const timeline: unknown[] = [];
   const measure = async () => {
-    timeline.push(await captureNextSuiteChart(page));
     return demo.evaluate(node => {
       const axis = node.querySelector('.recharts-xAxis .recharts-cartesian-axis-line')!;
       const label = Array.from(node.querySelectorAll('text.recharts-label')).find(element => element.textContent === 'Reporting month')!;
@@ -557,6 +574,8 @@ test('next suite Charts remeasures auto axis when actual local fonts finish load
   try {
     await page.goto(`${origin}/themes/playground#charts`, { waitUntil: 'domcontentloaded' });
     await expect(position).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Toggle theme', exact: true }).first()).toBeEnabled();
+    timeline.push({ phase: 'site-ready', time: Date.now() });
     await expect.poll(async () => {
       const snapshot = await measure();
       timeline.push(snapshot);

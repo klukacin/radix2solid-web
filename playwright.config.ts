@@ -11,7 +11,7 @@ export default defineConfig({
   use: {
     baseURL: origin,
     browserName: 'chromium',
-    trace: 'retain-on-failure',
+    trace: { mode: 'retain-on-failure', snapshots: false, screenshots: false },
     screenshot: 'only-on-failure'
   },
   projects: [
