@@ -491,8 +491,8 @@ test('next suite Charts displays selected legend axis and Sankey APIs', async ({
     await flow.evaluate(node => Reflect.set(window, '__nextSuiteServerSankey', node));
     release();
     await page.waitForLoadState('load');
-    // Window load can precede the awaited route module and native hydration.
-    await expect(page.getByRole('button', { name: 'Toggle theme', exact: true }).first()).toBeEnabled();
+    // Await startup within the existing action/test budget, then check geometry within its unchanged assertion budget.
+    await page.getByRole('button', { name: 'Toggle theme', exact: true, disabled: false }).first().waitFor({ state: 'attached' });
     timeline.push({ phase: 'site-ready', time: Date.now() });
     await expect.poll(async () => {
       const axisY = Number(await axis.getAttribute('y1'));
@@ -574,7 +574,7 @@ test('next suite Charts remeasures auto axis when actual local fonts finish load
   try {
     await page.goto(`${origin}/themes/playground#charts`, { waitUntil: 'domcontentloaded' });
     await expect(position).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Toggle theme', exact: true }).first()).toBeEnabled();
+    await page.getByRole('button', { name: 'Toggle theme', exact: true, disabled: false }).first().waitFor({ state: 'attached' });
     timeline.push({ phase: 'site-ready', time: Date.now() });
     await expect.poll(async () => {
       const snapshot = await measure();
