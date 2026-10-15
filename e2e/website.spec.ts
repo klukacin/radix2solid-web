@@ -1,5 +1,5 @@
-import { readFileSync } from 'node:fs';
-import { expect, test as base, type Locator } from '@playwright/test';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { expect, test as base, type Locator, type Page } from '@playwright/test';
 import { accessibilityViolations } from './accessibility.js';
 
 // Test-only exact original free-license images; production URLs, Unsplash+ and WorkOS remain live.
@@ -21,6 +21,30 @@ const test = base.extend<{ unsplash: void }>({
 });
 
 const origin = `http://127.0.0.1:${process.env.WEBSITE_PREVIEW_PORT ?? 4149}`;
+
+const captureNextSuiteChart = (page: Page) => page.evaluate(() => {
+  const position = document.querySelector<HTMLSelectElement>('select[aria-label="Legend position"]');
+  const demo = position?.closest('figure');
+  const axis = demo?.querySelector('.recharts-xAxis .recharts-cartesian-axis-line');
+  const svg = axis?.closest('svg');
+  const label = Array.from(demo?.querySelectorAll('text.recharts-label') ?? []).find(node => node.textContent === 'Reporting month');
+  const legend = demo?.querySelector('.recharts-legend-wrapper');
+  const box = (node: Element | null | undefined) => node ? {
+    text: node.textContent, rect: node.getBoundingClientRect().toJSON(), font: getComputedStyle(node).font,
+  } : null;
+  return {
+    time: performance.now(), readyState: document.readyState, fontStatus: document.fonts.status,
+    position: position?.value, configuration: document.querySelector('[aria-label="Legend configuration"]')?.textContent,
+    axis: axis ? { y1: axis.getAttribute('y1'), box: box(axis) } : null,
+    svg: svg ? { height: svg.getAttribute('height'), width: svg.getAttribute('width'), box: box(svg) } : null,
+    label: box(label), legend: box(legend), legendStyle: legend?.getAttribute('style'),
+    ticks: Array.from(demo?.querySelectorAll('.recharts-xAxis .recharts-cartesian-axis-tick-label') ?? []).map(box),
+    missing: { demo: !demo, axis: !axis, svg: !svg, label: !label, legend: !legend },
+    scripts: performance.getEntriesByType('resource')
+      .filter(entry => (entry as PerformanceResourceTiming).initiatorType === 'script')
+      .map(entry => ({ name: entry.name, startTime: entry.startTime, duration: entry.duration })),
+  };
+}).catch(error => ({ captureError: String(error) }));
 
 test('next suite native routes expose source Markdown search and downloads', async ({ page, request }) => {
   const records = await (await request.get(`${origin}/search-index.json`)).json() as { url: string }[];
@@ -420,9 +444,12 @@ test('next suite Extra icons remain separate and downloadable', async ({ page, c
   expect(archive.ok()).toBe(true);
 });
 
-test('next suite Charts displays selected legend axis and Sankey APIs', async ({ page, context, browserName }) => {
+test('next suite Charts displays selected legend axis and Sankey APIs', async ({ page, context, browserName }, testInfo) => {
   let release!: () => void;
   const ready = new Promise<void>(resolve => { release = resolve; });
+  const timeline: unknown[] = [];
+  const errors: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
   await page.route(/\/assets\/.*\.js(?:\?.*)?$/, async route => { await ready; await route.continue(); });
   await page.goto(`${origin}/themes/playground#charts`, { waitUntil: 'commit' });
   const position = page.getByRole('combobox', { name: 'Legend position', exact: true });
@@ -440,32 +467,49 @@ test('next suite Charts displays selected legend axis and Sankey APIs', async ({
     expect(nodes[0].name?.value).toBe('Documentation flow');
     expect(nodes[0].description?.value).toBe('Visits flow through docs and playground to installation.');
   };
-  await expect(position).toBeVisible();
-  await expect(axis).toHaveCount(1);
-  const serverAxisY = Number(await axis.getAttribute('y1'));
-  await expect(flow).toHaveAccessibleName('Documentation flow');
-  await expectNativeSankeyDescription();
-  await flow.evaluate(node => Reflect.set(window, '__nextSuiteServerSankey', node));
-  release();
-  await page.waitForLoadState('load');
-  await expect.poll(async () => Number(await axis.getAttribute('y1'))).toBeLessThan(serverAxisY);
-  const outsideAxisY = Number(await axis.getAttribute('y1'));
-  await position.selectOption('insideTopRight');
-  await expect(page.getByLabel('Legend configuration', { exact: true })).toContainText('insideTopRight');
-  await expect.poll(async () => Number(await axis.getAttribute('y1'))).toBeGreaterThan(outsideAxisY);
-  // With no inside-legend reservation, the remaining growth is the measured auto axis.
-  expect(Number(await axis.getAttribute('y1'))).toBeLessThan(serverAxisY);
-  const legend = demo.locator('.recharts-legend-wrapper');
-  const insideStyle = await legend.getAttribute('style');
-  await position.selectOption('bottom');
-  await expect(page.getByLabel('Legend configuration', { exact: true })).toContainText('bottom');
-  await expect.poll(async () => Number(await axis.getAttribute('y1'))).toBeCloseTo(outsideAxisY, 0);
-  await position.selectOption('insideTopRight');
-  await expect(legend).toHaveAttribute('style', insideStyle!);
-  await expect(demo.getByText('Reporting month', { exact: true })).toBeVisible();
-  await expect(flow).toHaveAccessibleName('Documentation flow');
-  await expectNativeSankeyDescription();
-  expect(await flow.evaluate(node => node === Reflect.get(window, '__nextSuiteServerSankey'))).toBe(true);
+  try {
+    await expect(position).toBeVisible();
+    await expect(axis).toHaveCount(1);
+    const serverAxisY = Number(await axis.getAttribute('y1'));
+    timeline.push(await captureNextSuiteChart(page));
+    await expect(flow).toHaveAccessibleName('Documentation flow');
+    await expectNativeSankeyDescription();
+    await flow.evaluate(node => Reflect.set(window, '__nextSuiteServerSankey', node));
+    release();
+    await page.waitForLoadState('load');
+    await expect.poll(async () => {
+      const axisY = Number(await axis.getAttribute('y1'));
+      timeline.push(await captureNextSuiteChart(page));
+      return axisY;
+    }).toBeLessThan(serverAxisY);
+    const outsideAxisY = Number(await axis.getAttribute('y1'));
+    await position.selectOption('insideTopRight');
+    await expect(page.getByLabel('Legend configuration', { exact: true })).toContainText('insideTopRight');
+    await expect.poll(async () => Number(await axis.getAttribute('y1'))).toBeGreaterThan(outsideAxisY);
+    // With no inside-legend reservation, the remaining growth is the measured auto axis.
+    expect(Number(await axis.getAttribute('y1'))).toBeLessThan(serverAxisY);
+    const legend = demo.locator('.recharts-legend-wrapper');
+    const insideStyle = await legend.getAttribute('style');
+    await position.selectOption('bottom');
+    await expect(page.getByLabel('Legend configuration', { exact: true })).toContainText('bottom');
+    await expect.poll(async () => Number(await axis.getAttribute('y1'))).toBeCloseTo(outsideAxisY, 0);
+    await position.selectOption('insideTopRight');
+    await expect(legend).toHaveAttribute('style', insideStyle!);
+    await expect(demo.getByText('Reporting month', { exact: true })).toBeVisible();
+    await expect(flow).toHaveAccessibleName('Documentation flow');
+    await expectNativeSankeyDescription();
+    expect(await flow.evaluate(node => node === Reflect.get(window, '__nextSuiteServerSankey'))).toBe(true);
+  } finally {
+    timeline.push(await captureNextSuiteChart(page));
+    release();
+    try {
+      const path = testInfo.outputPath('legend-axis-geometry.json');
+      writeFileSync(path, JSON.stringify({ errors, timeline }, null, 2));
+      await testInfo.attach('legend-axis-geometry', { path, contentType: 'application/json' });
+    } catch (error) {
+      console.error('Could not persist legend-axis geometry evidence:', error, JSON.stringify({ errors, timeline }));
+    }
+  }
 });
 
 test('next suite Charts remeasures auto axis when actual local fonts finish loading', async ({ page, browserName }, testInfo) => {
@@ -473,6 +517,8 @@ test('next suite Charts remeasures auto axis when actual local fonts finish load
   let releaseFonts!: () => void;
   const fontsReleased = new Promise<void>(resolve => { releaseFonts = resolve; });
   const requests: { url: string; time: number }[] = [];
+  const errors: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
   await page.route(`${origin}/fonts/**`, async route => {
     requests.push({ url: route.request().url(), time: Date.now() });
     await fontsReleased;
@@ -480,32 +526,42 @@ test('next suite Charts remeasures auto axis when actual local fonts finish load
   });
   const position = page.getByRole('combobox', { name: 'Legend position', exact: true });
   const demo = page.locator('figure').filter({ has: position });
-  const measure = () => demo.evaluate(node => {
-    const axis = node.querySelector('.recharts-xAxis .recharts-cartesian-axis-line')!;
-    const label = Array.from(node.querySelectorAll('text.recharts-label')).find(element => element.textContent === 'Reporting month')!;
-    const legend = node.querySelector('.recharts-legend-wrapper')!;
-    const ticks = Array.from(node.querySelectorAll('.recharts-xAxis .recharts-cartesian-axis-tick-label'));
-    const box = (element: Element) => ({
-      text: element.textContent, rect: element.getBoundingClientRect().toJSON(), font: getComputedStyle(element).font,
-    });
-    const maxTickHeight = Math.max(...ticks.map(element => element.getBoundingClientRect().height));
-    const labelHeight = label.getBoundingClientRect().height;
-    const legendHeight = legend.getBoundingClientRect().height;
-    const axisY = Number(axis.getAttribute('y1'));
-    // Existing scene: default bottom margin 5, Legend offset 8; XAxisUtils measures wrappers plus the string label.
-    const allocatedHeight = Number(axis.closest('svg')!.getAttribute('height')) - 5 - legendHeight - 8 - axisY;
-    return {
-      time: performance.now(), fontStatus: document.fonts.status, axisY, allocatedHeight,
-      formulaInputs: { maxTickHeight, tickSize: 6, tickMargin: 2, labelHeight, labelGap: 5 },
-      measuredHeight: Math.round(maxTickHeight + 6 + 2 + labelHeight + 5),
-      ticks: ticks.map(box), label: box(label), legend: box(legend), legendReservation: legendHeight + 8,
-    };
-  });
   const timeline: unknown[] = [];
+  const measure = async () => {
+    timeline.push(await captureNextSuiteChart(page));
+    return demo.evaluate(node => {
+      const axis = node.querySelector('.recharts-xAxis .recharts-cartesian-axis-line')!;
+      const label = Array.from(node.querySelectorAll('text.recharts-label')).find(element => element.textContent === 'Reporting month')!;
+      const legend = node.querySelector('.recharts-legend-wrapper')!;
+      const ticks = Array.from(node.querySelectorAll('.recharts-xAxis .recharts-cartesian-axis-tick-label'));
+      const box = (element: Element) => ({
+        text: element.textContent, rect: element.getBoundingClientRect().toJSON(), font: getComputedStyle(element).font,
+      });
+      const maxTickHeight = Math.max(...ticks.map(element => element.getBoundingClientRect().height));
+      const labelHeight = label.getBoundingClientRect().height;
+      const legendHeight = legend.getBoundingClientRect().height;
+      const axisY = Number(axis.getAttribute('y1'));
+      // Existing scene: default bottom margin 5, Legend offset 8; XAxisUtils measures wrappers plus the string label.
+      const allocatedHeight = Number(axis.closest('svg')!.getAttribute('height')) - 5 - legendHeight - 8 - axisY;
+      return {
+        time: performance.now(), fontStatus: document.fonts.status, axisY, allocatedHeight,
+        formulaInputs: { maxTickHeight, tickSize: 6, tickMargin: 2, labelHeight, labelGap: 5 },
+        measuredHeight: Math.round(maxTickHeight + 6 + 2 + labelHeight + 5),
+        ticks: ticks.map(box), label: box(label), legend: box(legend), legendReservation: legendHeight + 8,
+      };
+    }).catch(error => {
+      timeline.push({ measurementError: String(error) });
+      throw error;
+    });
+  };
   try {
     await page.goto(`${origin}/themes/playground#charts`, { waitUntil: 'domcontentloaded' });
     await expect(position).toBeVisible();
-    await expect.poll(async () => (await measure()).allocatedHeight).toBeGreaterThan(30);
+    await expect.poll(async () => {
+      const snapshot = await measure();
+      timeline.push(snapshot);
+      return snapshot.allocatedHeight;
+    }).toBeGreaterThan(30);
     const initial = await measure();
     timeline.push(initial);
     expect(requests.some(request => request.url.endsWith('/fonts/Inter-Regular.woff2'))).toBe(true);
@@ -524,10 +580,15 @@ test('next suite Charts remeasures auto axis when actual local fonts finish load
       return snapshot.allocatedHeight - snapshot.measuredHeight;
     }).toBe(0);
   } finally {
+    timeline.push(await captureNextSuiteChart(page));
     releaseFonts();
-    await testInfo.attach('actual-local-font-axis-geometry', {
-      body: JSON.stringify({ requests, timeline }, null, 2), contentType: 'application/json',
-    });
+    try {
+      const path = testInfo.outputPath('actual-local-font-axis-geometry.json');
+      writeFileSync(path, JSON.stringify({ requests, errors, timeline }, null, 2));
+      await testInfo.attach('actual-local-font-axis-geometry', { path, contentType: 'application/json' });
+    } catch (error) {
+      console.error('Could not persist held-font geometry evidence:', error, JSON.stringify({ requests, errors, timeline }));
+    }
   }
 });
 

@@ -8,7 +8,12 @@ export default defineConfig({
   fullyParallel: false,
   workers: 1,
   testMatch: '**/website.spec.ts',
-  use: { baseURL: origin, browserName: 'chromium' },
+  use: {
+    baseURL: origin,
+    browserName: 'chromium',
+    trace: 'retain-on-failure',
+    screenshot: 'only-on-failure'
+  },
   projects: [
     { name: 'chromium' },
     { name: 'firefox', use: { browserName: 'firefox' } },

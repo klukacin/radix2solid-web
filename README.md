@@ -81,6 +81,8 @@ To update the library, review an actual clean library commit, update `library-so
 
 Runtime interactions reuse representative built archives for Dialog, Toast, Select, Charts, Combobox, Command, Tree, Splitter and Icons Extra in all three engines. This is separate from the 110-archive installation/build count. The checker accepts explicit archive names for bounded local checks; the no-argument CI command still checks every advertised archive.
 
+Failed GitHub Actions checks retain only `.artifacts/playwright/` for seven days: browser failure traces/screenshots, error contexts and chart geometry attachments. Private build artifacts and installation credentials are not uploaded. These diagnostics do not change test retries, deadlines or assertions.
+
 Preview binds only to `127.0.0.1`, on port 4149 unless `WEBSITE_PREVIEW_PORT` overrides it for the preview server, Playwright and the website spec together. Playwright owns its preview process; stop a manually started preview on the same port before browser checks. The library gallery is not part of this repository or its browser server configuration. Site implementation, focused commands and coverage limits are documented in [apps/website/README.md](apps/website/README.md).
 
 ## License, assets and publication limits
