@@ -54,6 +54,15 @@ A server has no layout, so a responsive chart cannot measure itself there. Give 
 - A `ResponsiveContainer` with `initialDimension` renders at that size on the server, then measures and redraws on the client.
 - A `ResponsiveContainer` without `initialDimension` renders an empty measurement state on the server and draws on the client. This is intentional: the package does not invent dimensions.
 
+### Next-suite measured layout
+
+With `Legend position` supplied and the default mount, the chart wrapper owns the server-rendered legend HTML. Its measured box is initially 0 × 0, and the first client styles retain that state before applying browser measurements. Outside legends then reserve their measured size; inside positions reserve no plot space and their placement does not depend on that measurement. Legends without `position` and those using an explicit custom portal retain their existing DOM-only path; this does not add server markup for those paths. `position` overrides `align` and `verticalAlign`; `layout="auto"` chooses vertical for `left`, `right`, `insideLeft`, and `insideRight`, horizontal otherwise.
+
+`XAxis height="auto"` uses **30px** on the server and first client render. After mount it measures rendered ticks and a string label, then rounds the tallest tick height plus `tickSize`, `tickMargin`, and the label height plus 5px when present. Function-content and JSX-element labels are excluded from this measurement. Requested numeric heights and tick positions remain unchanged. Shared server clip production now follows axis registration: for a 300px chart with 5px top/bottom margins and a numeric 30px X axis, the plot clip is correctly 260px rather than the previous erroneous 290px. This correction is not byte-identical SSR markup or clip output. Automatic sizing is browser-measured, not server-final; use the bounded recipe below when final server geometry is required.
+
+`Sankey title` and `desc` supply the root SVG's accessible name and description, including server output. `accessibilityLayer` enables its accessibility attributes. These attributes do not require browser geometry; see the [live Sankey example](/charts/docs/components/sankey).
+
+
 ### Server geometry needs explicit axes
 
 The server renders a chart in one pass, before axes and series have registered with each other. Charts that rely on automatic domains or automatic axis sizes are not supported on the server: their client render is correct, but their server HTML is not. With an automatic Y domain, for example, two stacked `Bar` series are drawn against different domains and numeric Y-axis ticks are missing; with automatic axis sizes, category labels do not line up with the bars.

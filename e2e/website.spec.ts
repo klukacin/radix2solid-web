@@ -22,7 +22,506 @@ const test = base.extend<{ unsplash: void }>({
 
 const origin = `http://127.0.0.1:${process.env.WEBSITE_PREVIEW_PORT ?? 4149}`;
 
-test('published package installation commands retain exact versions and local archives', async ({ page, context, browserName, request }) => {
+test('next suite native routes expose source Markdown search and downloads', async ({ page, request }) => {
+  const records = await (await request.get(`${origin}/search-index.json`)).json() as { url: string }[];
+  for (const family of ['combobox', 'command', 'tree', 'splitter']) {
+    for (const prefix of ['/primitives/docs/components', '/themes/docs/recipes']) {
+      const path = `${prefix}/${family}`;
+      await page.goto(`${origin}${path}`);
+      const references = page.getByRole('navigation', { name: 'Document references', exact: true });
+      await expect(references.getByRole('link', { name: 'View documentation source', exact: true })).toHaveAttribute('href', `https://github.com/wsagency/radix2solid-web/blob/main/apps/website/data${path}.mdx`);
+      await expect(references.getByRole('link', { name: 'Edit documentation', exact: true })).toHaveAttribute('href', `https://github.com/wsagency/radix2solid-web/edit/main/apps/website/data${path}.mdx`);
+      await expect(references.getByRole('link', { name: 'View original source', exact: true })).toHaveCount(0);
+      await expect(references.getByRole('link', { name: 'View in playground', exact: true })).toHaveAttribute('href', `/themes/playground#${family}`);
+      const response = await request.get(`${origin}${path}`, { headers: { Accept: 'text/markdown' } });
+      expect(response.status()).toBe(200);
+      expect(response.headers()['content-type']).toContain('text/markdown');
+      const markdown = await response.text();
+      expect(markdown).toBe(await (await request.get(`${origin}${path}.md`)).text());
+      expect(markdown).not.toMatch(/@radix-ui\/react-|packages\/react\/(?:combobox|command|tree|splitter)/);
+      expect(records.some(record => record.url === path || record.url.startsWith(`${path}#`))).toBe(true);
+    }
+    for (const style of ['css', 'css-modules', 'tailwind']) {
+      expect((await request.get(`${origin}/sandboxes/${family}-${style}.tar.gz`)).ok()).toBe(true);
+    }
+  }
+  await page.getByRole('button', { name: 'Search documentation', exact: true }).click();
+  const search = page.getByRole('dialog', { name: 'Search documentation', exact: true });
+  await search.getByRole('combobox').fill('Combobox');
+  await expect(search.locator('a[href^="/primitives/docs/components/combobox"]').first()).toBeVisible();
+});
+
+for (const [family, role, name] of [
+  ['combobox', 'combobox', 'External destination'],
+  ['command', 'combobox', 'Inline actions'],
+  ['tree', 'tree', 'Project explorer'],
+  ['splitter', 'separator', 'Workspace sidebar'],
+] as const) {
+  test(`next suite ${family} recipe preserves its server host through hydration`, async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', error => errors.push(error.message));
+    page.on('console', message => { if (message.type() === 'warning' || message.type() === 'error') errors.push(message.text()); });
+    let release!: () => void;
+    const ready = new Promise<void>(resolve => { release = resolve; });
+    await page.route(/\/assets\/.*\.js(?:\?.*)?$/, async route => { await ready; await route.continue(); });
+    await page.goto(`${origin}/themes/docs/recipes/${family}`, { waitUntil: 'commit' });
+    const host = page.getByRole(role, { name, exact: true });
+    await expect(host).toBeVisible();
+    await host.evaluate(node => Reflect.set(window, '__nextSuiteServerHost', node));
+    if (family === 'combobox') await expect(host).toHaveValue('Oslo');
+    release();
+    await page.waitForLoadState('load');
+    await expect(page.getByRole('button', { name: 'Toggle theme', exact: true }).first()).toBeEnabled();
+    expect(await host.evaluate(node => node === Reflect.get(window, '__nextSuiteServerHost'))).toBe(true);
+    if (family === 'combobox') await expect(host).toHaveValue('Oslo');
+    expect(errors).toEqual([]);
+  });
+}
+
+test('next suite playground remains usable narrow dark and forced colors', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.emulateMedia({ colorScheme: 'dark', forcedColors: 'active' });
+  await page.goto(`${origin}/themes/playground#combobox`);
+  for (const family of ['combobox', 'command', 'tree', 'splitter']) {
+    await expect(page.locator(`#${family}`)).toBeVisible();
+    await expect(page.locator(`a[href="/themes/docs/recipes/${family}"]`).first()).toBeVisible();
+    const geometry = await page.locator(`#${family}`).evaluate(heading => {
+      const section = heading.parentElement!.parentElement!;
+      return { right: section.getBoundingClientRect().right, viewport: window.innerWidth, scroll: section.scrollWidth, client: section.clientWidth };
+    });
+    expect(geometry.right).toBeLessThanOrEqual(geometry.viewport);
+    expect(geometry.scroll).toBeLessThanOrEqual(geometry.client);
+  }
+  const input = page.getByRole('combobox', { name: 'Destination', exact: true });
+  await input.fill('Prague');
+  await input.press('ArrowDown');
+  await input.press('Enter');
+  await expect(page.getByLabel('Accepted destination', { exact: true })).toHaveText('Key: prague');
+  const handle = page.getByRole('separator', { name: 'Workspace sidebar', exact: true });
+  await handle.focus();
+  await expect(handle).toBeFocused();
+  const bounds = (await handle.boundingBox())!;
+  expect(bounds.width).toBeGreaterThanOrEqual(24);
+});
+
+test('next suite Combobox recovers native validity after blocked required submission', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto(`${origin}/themes/docs/recipes/combobox`);
+  const input = page.getByRole('combobox', { name: 'Destination', exact: true });
+  const form = page.getByRole('form', { name: 'Destination booking', exact: true });
+  const submitted = page.getByLabel('Submitted destination', { exact: true });
+  const accepted = page.getByLabel('Accepted destination', { exact: true });
+  await expect(input).toBeVisible();
+  await expect(input).toHaveAttribute('required', '');
+  await expect(input).toHaveValue('');
+  await expect(accepted).toHaveText('Key: none');
+  expect(await form.evaluate(node => [...new FormData(node as HTMLFormElement)])).toEqual([]);
+  await page.getByRole('button', { name: 'Book destination', exact: true }).click();
+  await expect(input).toBeFocused();
+  await expect(submitted).toHaveText('Submitted: Not submitted; count: 0');
+  await form.evaluate(node => (node as HTMLFormElement).requestSubmit());
+  await expect(input).toBeFocused();
+  await expect(submitted).toHaveText('Submitted: Not submitted; count: 0');
+  expect(await input.evaluate(node => (node as HTMLInputElement).validity.valid)).toBe(false);
+  await input.fill('Paris');
+  await input.press('ArrowDown');
+  const active = await input.getAttribute('aria-activedescendant');
+  expect(active).toBeTruthy();
+  await expect(page.locator(`[id="${active}"]`)).toHaveRole('option');
+  await input.press('Enter');
+  await expect(accepted).toHaveText('Key: paris');
+  await expect(input).toHaveValue('Paris');
+  expect(await form.evaluate(node => [...new FormData(node as HTMLFormElement)])).toEqual([['destination', 'paris']]);
+  expect(await input.evaluate(node => {
+    const input = node as HTMLInputElement;
+    return { valid: input.validity.valid, customError: input.validity.customError, message: input.validationMessage };
+  })).toEqual({ valid: true, customError: false, message: '' });
+  await expect(submitted).toHaveText('Submitted: Not submitted; count: 0');
+  expect(errors).toEqual([]);
+});
+
+test('next suite Combobox submits accepted keys, not drafts', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto(`${origin}/themes/docs/recipes/combobox`);
+  const input = page.getByRole('combobox', { name: 'Destination', exact: true });
+  const form = page.getByRole('form', { name: 'Destination booking', exact: true });
+  const submitted = page.getByLabel('Submitted destination', { exact: true });
+  const accepted = page.getByLabel('Accepted destination', { exact: true });
+  await expect(input).toBeVisible();
+  // The blocked-validation transition has its own real-Combobox case; this case starts without prior native validation UI.
+  await input.fill('Paris');
+  await input.press('ArrowDown');
+  const active = await input.getAttribute('aria-activedescendant');
+  expect(active).toBeTruthy();
+  await expect(page.locator(`[id="${active}"]`)).toHaveRole('option');
+  await expect(input).toBeFocused();
+  await input.dispatchEvent('compositionstart');
+  await input.dispatchEvent('keydown', { key: 'Enter', code: 'Enter', isComposing: true });
+  await expect(accepted).toHaveText('Key: none');
+  await expect(submitted).toContainText('count: 0');
+  await input.dispatchEvent('compositionend');
+  await input.press('Enter');
+  await expect(submitted).toContainText('count: 0');
+  await expect(accepted).toHaveText('Key: paris');
+  await expect(input).toHaveValue('Paris');
+  expect(await form.evaluate(node => [...new FormData(node as HTMLFormElement)])).toEqual([['destination', 'paris']]);
+  expect(await input.evaluate(node => {
+    const input = node as HTMLInputElement;
+    return { valid: input.validity.valid, customError: input.validity.customError, message: input.validationMessage };
+  })).toEqual({ valid: true, customError: false, message: '' });
+  await page.getByRole('button', { name: 'Book destination', exact: true }).click();
+  await expect(submitted).toHaveText('Submitted: paris; count: 1');
+  await page.getByRole('button', { name: 'Request booking', exact: true }).click();
+  await expect(submitted).toHaveText('Submitted: paris; count: 2');
+  await input.fill('Unmatched draft');
+  await expect.poll(() => form.evaluate(node => new FormData(node as HTMLFormElement).has('destination'))).toBe(false);
+  await form.evaluate(node => (node as HTMLFormElement).requestSubmit());
+  await expect(input).toBeFocused();
+  await expect(submitted).toContainText('count: 2');
+  expect(await input.evaluate(node => (node as HTMLInputElement).checkValidity())).toBe(false);
+  await input.fill('');
+  await expect(accepted).toHaveText('Key: paris');
+  await expect.poll(() => form.evaluate(node => new FormData(node as HTMLFormElement).has('destination'))).toBe(false);
+  await form.evaluate(node => (node as HTMLFormElement).requestSubmit());
+  await expect(input).toBeFocused();
+  await expect(submitted).toContainText('count: 2');
+  expect(await input.evaluate(node => (node as HTMLInputElement).validity.valid)).toBe(false);
+  await input.press('Escape');
+  await expect(input).toHaveValue('Paris');
+  await page.getByRole('checkbox', { name: 'Prevent reset', exact: true }).check();
+  await input.fill('Draft to preserve');
+  await form.evaluate(node => (node as HTMLFormElement).reset());
+  await expect(input).toHaveValue('Draft to preserve');
+  await page.getByRole('checkbox', { name: 'Prevent reset', exact: true }).uncheck();
+  await page.getByRole('checkbox', { name: 'Accept value proposals', exact: true }).uncheck();
+  await form.evaluate(node => (node as HTMLFormElement).reset());
+  await expect(accepted).toHaveText('Key: paris');
+  await expect(input).toHaveValue('');
+  await expect(page.getByRole('status', { name: 'Destination query', exact: true })).toHaveText('Query: empty');
+  await expect.poll(() => form.evaluate(node => new FormData(node as HTMLFormElement).has('destination'))).toBe(false);
+  await input.fill('Paris');
+  await input.press('Escape');
+  await page.getByRole('checkbox', { name: 'Keep Paris in data', exact: true }).uncheck();
+  await expect(accepted).toHaveText('Key: paris');
+  await expect.poll(() => form.evaluate(node => new FormData(node as HTMLFormElement).has('destination'))).toBe(false);
+  await page.getByRole('checkbox', { name: 'Accept value proposals', exact: true }).check();
+  await page.getByRole('button', { name: 'Clear destination', exact: true }).click();
+  await expect(accepted).toHaveText('Key: none');
+  await expect(input).toBeFocused();
+  const external = page.getByRole('form', { name: 'External destination form', exact: true });
+  await expect.poll(() => external.evaluate(node => new FormData(node as HTMLFormElement).get('externalDestination'))).toBe('oslo');
+  await page.getByRole('button', { name: 'Clear external destination', exact: true }).click();
+  await expect.poll(() => external.evaluate(node => new FormData(node as HTMLFormElement).has('externalDestination'))).toBe(false);
+  expect(errors).toEqual([]);
+});
+
+test('next suite Command dispatches once and preserves dialog focus', async ({ page }) => {
+  await page.goto(`${origin}/themes/docs/recipes/command`);
+  const inline = page.getByRole('combobox', { name: 'Inline actions', exact: true });
+  await expect(inline).toBeVisible();
+  await inline.fill('Create note');
+  await inline.press('Enter');
+  await expect(page.getByLabel('Command action count', { exact: true })).toHaveText('Actions: 1');
+  await inline.fill('Protected action');
+  await inline.press('Enter');
+  await expect(page.getByLabel('Command action count', { exact: true })).toHaveText('Actions: 1');
+  await inline.fill('Unavailable action');
+  await inline.press('Enter');
+  await expect(page.getByLabel('Command action count', { exact: true })).toHaveText('Actions: 1');
+  await expect(inline).not.toHaveAttribute('aria-activedescendant', /.+/);
+  await inline.fill('No matching action');
+  await inline.press('Enter');
+  await expect(page.getByLabel('Command form submissions', { exact: true })).toHaveText('Form submissions: 0');
+  const trigger = page.getByRole('button', { name: 'Open command palette', exact: true });
+  await trigger.click();
+  const palette = page.getByRole('combobox', { name: 'Palette actions', exact: true });
+  await expect(palette).toBeFocused();
+  await palette.press('Escape');
+  await expect(trigger).toBeFocused();
+  await trigger.click();
+  await palette.fill('Open details');
+  await palette.press('Enter');
+  await expect(page.getByRole('dialog', { name: 'Action details', exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Close action details', exact: true })).toBeFocused();
+  await expect(page.getByLabel('Command action count', { exact: true })).toHaveText('Actions: 2');
+  await page.getByRole('button', { name: 'Close action details', exact: true }).click();
+  await page.getByRole('checkbox', { name: 'Accept palette close proposals', exact: true }).uncheck();
+  await trigger.click();
+  await expect(palette).toHaveValue('');
+  await palette.fill('Create note');
+  await palette.press('Enter');
+  await expect(page.getByLabel('Command action count', { exact: true })).toHaveText('Actions: 3');
+  await expect(palette).toBeVisible();
+  await palette.press('Escape');
+  await expect(palette).toBeVisible();
+  await expect(palette).toBeFocused();
+});
+
+test('next suite Tree keeps focus selection and activation separate', async ({ page }) => {
+  await page.goto(`${origin}/themes/docs/recipes/tree`);
+  const tree = page.getByRole('tree', { name: 'Project explorer', exact: true });
+  await expect(tree).toBeVisible();
+  const source = tree.getByRole('treeitem', { name: 'Source', exact: true });
+  await source.focus();
+  await source.press('ArrowRight');
+  await source.press('ArrowDown');
+  const first = source.getByRole('treeitem', { name: 'Readme', exact: true });
+  await expect(first).toBeFocused();
+  await expect(page.getByLabel('Tree selected key', { exact: true })).toHaveText('Selected: none');
+  await first.press('Space');
+  await expect(page.getByLabel('Tree selected key', { exact: true })).toHaveText('Selected: source-readme');
+  await first.press('Enter');
+  await expect(page.getByLabel('Tree activations', { exact: true })).toHaveText('Activations: 1');
+  const original = await first.elementHandle();
+  await page.getByRole('button', { name: 'Reverse source children', exact: true }).evaluate(node => (node as HTMLButtonElement).click());
+  expect(await original!.evaluate(node => node.isConnected)).toBe(true);
+  await expect(first).toBeFocused();
+  await first.press('ArrowUp');
+  await expect(source.getByRole('treeitem', { name: 'Configuration', exact: true })).toBeFocused();
+  await page.getByRole('checkbox', { name: 'Accept selection proposals', exact: true }).uncheck();
+  const guide = tree.getByRole('treeitem', { name: 'Enabled guide', exact: true });
+  await guide.focus();
+  await guide.press('Space');
+  await expect(page.getByLabel('Tree selected key', { exact: true })).toHaveText('Selected: source-readme');
+  await guide.press('ArrowUp');
+  await expect(tree.getByRole('treeitem', { name: 'Readme', exact: true }).last()).toBeFocused();
+  const protectedAction = tree.getByRole('treeitem', { name: 'Protected action', exact: true });
+  await protectedAction.focus();
+  await protectedAction.press('Enter');
+  await expect(page.getByLabel('Tree activations', { exact: true })).toHaveText('Activations: 1');
+  await tree.getByRole('button', { name: 'Toggle Source', exact: true }).click();
+  await expect(page.getByLabel('Tree activations', { exact: true })).toHaveText('Activations: 1');
+  await expect(page.getByLabel('Tree selected key', { exact: true })).toHaveText('Selected: source-readme');
+  await expect(first).not.toBeVisible();
+  await page.getByRole('checkbox', { name: 'Accept expansion proposals', exact: true }).uncheck();
+  await source.focus();
+  await source.press('ArrowRight');
+  await expect(source).toHaveAttribute('aria-expanded', 'false');
+  await page.getByRole('checkbox', { name: 'Accept expansion proposals', exact: true }).check();
+  await page.getByRole('checkbox', { name: 'Right-to-left tree', exact: true }).check();
+  await source.focus();
+  await source.press('ArrowLeft');
+  await expect(source).toHaveAttribute('aria-expanded', 'true');
+  await first.focus();
+  await page.getByRole('button', { name: 'Collapse source externally', exact: true }).evaluate(node => (node as HTMLButtonElement).click());
+  await expect(source).toBeFocused();
+  await expect(first).not.toBeVisible();
+  const external = page.getByRole('button', { name: 'Reverse source children', exact: true });
+  await source.press('ArrowLeft');
+  await external.focus();
+  await page.getByRole('button', { name: 'Collapse source externally', exact: true }).evaluate(node => (node as HTMLButtonElement).click());
+  await expect(external).toBeFocused();
+  expect(await tree.locator('[tabindex="0"]').evaluateAll(nodes => nodes.filter(node => (node as HTMLElement).getClientRects().length === 0).length)).toBe(0);
+});
+
+test('next suite Splitter commits accepted geometry and never collapse', async ({ page }) => {
+  await page.goto(`${origin}/themes/docs/recipes/splitter`);
+  const handle = page.getByRole('separator', { name: 'Workspace sidebar', exact: true });
+  await expect(handle).toBeVisible();
+  await expect(handle).not.toHaveAttribute('aria-disabled', 'true');
+  const primary = page.getByLabel('Workspace sidebar panel', { exact: true });
+  const before = (await primary.boundingBox())!.width;
+  await handle.focus();
+  await handle.press('ArrowRight');
+  await expect.poll(async () => (await primary.boundingBox())!.width).toBeGreaterThan(before);
+  await expect(page.getByLabel('Splitter commit count', { exact: true })).toHaveText('Commits: 1');
+  await page.getByRole('checkbox', { name: 'Accept resize proposals', exact: true }).uncheck();
+  const accepted = (await primary.boundingBox())!.width;
+  await handle.press('ArrowRight');
+  await expect.poll(async () => (await primary.boundingBox())!.width).toBeCloseTo(accepted, 0);
+  await expect(page.getByLabel('Splitter commit count', { exact: true })).toHaveText('Commits: 1');
+  await handle.press('Enter');
+  await expect(primary.getByRole('button', { name: 'Sidebar action', exact: true })).not.toBeVisible();
+  await expect(handle).toBeFocused();
+  await expect(page.getByLabel('Splitter commit count', { exact: true })).toHaveText('Commits: 1');
+  await handle.press('Enter');
+  await expect(primary.getByRole('button', { name: 'Sidebar action', exact: true })).toBeVisible();
+  await page.getByRole('checkbox', { name: 'Accept collapse proposals', exact: true }).uncheck();
+  await handle.press('Enter');
+  await expect(primary.getByRole('button', { name: 'Sidebar action', exact: true })).toBeVisible();
+  await page.getByRole('checkbox', { name: 'Accept collapse proposals', exact: true }).check();
+  await primary.getByRole('button', { name: 'Sidebar action', exact: true }).focus();
+  await page.getByRole('button', { name: 'Toggle sidebar externally', exact: true }).evaluate(node => (node as HTMLButtonElement).click());
+  await expect(handle).toBeFocused();
+  await expect(primary.getByRole('button', { name: 'Sidebar action', exact: true })).not.toBeVisible();
+  await handle.press('Enter');
+  await page.getByRole('checkbox', { name: 'Accept resize proposals', exact: true }).check();
+  await page.getByRole('checkbox', { name: 'Right-to-left layout', exact: true }).check();
+  const rtlBefore = (await primary.boundingBox())!.width;
+  await handle.press('ArrowRight');
+  await expect.poll(async () => (await primary.boundingBox())!.width).toBeLessThan(rtlBefore);
+  await expect(page.getByLabel('Splitter commit count', { exact: true })).toHaveText('Commits: 2');
+  const nested = page.getByRole('separator', { name: 'Editor height', exact: true });
+  await expect(handle).toHaveAttribute('aria-orientation', 'vertical');
+  await expect(nested).toHaveAttribute('aria-orientation', 'horizontal');
+  const nestedBefore = Number(await nested.getAttribute('aria-valuenow'));
+  await nested.press('ArrowDown');
+  await expect.poll(async () => Number(await nested.getAttribute('aria-valuenow'))).toBeGreaterThan(nestedBefore);
+  await expect(page.getByLabel('Splitter commit count', { exact: true })).toHaveText('Commits: 2');
+  await page.getByRole('checkbox', { name: 'Right-to-left layout', exact: true }).uncheck();
+  const dragStart = (await primary.boundingBox())!.width;
+  const grip = (await handle.boundingBox())!;
+  await page.mouse.move(grip.x + grip.width / 2, grip.y + grip.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(grip.x + grip.width / 2 + 35, grip.y + grip.height / 2, { steps: 4 });
+  await page.mouse.up();
+  await expect.poll(async () => (await primary.boundingBox())!.width).toBeGreaterThan(dragStart + 20);
+  await expect(page.getByLabel('Splitter commit count', { exact: true })).toHaveText('Commits: 3');
+  const root = handle.locator('..');
+  await root.evaluate(node => { (node as HTMLElement).style.width = '280px'; });
+  await expect.poll(async () => (await primary.boundingBox())!.width).toBeLessThanOrEqual(136);
+  await expect(page.getByLabel('Splitter commit count', { exact: true })).toHaveText('Commits: 3');
+  for (const width of ['180px', '0px']) {
+    await root.evaluate((node, width) => { (node as HTMLElement).style.width = width; }, width);
+    await expect(handle).toHaveAttribute('aria-disabled', 'true');
+    const size = await handle.getAttribute('aria-valuenow');
+    await handle.press('ArrowRight');
+    await handle.press('Enter');
+    await expect(handle).toHaveAttribute('aria-valuenow', size!);
+    await expect(page.getByLabel('Splitter collapsed state', { exact: true })).toHaveText('Collapsed: false');
+    await expect(page.getByLabel('Splitter commit count', { exact: true })).toHaveText('Commits: 3');
+    for (const attribute of ['aria-valuenow', 'aria-valuemin', 'aria-valuemax']) expect(Number.isFinite(Number(await handle.getAttribute(attribute)))).toBe(true);
+  }
+});
+
+test('next suite Extra icons remain separate and downloadable', async ({ page, context, browserName, request }) => {
+  if (browserName === 'chromium') await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin });
+  await page.goto(`${origin}/icons`);
+  const extra = page.getByRole('region', { name: 'Extra icons', exact: true });
+  await expect(extra).toBeVisible();
+  await expect(extra.getByRole('button')).toHaveCount(2);
+  await expect(page.getByRole('region', { name: 'Original Radix icons', exact: true }).getByRole('button')).toHaveCount(332);
+  const folder = extra.getByRole('button', { name: 'Folder', exact: true });
+  await expect(folder.locator('svg')).toHaveAttribute('viewBox', '0 0 24 24');
+  await expect(folder.locator('svg')).toHaveAttribute('width', '15');
+  if (browserName === 'chromium') {
+    await folder.click();
+    await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toContain('viewBox="0 0 24 24"');
+  }
+  await page.getByRole('textbox', { name: 'Search icons', exact: true }).fill('folder');
+  await expect(page.getByRole('region', { name: 'Extra icon results', exact: true }).getByRole('button')).toHaveCount(2);
+  const asset = await request.get(`${origin}/icons-extra/folder.svg`);
+  expect(asset.ok()).toBe(true);
+  expect(await asset.text()).toContain('viewBox="0 0 24 24"');
+  await expect(page.getByRole('img', { name: 'Open project folder', exact: true })).toBeVisible();
+  const archive = await request.get(`${origin}/packages/wsagency-radix2solid-icons-extra-0.1.0-rc.3.tgz`);
+  expect(archive.ok()).toBe(true);
+});
+
+test('next suite Charts displays selected legend axis and Sankey APIs', async ({ page, context, browserName }) => {
+  let release!: () => void;
+  const ready = new Promise<void>(resolve => { release = resolve; });
+  await page.route(/\/assets\/.*\.js(?:\?.*)?$/, async route => { await ready; await route.continue(); });
+  await page.goto(`${origin}/themes/playground#charts`, { waitUntil: 'commit' });
+  const position = page.getByRole('combobox', { name: 'Legend position', exact: true });
+  const demo = page.locator('figure').filter({ has: position });
+  const axis = demo.locator('.recharts-xAxis .recharts-cartesian-axis-line');
+  const flow = page.locator('svg').filter({ has: page.locator('title').filter({ hasText: /^Documentation flow$/ }) }).first();
+  const accessibility = browserName === 'chromium' ? await context.newCDPSession(page) : undefined;
+  const expectNativeSankeyDescription = async () => {
+    if (!accessibility) return;
+    const { result } = await accessibility.send('Runtime.evaluate', {
+      expression: "Array.from(document.querySelectorAll('svg')).find(node => Array.from(node.children).some(child => child.localName === 'title' && child.textContent === 'Documentation flow'))",
+    });
+    const { nodes } = await accessibility.send('Accessibility.getPartialAXTree', { objectId: result.objectId!, fetchRelatives: false });
+    expect(nodes[0].ignored).toBe(false);
+    expect(nodes[0].name?.value).toBe('Documentation flow');
+    expect(nodes[0].description?.value).toBe('Visits flow through docs and playground to installation.');
+  };
+  await expect(position).toBeVisible();
+  await expect(axis).toHaveCount(1);
+  const serverAxisY = Number(await axis.getAttribute('y1'));
+  await expect(flow).toHaveAccessibleName('Documentation flow');
+  await expectNativeSankeyDescription();
+  await flow.evaluate(node => Reflect.set(window, '__nextSuiteServerSankey', node));
+  release();
+  await page.waitForLoadState('load');
+  await expect.poll(async () => Number(await axis.getAttribute('y1'))).toBeLessThan(serverAxisY);
+  const outsideAxisY = Number(await axis.getAttribute('y1'));
+  await position.selectOption('insideTopRight');
+  await expect(page.getByLabel('Legend configuration', { exact: true })).toContainText('insideTopRight');
+  await expect.poll(async () => Number(await axis.getAttribute('y1'))).toBeGreaterThan(outsideAxisY);
+  // With no inside-legend reservation, the remaining growth is the measured auto axis.
+  expect(Number(await axis.getAttribute('y1'))).toBeLessThan(serverAxisY);
+  const legend = demo.locator('.recharts-legend-wrapper');
+  const insideStyle = await legend.getAttribute('style');
+  await position.selectOption('bottom');
+  await expect(page.getByLabel('Legend configuration', { exact: true })).toContainText('bottom');
+  await expect.poll(async () => Number(await axis.getAttribute('y1'))).toBeCloseTo(outsideAxisY, 0);
+  await position.selectOption('insideTopRight');
+  await expect(legend).toHaveAttribute('style', insideStyle!);
+  await expect(demo.getByText('Reporting month', { exact: true })).toBeVisible();
+  await expect(flow).toHaveAccessibleName('Documentation flow');
+  await expectNativeSankeyDescription();
+  expect(await flow.evaluate(node => node === Reflect.get(window, '__nextSuiteServerSankey'))).toBe(true);
+});
+
+test('next suite Charts remeasures auto axis when actual local fonts finish loading', async ({ page, browserName }, testInfo) => {
+  test.skip(browserName !== 'webkit', 'Controlled cold-font regression for the observed WebKit allocation failure.');
+  let releaseFonts!: () => void;
+  const fontsReleased = new Promise<void>(resolve => { releaseFonts = resolve; });
+  const requests: { url: string; time: number }[] = [];
+  await page.route(`${origin}/fonts/**`, async route => {
+    requests.push({ url: route.request().url(), time: Date.now() });
+    await fontsReleased;
+    await route.continue();
+  });
+  const position = page.getByRole('combobox', { name: 'Legend position', exact: true });
+  const demo = page.locator('figure').filter({ has: position });
+  const measure = () => demo.evaluate(node => {
+    const axis = node.querySelector('.recharts-xAxis .recharts-cartesian-axis-line')!;
+    const label = Array.from(node.querySelectorAll('text.recharts-label')).find(element => element.textContent === 'Reporting month')!;
+    const legend = node.querySelector('.recharts-legend-wrapper')!;
+    const ticks = Array.from(node.querySelectorAll('.recharts-xAxis .recharts-cartesian-axis-tick-label'));
+    const box = (element: Element) => ({
+      text: element.textContent, rect: element.getBoundingClientRect().toJSON(), font: getComputedStyle(element).font,
+    });
+    const maxTickHeight = Math.max(...ticks.map(element => element.getBoundingClientRect().height));
+    const labelHeight = label.getBoundingClientRect().height;
+    const legendHeight = legend.getBoundingClientRect().height;
+    const axisY = Number(axis.getAttribute('y1'));
+    // Existing scene: default bottom margin 5, Legend offset 8; XAxisUtils measures wrappers plus the string label.
+    const allocatedHeight = Number(axis.closest('svg')!.getAttribute('height')) - 5 - legendHeight - 8 - axisY;
+    return {
+      time: performance.now(), fontStatus: document.fonts.status, axisY, allocatedHeight,
+      formulaInputs: { maxTickHeight, tickSize: 6, tickMargin: 2, labelHeight, labelGap: 5 },
+      measuredHeight: Math.round(maxTickHeight + 6 + 2 + labelHeight + 5),
+      ticks: ticks.map(box), label: box(label), legend: box(legend), legendReservation: legendHeight + 8,
+    };
+  });
+  const timeline: unknown[] = [];
+  try {
+    await page.goto(`${origin}/themes/playground#charts`, { waitUntil: 'domcontentloaded' });
+    await expect(position).toBeVisible();
+    await expect.poll(async () => (await measure()).allocatedHeight).toBeGreaterThan(30);
+    const initial = await measure();
+    timeline.push(initial);
+    expect(requests.some(request => request.url.endsWith('/fonts/Inter-Regular.woff2'))).toBe(true);
+    expect(initial.fontStatus).toBe('loading');
+    expect(initial.allocatedHeight).toBe(initial.measuredHeight);
+    releaseFonts();
+    await page.evaluate(() => document.fonts.ready.then(() => undefined));
+    const loaded = await measure();
+    timeline.push(loaded);
+    expect(loaded.fontStatus).toBe('loaded');
+    expect(loaded.measuredHeight).not.toBe(initial.measuredHeight);
+    // Font completion invalidates the native Solid measurement effect; assert its exact resulting allocation.
+    await expect.poll(async () => {
+      const snapshot = await measure();
+      timeline.push(snapshot);
+      return snapshot.allocatedHeight - snapshot.measuredHeight;
+    }).toBe(0);
+  } finally {
+    releaseFonts();
+    await testInfo.attach('actual-local-font-axis-geometry', {
+      body: JSON.stringify({ requests, timeline }, null, 2), contentType: 'application/json',
+    });
+  }
+});
+
+test('published package installation remains distinct from next suite local candidates', async ({ page, context, browserName, request }) => {
   test.skip(browserName !== 'chromium', 'Native clipboard read permission is supported by Chromium.');
   await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin });
   for (const [name, path, manager] of [
@@ -30,14 +529,18 @@ test('published package installation commands retain exact versions and local ar
     ['themes', '/themes/docs/overview/getting-started', 'pnpm add'],
     ['icons', '/icons', 'pnpm add'],
     ['charts', '/charts/docs/overview/getting-started', 'pnpm add'],
+    ['icons-extra', '/icons', 'pnpm add'],
   ]) {
     const manifest = JSON.parse(readFileSync(new URL(`../.library/packages/${name}/package.json`, import.meta.url), 'utf8'));
-    const command = `${manager} -E ${manifest.name}@${manifest.version}`;
+    const archive = `wsagency-radix2solid-${name}-${manifest.version}.tgz`;
+    const archives = name === 'themes' ? `./wsagency-radix2solid-primitives-${manifest.version}.tgz ./${archive}` : `./${archive}`;
+    const command = `${manager} ${archives}`;
     await page.goto(`${origin}${path}`);
     if (name === 'themes') await page.getByRole('tab', { name: 'pnpm', exact: true }).click();
     const code = page.locator('pre').filter({ hasText: command }).filter({ visible: true }).first();
     await expect(code).toHaveText(command);
     const block = page.locator('[data-code-block-content]').filter({ has: code });
+    await block.evaluate(node => node.scrollIntoView({ block: 'center' }));
     await block.hover();
     await block.getByRole('button', { name: 'Copy code to clipboard', exact: true }).click();
     await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe(command);
@@ -45,26 +548,24 @@ test('published package installation commands retain exact versions and local ar
       for (const [tab, verb] of [['npm', 'install'], ['yarn', 'add'], ['bun', 'add']]) {
         await page.getByRole('tab', { name: tab, exact: true }).click();
         const panel = page.getByRole('tabpanel').filter({ visible: true });
-        const expected = `${tab} ${verb} -E ${manifest.name}@${manifest.version}`;
+        const expected = `${tab} ${verb} ${archives}`;
         await expect(panel.locator('pre')).toHaveText(expected);
         await panel.getByRole('button', { name: 'Copy code to clipboard', exact: true }).click();
         await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe(expected);
       }
     }
-    await expect(page.locator(`a[href="https://www.npmjs.com/package/${manifest.name}"]`).first()).toBeVisible();
-    await expect(page.locator(`a[href="/packages/wsagency-radix2solid-${name}-${manifest.version}.tgz"]`).first()).toBeVisible();
+    await expect(page.locator(`a[href="/packages/${archive}"]`).first()).toBeVisible();
+    expect((await request.get(`${origin}/packages/${archive}`)).ok()).toBe(true);
     if (name === 'icons') {
-      const input = page.getByRole('textbox', { name: 'Install native icons from npm', exact: true });
+      const input = page.getByRole('textbox', { name: 'Install downloaded native icons candidate', exact: true });
       await expect(input).toHaveValue(command);
       await input.click();
       expect(await input.evaluate(node => (node as HTMLInputElement).selectionEnd! - (node as HTMLInputElement).selectionStart!)).toBe(command.length);
     }
     const markdown = await (await request.get(`${origin}${path}.md`)).text();
-    // Markdown exports the server-selected npm tab, not the hydrated pnpm tab.
-    expect(markdown).toContain(name === 'themes' ? `npm install -E ${manifest.name}@${manifest.version}` : command);
-    expect(markdown).toContain(`https://www.npmjs.com/package/${manifest.name}`);
-    expect(markdown).toContain(`/packages/wsagency-radix2solid-${name}-${manifest.version}.tgz`);
-    expect(markdown).not.toContain('not published on npm');
+    expect(markdown).toContain(name === 'themes' ? `npm install ${archives}` : command);
+    expect(markdown).toContain(`/packages/${archive}`);
+    expect(markdown).not.toContain(`-E ${manifest.name}@${manifest.version}`);
   }
 });
 
@@ -898,7 +1399,7 @@ test('charts landing hydrates one chart per container, switches chart type and s
   const families = page.locator('a[href^="/charts/docs/components/"]').filter({ has: page.locator('.recharts-wrapper') });
   await expect(families).toHaveCount(12);
   for (const family of await families.all()) await expect(family.locator('.recharts-wrapper > svg.recharts-surface')).toHaveCount(1);
-  const download = page.getByRole('link', { name: 'Download package', exact: true });
+  const download = page.getByRole('link', { name: 'Download candidate', exact: true });
   expect((await request.get(`${origin}${await download.getAttribute('href')}`)).status()).toBe(200);
   const notice = await (await request.get(`${origin}/NOTICE.txt`)).text();
   for (const text of ['Copyright (c) 2026 Thomas Guehenneux', 'Copyright (c) 2015-present recharts', '--- d3-scale@', '--- d3-shape@', '--- internmap@', '--- solid-js@2.0.0-rc.15 ', '--- @floating-ui/dom@', 'Copyright (c) 2022 WorkOS']) expect(notice).toContain(text);
@@ -1069,8 +1570,9 @@ test('playground charts render every family once with the page theme tokens', as
   page.on('pageerror', error => errors.push(error.message));
   await page.goto(`${origin}/themes/playground#charts`);
   await expect(page.locator('#charts')).toBeVisible();
-  await expect(page.locator('.recharts-wrapper')).toHaveCount(12);
-  await expect(page.locator('.recharts-wrapper > svg.recharts-surface')).toHaveCount(12);
+  // Twelve family previews plus the interactive next-suite Charts demo.
+  await expect(page.locator('.recharts-wrapper')).toHaveCount(13);
+  await expect(page.locator('.recharts-wrapper > svg.recharts-surface')).toHaveCount(13);
   expect(await page.locator('.recharts-line-curve').first().evaluate(node => getComputedStyle(node).stroke)).not.toBe('none');
   expect(errors).toEqual([]);
 });

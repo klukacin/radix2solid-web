@@ -32,6 +32,13 @@ const chartsManifest: { name: string; version: string } = JSON.parse(await readF
 const chartsTarball = `${chartsManifest.name.slice(1).replace('/', '-')}-${chartsManifest.version}.tgz`;
 run('pnpm', ['--dir', resolve(library, 'packages/charts'), 'pack', '--pack-destination', chartsVendor]);
 await cp(chartsVendor, resolve(site, 'out/packages'), { recursive: true });
+// Extra icons stay optional: only their own demo receives the fifth tarball.
+const extraVendor = resolve(staging, 'icons-extra-vendor');
+const extraManifest: { name: string; version: string } = JSON.parse(await readFile(resolve(library, 'packages/icons-extra/package.json'), 'utf8'));
+const extraTarball = `${extraManifest.name.slice(1).replace('/', '-')}-${extraManifest.version}.tgz`;
+run('pnpm', ['--dir', resolve(library, 'packages/icons-extra'), 'pack', '--pack-destination', extraVendor]);
+await cp(extraVendor, resolve(site, 'out/packages'), { recursive: true });
+await cp(resolve(library, 'packages/icons-extra/icons'), resolve(site, 'out/icons-extra'), { recursive: true });
 // The sandbox keeps the host's exact RC15 overrides (solid-js/web/signals/compiler/babel-plugin) and
 // exact age exceptions (tuple + vite-plugin next.50); host-only workspace globs and Playwright exceptions go.
 const workspace = (await readFile(resolve(root, 'pnpm-workspace.yaml'), 'utf8'))
@@ -53,12 +60,14 @@ for await (const entry of glob('*/index.tsx', { cwd: resolve(site, 'src/demos') 
     await mkdir(project, { recursive: true });
     await cp(vendor, resolve(project, 'vendor'), { recursive: true });
     if (name === 'charts') await cp(resolve(chartsVendor, chartsTarball), resolve(project, 'vendor', chartsTarball));
+    if (name === 'icons-extra') await cp(resolve(extraVendor, extraTarball), resolve(project, 'vendor', extraTarball));
     for await (const file of glob('*.{tsx,css,cjs}', { cwd: source })) {
       let content = await readFile(resolve(source, file), 'utf8');
       if (solution === 'tailwind' && file === 'styles.css') content = content.replace('./index.tsx', './demo.tsx');
       await writeFile(resolve(project, file === 'index.tsx' ? 'demo.tsx' : basename(file)), content);
     }
-    const projectDependencies = name === 'charts' ? { ...dependencies, [chartsManifest.name]: `file:./vendor/${chartsTarball}` } : dependencies;
+    const projectDependencies = name === 'charts' ? { ...dependencies, [chartsManifest.name]: `file:./vendor/${chartsTarball}` }
+      : name === 'icons-extra' ? { ...dependencies, [extraManifest.name]: `file:./vendor/${extraTarball}` } : dependencies;
     await writeFile(resolve(project, 'package.json'), JSON.stringify({ name: `radix-solid-${name}-${solution}-demo`, private: true, type: 'module', packageManager: 'pnpm@11.5.0', engines: { node: '>=24 <25' }, scripts: { dev: 'vite', build: 'vite build' }, dependencies: projectDependencies, devDependencies: { '@solidjs/vite-plugin': '3.0.0-next.50', vite: '8.3.3', ...(solution === 'tailwind' ? { tailwindcss: '4.3.3', '@tailwindcss/vite': '4.3.3' } : {}) } }, null, 2));
     await writeFile(resolve(project, 'pnpm-workspace.yaml'), workspace);
     await writeFile(resolve(project, 'index.html'), '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Radix2Solid native demo</title></head><body><div id="root"></div><script type="module" src="/entry.tsx"></script></body></html>');
@@ -67,6 +76,7 @@ for await (const entry of glob('*/index.tsx', { cwd: resolve(site, 'src/demos') 
     await writeFile(resolve(project, 'global.css'), globalCss);
     for (const name of ['primitives', 'icons', 'themes']) await cp(resolve(library, `packages/${name}/LICENSE`), resolve(project, `LICENSE-${name}`));
     if (name === 'charts') for (const file of ['LICENSE', 'NOTICE']) await cp(resolve(library, `packages/charts/${file}`), resolve(project, `${file}-charts`));
+    if (name === 'icons-extra') await cp(resolve(library, 'packages/icons-extra/LICENSE'), resolve(project, 'LICENSE-icons-extra'));
     run('tar', ['-czf', resolve(output, `${name}-${solution}.tar.gz`), '-C', project, '.']);
     count++;
   }

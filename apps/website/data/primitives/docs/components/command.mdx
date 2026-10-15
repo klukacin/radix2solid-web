@@ -1,0 +1,70 @@
+---
+metaTitle: Command
+metaDescription: Caller-filtered action search with input focus and cancellable exactly-once actions.
+---
+
+import CommandDemo from "../../../../src/demos/command";
+
+# Command
+
+<Description>Search actions without turning them into a selected form value.</Description>
+
+<HeroContainer><CommandDemo /></HeroContainer>
+<HeroCodeBlock folder="Command" />
+
+New in the **0.1.0-rc.3 source candidate**, not the previously published rc.2. Use [candidate archives](/primitives/docs/overview/getting-started). [Themes recipe](/themes/docs/recipes/command).
+
+## Imports and anatomy
+
+```tsx
+import { Command } from "@wsagency/radix2solid-primitives";
+// Alternatively: import * as Command from "@wsagency/radix2solid-primitives/command";
+
+export default () => <Command.Root>
+  <Command.Input aria-label="Actions" />
+  <Command.List aria-label="Action results">
+    <Command.Group>
+      <Command.Label>Workspace</Command.Label>
+      <Command.Item value="note" textValue="Create note" onSelect={() => console.log("Create note")}>Create note</Command.Item>
+    </Command.Group>
+    <Command.Empty>No matching actions.</Command.Empty>
+  </Command.List>
+</Command.Root>;
+```
+
+## API reference
+
+| Part | Props and responsibility |
+| --- | --- |
+| `Root` | `search/defaultSearch: string`, `onSearchChange(search)`, `loop: boolean` (default `true`). Search defaults empty. No selected value, open state, form name or global shortcut. |
+| `Input` | Native text input with combobox/listbox active-descendant semantics and `aria-autocomplete="list"`. Value belongs to search state. Supply an accessible name. |
+| `List` | Results listbox with a Root-owned ID. Supply an accessible name. |
+| `Group`, `Label` | Named result group, not a separate cursor. |
+| `Item` | Required stable `value` identity and plain-text `textValue`; optional `disabled` and cancellable `onSelect(event)`. Native refs, consumer events and target-factory `asChild` apply. |
+| `Empty` | Non-option status when zero result options are rendered, not when all results are disabled. |
+
+## Caller-owned filtering
+
+Command never filters or ranks strings. Read controlled search and render your application results, as the demo does with ordinary label substring matching. Remote results are child updates, not a built-in loader. Search changes reset the active suggestion to the first enabled rendered result after that update. Other reorder preserves active identity; removal picks the next/previous enabled visible result or none.
+
+All-disabled results remain visible results, with no active suggestion; they do not show Empty. Loading is a separate application status. There is no fuzzy-search dependency, persisted selection, router or action scheduler.
+
+## Exactly-once actions and cancellation
+
+An enabled Item emits one cancellable `onSelect` per deliberate Enter or pointer gesture. Later deliberate gestures can run it again. It is an action notification, not `onValueChange`; no committed value is retained. `aria-selected` means the transient active suggestion only.
+
+Run a guard before side effects. `event.preventDefault()` cannot undo consumer code that already ran. The Dialog recipe guards first, returns if prevented, requests close, then executes one action. A parent refusing close must not suppress an otherwise accepted action. Inline Command does not close anything itself.
+
+## Keyboard and focus
+
+DOM focus stays in Input. Up/Down wrap unless `loop={false}`. Enter dispatches the active action and prevents surrounding form submission, even with no active result. IME composition Enter never selects. Home/End, Left/Right and modified editing shortcuts stay native. IDs and active-descendant references follow mounted visible results; group labels and empty status never become options.
+
+There is no global Ctrl/Cmd+K listener. Add an application shortcut only if your application needs one and owns its lifecycle.
+
+## Dialog composition
+
+Dialog owns modality, title, description and focus restoration. Reset search explicitly on opening and focus Command.Input in `onOpenAutoFocus`; do not reset inline search on rerenders. When an action opens another modal, prevent palette close restoration from stealing its focus. The demo exposes action count, last action and surrounding form submission count, including protected cancellation and close refusal.
+
+Native owner-scoped IDs and cleanup apply. Portal rendering follows Dialog's server/client lifecycle; this is not a guarantee of server-rendered modal contents or screen-reader certification. For a submitted single key, use [Combobox](/primitives/docs/components/combobox), not Command.
+
+[Native source](https://github.com/wsagency/radix2solid/tree/main/packages/primitives/src/command)

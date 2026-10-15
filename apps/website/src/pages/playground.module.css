@@ -84,3 +84,7 @@
 		display: none;
 	}
 }
+
+.NativeRecipe { width: 100%; max-width: 760px; min-width: 0; }
+.NativeRecipe input[type="checkbox"] { accent-color: var(--accent-9); }
+.NativeRecipe output { overflow-wrap: anywhere; }

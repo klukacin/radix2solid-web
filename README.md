@@ -2,21 +2,31 @@
 
 The independent, unofficial native **Solid 2** documentation website for [Radix2Solid](https://github.com/wsagency/radix2solid). This is not a WorkOS product. Original Radix documentation, designs, blog posts and case studies keep their attribution and historical context; they do not endorse this fork.
 
-The site preserves 137 original MDX documents and 151 original routes, and adds 23 native-only documents and 24 native-only routes for Charts and Themes recipes: 160 documents, 175 routes plus 404, 222 demo source files and 95 downloadable runnable sandboxes. It includes native interactive examples, API tables, Markdown negotiation, heading-aware search, redirects, the Themes playground and historical marketing/example layouts. Website source and issues belong to [wsagency/radix2solid-web](https://github.com/wsagency/radix2solid-web); native package issues belong to [wsagency/radix2solid](https://github.com/wsagency/radix2solid).
+The site preserves 137 original MDX documents and 151 original routes, and adds 31 native-only documents and 32 native-only routes for Charts, four new Primitives families and Themes recipes: 168 documents, 183 routes plus 404, 257 demo source files and 110 downloadable runnable sandboxes. It includes native interactive examples, API tables, Markdown negotiation, heading-aware search, redirects, the Themes playground and historical marketing/example layouts. Website source and issues belong to [wsagency/radix2solid-web](https://github.com/wsagency/radix2solid-web); native package issues belong to [wsagency/radix2solid](https://github.com/wsagency/radix2solid).
 
-## Published packages
+## Next-suite candidate packages
 
-All four native packages are published at **0.1.0-rc.2**: [Primitives](https://www.npmjs.com/package/@wsagency/radix2solid-primitives), [Themes](https://www.npmjs.com/package/@wsagency/radix2solid-themes), [Icons](https://www.npmjs.com/package/@wsagency/radix2solid-icons) and [Charts](https://www.npmjs.com/package/@wsagency/radix2solid-charts). Install exact versions to retain the documented Solid RC15 tuple:
+This site documents **0.1.0-rc.3 candidate archives** for Primitives, Themes, Icons, Charts and the optional Icons Extra package. npm publication of rc.3 is not claimed. The earlier published rc.2 packages lack the new families and chart APIs; do not substitute them for the downloaded candidate.
 
-```sh
-pnpm add -E @wsagency/radix2solid-primitives@0.1.0-rc.2 @wsagency/radix2solid-themes@0.1.0-rc.2 @wsagency/radix2solid-icons@0.1.0-rc.2 @wsagency/radix2solid-charts@0.1.0-rc.2
+Download the five `/packages/wsagency-radix2solid-<package>-0.1.0-rc.3.tgz` archives from the site into your application directory. Pin the complete Solid RC15 graph and Themes' transitive Primitives dependency in `pnpm-workspace.yaml`:
+
+```yaml
+overrides:
+  solid-js: 2.0.0-rc.15
+  '@solidjs/web': 2.0.0-rc.15
+  '@solidjs/signals': 2.0.0-rc.15
+  '@solidjs/compiler': 2.0.0-rc.15
+  '@solidjs/babel-plugin': 2.0.0-rc.15
+  '@wsagency/radix2solid-primitives': file:./wsagency-radix2solid-primitives-0.1.0-rc.3.tgz
 ```
 
-The `-E` flag saves exact dependency specifiers instead of caret ranges, keeping later installs aligned with the documented Solid RC15 tuple.
+```sh
+pnpm add ./wsagency-radix2solid-primitives-0.1.0-rc.3.tgz ./wsagency-radix2solid-themes-0.1.0-rc.3.tgz ./wsagency-radix2solid-icons-0.1.0-rc.3.tgz ./wsagency-radix2solid-charts-0.1.0-rc.3.tgz ./wsagency-radix2solid-icons-extra-0.1.0-rc.3.tgz
+```
 
-At this cutover, `next` points to rc.2 for all four; `latest` remains rc.1 for Primitives, Themes and Icons, and rc.2 for Charts. Tags can move; the documentation deliberately pins versions. Downloadable local archives remain supported.
+Use `@solidjs/vite-plugin@3.0.0-next.50`. The runnable downloads include complete pinned tooling and licenses. Icons Extra is optional: its two native folder icons remain separate from the original 332.
 
-Before rc.3, maintainers must configure Trusted Publishers for **all four** npm packages: repository `wsagency/radix2solid`, workflow `publish.yml`, environment `npm`. Charts currently lacks this configuration. This website change does not configure publishers, publish packages or move tags.
+Maintainers own npm permissions, first publication of Icons Extra, Trusted Publisher configuration, tokens and tags. This website change does not configure publishers, publish packages or move tags.
 
 
 ## Created for WS Agency
@@ -47,7 +57,7 @@ pnpm dev
 
 The dependency-free Node bootstrap reads the fixed public repository and full commit from `library-source.json`, then prepares ignored `.library/` before installation. Run it directly, before any pnpm command: pnpm can automatically install workspace dependencies before running a package script. That exact library commit must be published for the default HTTPS fetch to succeed. It does not fall back to a branch, npm or copied source. An existing checkout must have the pinned HEAD and no staged, unstaged or nonignored untracked changes; wrong HEAD, dirt, symlinks, non-Git directories and invalid/replaced pins fail without resetting or overwriting existing data. Ignored `dist/` and `node_modules/` outputs are allowed.
 
-Install **once at this web root**, not inside `.library`. The workspace contains `apps/website` and the four actual `.library/packages/*` producers. Build validates the checkout again, then builds real primitives → icons → themes → charts distributions before the site. There are no library source aliases, React bridge, Solid 1 runtime or second library-root dependency installation. The web lock retains the accepted producer dependency resolutions and the exact Solid 2.0.0-rc.15 overrides (`solid-js`, `@solidjs/web`, `@solidjs/signals`, `@solidjs/compiler`, `@solidjs/babel-plugin`) with `@solidjs/vite-plugin` 3.0.0-next.50. The global 24-hour `minimumReleaseAge` stays; only those exact versions are excepted until they age.
+Install **once at this web root**, not inside `.library`. The workspace contains `apps/website` and the five actual `.library/packages/*` producers. Build validates the checkout again, then builds real primitives → icons → icons-extra → themes → charts distributions before the site. There are no library source aliases, React bridge, Solid 1 runtime or second library-root dependency installation. The web lock retains the accepted producer dependency resolutions and exact Solid 2.0.0-rc.15 overrides (`solid-js`, `@solidjs/web`, `@solidjs/signals`, `@solidjs/compiler`, `@solidjs/babel-plugin`) with `@solidjs/vite-plugin` 3.0.0-next.50. The global 24-hour `minimumReleaseAge` stays; only those exact versions are excepted until they age.
 
 ### Explicit local sibling prepopulation
 
@@ -55,7 +65,7 @@ If the pinned source has not been published yet, a real local sibling clone is a
 
 ```sh
 git clone --no-hardlinks ../radix2solid .library
-git -C .library checkout --detach b0cf970aba2f67f4ac5d8a6355e5737b1c29b89c
+git -C .library checkout --detach 5a088e887877194476964b883373757ac0fbc36d
 node scripts/prepare-library.ts
 pnpm install --frozen-lockfile
 pnpm check
@@ -67,14 +77,14 @@ To update the library, review an actual clean library commit, update `library-so
 
 ## Verification scope
 
-`pnpm check` builds real producers, typechecks the site, checks exact HTML/Markdown/document/demo/archive inventories, compiles native documented fences and installation commands, exercises copied guides, independently installs/builds **all 95 actual exported archives**, and runs bootstrap safety, existing worker/script tests and website browser cases in Chromium, Firefox and WebKit. Archive first installs have no pre-existing lock; each normal isolated install creates its own. Package names, declared native/runtime/tool pins and real tarballs remain exact. Archive installation/build coverage is not a claim that every archive received runtime interaction tests.
+`pnpm check` builds real producers, typechecks the site, checks exact HTML/Markdown/document/demo/archive inventories, compiles native documented fences and installation commands, exercises copied guides, independently installs/builds **all 110 actual exported archives**, and runs bootstrap safety, existing worker/script tests and website browser cases in Chromium, Firefox and WebKit. Archive first installs have no pre-existing lock; each normal isolated install creates its own. Package names, declared native/runtime/tool pins and real tarballs remain exact. Archive installation/build coverage is not a claim that every archive received runtime interaction tests.
 
-Runtime interactions reuse representative built archives—`dialog-css`, `toast-css-modules`, `select-tailwind` and a Charts archive—in all three engines. This is deliberately separate from the 95-archive installation/build count.
+Runtime interactions reuse representative built archives for Dialog, Toast, Select, Charts, Combobox, Command, Tree, Splitter and Icons Extra in all three engines. This is separate from the 110-archive installation/build count. The checker accepts explicit archive names for bounded local checks; the no-argument CI command still checks every advertised archive.
 
 Preview binds only to `127.0.0.1`, on port 4149 unless `WEBSITE_PREVIEW_PORT` overrides it for the preview server, Playwright and the website spec together. Playwright owns its preview process; stop a manually started preview on the same port before browser checks. The library gallery is not part of this repository or its browser server configuration. Site implementation, focused commands and coverage limits are documented in [apps/website/README.md](apps/website/README.md).
 
 ## License, assets and publication limits
 
-Native fork changes: MIT, Copyright (c) 2026 Radix2Solid contributors; see [LICENSE](LICENSE). Original website software keeps its full WorkOS MIT text in [WEBSITE-LICENSE.txt](apps/website/public/WEBSITE-LICENSE.txt). Package tarballs preserve the library's complete original and contributor notices, including reused released Colors CSS. The Charts tarball keeps the solid-recharts and Recharts MIT notices in `LICENSE` and the verbatim ISC licenses of its resolved D3 dependencies in `NOTICE`, and `check:export` verifies them in the packed archive. `NOTICE.txt` reproduces, verbatim, the license of each package whose code the site's JavaScript bundles: the four Radix2Solid packages, D3, Solid, Floating UI and the rest. `check:export` verifies it against the client build's runtime graph. Font copyright/OFL texts and provenance hashes are in `apps/website/public/fonts/`.
+Native fork changes: MIT, Copyright (c) 2026 Radix2Solid contributors; see [LICENSE](LICENSE). Original website software keeps its full WorkOS MIT text in [WEBSITE-LICENSE.txt](apps/website/public/WEBSITE-LICENSE.txt). Package tarballs preserve the library's complete original and contributor notices, including reused released Colors CSS. Charts keeps the solid-recharts/Recharts MIT notices in `LICENSE` and verbatim resolved D3 ISC licenses in `NOTICE`. The separate Icons Extra package carries its own artwork provenance and license. `NOTICE.txt` reproduces the licenses of all five Radix2Solid packages and other code bundled into the site's JavaScript; `check:export` checks the actual archives and runtime graph. Font copyright/OFL texts and provenance hashes are in `apps/website/public/fonts/`.
 
 [NOTICE.txt](apps/website/public/NOTICE.txt) discloses historical trademarks, portraits, endorsements and externally hosted images. Software licensing does not grant trademark/likeness/deployment rights. The site is indexable. The `radix2solid.com` hostname and a `www` redirect to it are configured in Cloudflare, not in this repository; this repository does not claim the site is published. GitHub Actions deploys the `out/` that `pnpm check` validated to a Cloudflare Worker, only for pushes to `main` that are still the branch head, so publication waits for a green `pnpm check`. No analytics, npm publication or GitHub Release upload is configured or claimed. Generated exports, downloads, dependencies, the ignored library checkout and private build artifacts are not committed.

@@ -1,0 +1,14 @@
+.SplitterDemo { display: grid; gap: 10px; width: min(100%, 720px); color: var(--gray-12, #202020); font: 14px/1.5 system-ui, sans-serif; }
+.SplitterRoot { width: 100%; height: 320px; border: 1px solid var(--gray-7, #aaa); border-radius: 8px; }
+.SplitterNested { width: 100%; height: 100%; min-height: 0; }
+.SplitterPanel { box-sizing: border-box; overflow: auto; background: var(--gray-2, #fafafa); }
+.SplitterPanel > p, .SplitterPanel > .SplitterButton { margin: 12px; }
+.SplitterHandle { position: relative; flex-shrink: 0; width: 24px; min-width: 24px; background: var(--gray-3, #eee); touch-action: none; cursor: col-resize; }
+.SplitterHandle::after { content: ""; position: absolute; inset: 10px 10px; background: var(--gray-8, #888); border-radius: 2px; }
+.SplitterHandle[aria-orientation="horizontal"] { width: auto; min-width: 0; height: 24px; min-height: 24px; cursor: row-resize; }
+.SplitterHandle:focus-visible { outline: 2px solid var(--accent-9, #6e56cf); outline-offset: -2px; }
+.SplitterHandle[aria-disabled="true"] { cursor: default; opacity: .5; }
+.SplitterEditor { box-sizing: border-box; width: calc(100% - 24px); min-height: 52px; margin: 0 12px 12px; resize: none; background: var(--color-panel-solid, white); color: inherit; border: 1px solid var(--gray-7, #aaa); }
+.SplitterButton { border: 1px solid var(--gray-7, #aaa); border-radius: 6px; padding: 8px 12px; background: var(--color-panel-solid, white); color: inherit; font: inherit; }
+.SplitterButton:focus-visible { outline: 2px solid var(--accent-9, #6e56cf); outline-offset: 2px; }
+@media (forced-colors: active) { .SplitterHandle { border: 1px solid ButtonText; } .SplitterHandle:focus-visible { outline-color: Highlight; } .SplitterHandle::after { background: ButtonText; } }

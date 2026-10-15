@@ -1,0 +1,14 @@
+.TreeDemo { display: grid; gap: 10px; width: min(100%, 440px); color: var(--gray-12, #202020); font: 14px/1.5 system-ui, sans-serif; }
+.TreeTree { padding: 8px; border: 1px solid var(--gray-7, #aaa); border-radius: 8px; }
+.TreeItem { outline: none; }
+.TreeRow { display: flex; align-items: center; min-height: 36px; gap: 6px; padding-inline: 8px; border-radius: 4px; }
+.TreeItem:focus-visible > .TreeRow { outline: 2px solid var(--accent-9, #6e56cf); outline-offset: -2px; }
+.TreeItem[aria-selected="true"] > .TreeRow { background: var(--accent-4, #e4ddff); font-weight: 700; }
+.TreeItem[aria-disabled="true"] > .TreeRow { color: var(--gray-10, #777); }
+.TreeGroup { padding-inline-start: 20px; }
+.TreeToggle { width: 28px; height: 28px; border: 0; border-radius: 4px; background: transparent; color: inherit; cursor: pointer; }
+.TreeItem[aria-expanded="true"] > .TreeRow > .TreeToggle { transform: rotate(90deg); }
+.TreeIndicator { margin-inline-start: auto; }
+.TreeButton { border: 1px solid var(--gray-7, #aaa); border-radius: 6px; padding: 8px 12px; background: var(--color-panel-solid, white); color: inherit; font: inherit; }
+.TreeButton:focus-visible { outline: 2px solid var(--accent-9, #6e56cf); outline-offset: 2px; }
+@media (forced-colors: active) { .TreeItem:focus-visible > .TreeRow { outline-color: Highlight; } .TreeItem[aria-selected="true"] > .TreeRow { border-inline-start: 3px solid Highlight; } }

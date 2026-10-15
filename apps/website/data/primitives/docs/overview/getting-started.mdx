@@ -20,17 +20,19 @@ In this quick tutorial, we will install and style the [Popover](../components/po
 
 ### 1. Install the primitive
 
-Install the published release candidate [`@wsagency/radix2solid-primitives@0.1.0-rc.2`](https://www.npmjs.com/package/@wsagency/radix2solid-primitives). It requires `solid-js` and `@solidjs/web` `2.0.0-rc.15` compiled by `@solidjs/vite-plugin` `3.0.0-next.50`:
+Download the next-suite candidate [`wsagency-radix2solid-primitives-0.1.0-rc.3.tgz`](/packages/wsagency-radix2solid-primitives-0.1.0-rc.3.tgz), then install the local archive. This is not a claim that rc.3 is published on npm; the earlier published rc.2 does not include the new families. The candidate requires `solid-js` and `@solidjs/web` `2.0.0-rc.15` compiled by `@solidjs/vite-plugin` `3.0.0-next.50`:
 
 ```bash
-npm install -E @wsagency/radix2solid-primitives@0.1.0-rc.2
+npm install ./wsagency-radix2solid-primitives-0.1.0-rc.3.tgz
 ```
 
-For a local archive installation, download [`wsagency-radix2solid-primitives-0.1.0-rc.2.tgz`](/packages/wsagency-radix2solid-primitives-0.1.0-rc.2.tgz) (or pack `packages/primitives` yourself), then run:
+For pnpm:
 
 ```bash
-npm install ./wsagency-radix2solid-primitives-0.1.0-rc.2.tgz
+pnpm add ./wsagency-radix2solid-primitives-0.1.0-rc.3.tgz
 ```
+
+Pin the complete Solid RC15 graph using the [workspace setup](/themes/docs/overview/getting-started). The [runnable Combobox sandbox](/sandboxes/combobox-css-modules.tar.gz) includes the archive, exact Solid overrides, build tool configuration, and license files.
 
 ### 2. Import the parts
 

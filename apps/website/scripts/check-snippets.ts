@@ -19,7 +19,7 @@ const cache = resolve(site, 'node_modules/.cache');
 await mkdir(cache, { recursive: true });
 const fixture = await mkdtemp(resolve(cache, 'native-doc-snippets-'));
 try {
-  const nativePackages: { name: string; version: string; private: boolean; peerDependencies?: Record<string, string> }[] = await Promise.all(['primitives', 'themes', 'icons', 'charts'].map(async name => JSON.parse(await readFile(resolve(root, `.library/packages/${name}/package.json`), 'utf8'))));
+  const nativePackages: { name: string; version: string; private: boolean; peerDependencies?: Record<string, string> }[] = await Promise.all(['primitives', 'themes', 'icons', 'charts', 'icons-extra'].map(async name => JSON.parse(await readFile(resolve(root, `.library/packages/${name}/package.json`), 'utf8'))));
   const colors: { name: string; version: string; private?: boolean } = JSON.parse(await readFile(resolve(site, 'node_modules/@radix-ui/colors/package.json'), 'utf8'));
   let highlightedFences = 0, installationCommands = 0;
   const config = ts.readConfigFile(resolve(root, 'tsconfig.json'), ts.sys.readFile);
@@ -86,12 +86,17 @@ try {
       if ((node.type === 'code' || node.type === 'mdxjsEsm') && node.value !== undefined) {
         const ast = ts.createSourceFile('imports.tsx', node.value, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
         for (const statement of ast.statements) {
-          if (!ts.isImportDeclaration(statement) || !ts.isStringLiteral(statement.moduleSpecifier) || !(statement.moduleSpecifier.text.startsWith('@') || statement.moduleSpecifier.text === 'solid-js')) continue;
+          if (!ts.isImportDeclaration(statement) || !ts.isStringLiteral(statement.moduleSpecifier)) continue;
+          const specifier = statement.moduleSpecifier.text;
+          const localPageImport = node.type === 'mdxjsEsm' && specifier.startsWith('.');
+          if (!(localPageImport || specifier.startsWith('@') || specifier === 'solid-js')) continue;
+          const modulePath = JSON.stringify(localPageImport ? resolve(dirname(resolve(site, 'data', path)), specifier) : specifier);
           const clause = statement.importClause;
+          if (clause?.name) sharedImports.set(clause.name.text, `import ${clause.isTypeOnly ? 'type ' : ''}${clause.name.text} from ${modulePath};`);
           if (clause?.namedBindings && ts.isNamedImports(clause.namedBindings)) {
-            for (const specifier of clause.namedBindings.elements) sharedImports.set(specifier.name.text, `import { ${specifier.isTypeOnly ? 'type ' : ''}${specifier.propertyName ? `${specifier.propertyName.text} as ` : ''}${specifier.name.text} } from ${statement.moduleSpecifier.getText(ast)};`);
+            for (const binding of clause.namedBindings.elements) sharedImports.set(binding.name.text, `import { ${binding.isTypeOnly ? 'type ' : ''}${binding.propertyName ? `${binding.propertyName.text} as ` : ''}${binding.name.text} } from ${modulePath};`);
           } else if (clause?.namedBindings && ts.isNamespaceImport(clause.namedBindings)) {
-            sharedImports.set(clause.namedBindings.name.text, `import * as ${clause.namedBindings.name.text} from ${statement.moduleSpecifier.getText(ast)};`);
+            sharedImports.set(clause.namedBindings.name.text, `import * as ${clause.namedBindings.name.text} from ${modulePath};`);
           }
         }
       }

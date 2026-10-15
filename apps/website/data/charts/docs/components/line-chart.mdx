@@ -26,10 +26,10 @@ and `Tooltip` register themselves into it.
 	return <ResponsiveContainer width="100%" height={300} initialDimension={{ width: 560, height: 300 }}>
 		<LineChart data={data} title="Visitors and signups by month">
 			<CartesianGrid strokeDasharray="3 3" stroke="var(--gray-a6)" />
-			<XAxis dataKey="month" />
+			<XAxis dataKey="month" height="auto" angle={-35} label="Reporting month" />
 			<YAxis />
 			<Tooltip />
-			<Legend />
+			<Legend position="insideTopRight" offset={8} layout="auto" />
 			<Line type="monotone" dataKey="visitors" stroke="var(--accent-9)" strokeWidth={2} />
 			<Line type="monotone" dataKey="signups" stroke="var(--teal-9)" strokeWidth={2} />
 		</LineChart>
@@ -48,13 +48,22 @@ and `Tooltip` register themselves into it.
 | `syncId`                    | `string`                       | —                | Sync tooltip/brush across charts sharing the id     |
 | `onClick`, `onMouseMove`, … | `function`                     | —                | Chart-level mouse events with the active payload    |
 
-The remaining props follow the Recharts 3.9.2 `LineChart` API (reference commit `b3451050`) that solid-recharts tracks; see the [Recharts LineChart reference](https://recharts.org/en-US/api/LineChart). Changes from Recharts 3.10.1 are tracked but not ported.
+The base API follows Recharts 3.9.2 (reference commit `b3451050`), with the [selected next-suite additions](/charts/docs/overview/releases); this is not full Recharts 3.10.1 parity. See the [Recharts LineChart reference](https://recharts.org/en-US/api/LineChart).
 
 ## Notes
 
 - Multiple `Line` children share the same axes unless you give a `Line` its own
   `xAxisId`/`yAxisId`.
 - Set `syncId` on two charts to mirror tooltips and brushes between them.
+
+
+## Legend placement and automatic axis height
+
+`Legend` accepts `position?: CartesianPosition` (an exported type), `offset?: number` (default `0`), and `layout="auto"` (the default). A supplied `position` takes precedence over `align` and `verticalAlign`; without it those props retain their existing behavior. Auto layout is vertical for `left`, `right`, `insideLeft`, and `insideRight`, and horizontal for other positions or no position.
+
+Inside legends such as this example's `insideTopRight` reserve no plot space. Outside legends (`top`, `bottom`, `left`, `right`) reserve their measured size. With `position` supplied and the default mount, the chart wrapper owns the server-rendered legend HTML; its measured box starts at zero and the first client styles preserve that state before browser measurement. Outside placement then adjusts; inside positioning does not depend on that measurement. Legends without `position` and legends with an explicit custom portal retain their existing DOM-only path, not server legend markup. Try both placements in the [Charts playground](/themes/playground#charts).
+
+`XAxis height="auto"` starts at **30px** on the server and first client render, then measures rotated tick labels and a rendered string label. Its height is rounded from the tallest tick label plus `tickSize`, `tickMargin`, and, when a label exists, its height plus a 5px gap. Function-content and JSX-element labels do not use this measurement. Requested numeric heights and tick positions remain unchanged, but corrected server plot clips mean SSR markup is not byte-identical to the previous version. Automatic height is browser-measured, not server-final; see [responsive sizing and SSR](/charts/docs/guides/responsive-and-ssr).
 
 ## See also
 

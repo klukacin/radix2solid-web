@@ -1,0 +1,2 @@
+.Demo { display: grid; gap: 16px; padding: 24px; color: var(--gray-12, #202020); font: 14px/1.5 system-ui, sans-serif; }
+.Row { display: flex; gap: 12px; align-items: center; }

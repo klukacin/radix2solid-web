@@ -1,0 +1,14 @@
+.Demo { display: grid; gap: 10px; width: min(100%, 440px); color: var(--gray-12, #202020); font: 14px/1.5 system-ui, sans-serif; }
+.Tree { padding: 8px; border: 1px solid var(--gray-7, #aaa); border-radius: 8px; }
+.Item { outline: none; }
+.Row { display: flex; align-items: center; min-height: 36px; gap: 6px; padding-inline: 8px; border-radius: 4px; }
+.Item:focus-visible > .Row { outline: 2px solid var(--accent-9, #6e56cf); outline-offset: -2px; }
+.Item[aria-selected="true"] > .Row { background: var(--accent-4, #e4ddff); font-weight: 700; }
+.Item[aria-disabled="true"] > .Row { color: var(--gray-10, #777); }
+.Group { padding-inline-start: 20px; }
+.Toggle { width: 28px; height: 28px; border: 0; border-radius: 4px; background: transparent; color: inherit; cursor: pointer; }
+.Item[aria-expanded="true"] > .Row > .Toggle { transform: rotate(90deg); }
+.Indicator { margin-inline-start: auto; }
+.Button { border: 1px solid var(--gray-7, #aaa); border-radius: 6px; padding: 8px 12px; background: var(--color-panel-solid, white); color: inherit; font: inherit; }
+.Button:focus-visible { outline: 2px solid var(--accent-9, #6e56cf); outline-offset: 2px; }
+@media (forced-colors: active) { .Item:focus-visible > .Row { outline-color: Highlight; } .Item[aria-selected="true"] > .Row { border-inline-start: 3px solid Highlight; } }
