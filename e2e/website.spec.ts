@@ -646,7 +646,7 @@ test('published rc.3 package guides pin npm versions and link the registry relea
     }
     await expect(page.locator('pre').filter({ hasText: npmCommand }).filter({ visible: true }).first()).toHaveText(npmCommand);
     await expect(page.locator(`a[href="${npmUrl}"]`).first()).toBeVisible();
-    await expect(page.locator('body')).toContainText(/published on npm as 0\\.1\\.0-rc\\.3.*release candidate.*dist-tag.*next/i);
+    await expect(page.locator('body')).toContainText(/published on npm as 0\.1\.0-rc\.3.*release candidate.*dist-tag.*next/i);
     await expect(page.locator('a[href^="/packages/"]')).toHaveCount(0);
     await expect(page.locator('body')).not.toContainText('@latest');
     if (name === 'icons') {
