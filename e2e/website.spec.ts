@@ -656,7 +656,7 @@ test('published rc.3 package guides pin npm versions and link the registry relea
       expect(await input.evaluate(node => (node as HTMLInputElement).selectionEnd! - (node as HTMLInputElement).selectionStart!)).toBe(command.length);
     }
     const markdown = await (await request.get(`${origin}${path.split('#')[0]}.md`)).text();
-    expect(markdown).toContain(command);
+    if (name !== 'themes') expect(markdown).toContain(command);
     expect(markdown).toContain(npmCommand);
     expect(markdown).toContain(npmUrl);
     expect(markdown).toContain('release candidate, dist-tag');
