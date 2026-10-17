@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
-import { mkdir, mkdtemp, open, readFile, readdir, rm, type FileHandle } from 'node:fs/promises';
+import { mkdir, mkdtemp, open, readFile, readdir, rm, realpath, type FileHandle } from 'node:fs/promises';
+import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import { chromium, firefox, webkit, expect } from '@playwright/test';
@@ -152,37 +153,42 @@ try {
           });
         };
         await exec('tar', ['-xzf', resolve(output, archive), '-C', project]);
-        // Downloaded metadata alone must pin the coherent tuple: exact RC15 overrides, matching
-        // plugin, exact (non-global) age exceptions and the real bundled tarball names.
+        // Downloaded metadata must pin the coherent tuple, exact registry packages and exact age exceptions.
         const workspace = await readFile(resolve(project, 'pnpm-workspace.yaml'), 'utf8');
         for (const name of ['solid-js', "'@solidjs/web'", "'@solidjs/signals'", "'@solidjs/compiler'", "'@solidjs/babel-plugin'"]) assert(workspace.includes(`\n  ${name}: 2.0.0-rc.15\n`), `${archive}: missing ${name} RC15 override`);
-        for (const exception of ['solid-js@2.0.0-rc.15', '@solidjs/web@2.0.0-rc.15', '@solidjs/signals@2.0.0-rc.15', '@solidjs/compiler@2.0.0-rc.15', '@solidjs/babel-plugin@2.0.0-rc.15', '@solidjs/vite-plugin@3.0.0-next.50']) assert(workspace.includes(exception), `${archive}: missing exact age exception ${exception}`);
+        for (const exception of [
+          'solid-js@2.0.0-rc.15', '@solidjs/web@2.0.0-rc.15', '@solidjs/signals@2.0.0-rc.15',
+          '@solidjs/compiler@2.0.0-rc.15', '@solidjs/babel-plugin@2.0.0-rc.15', '@solidjs/vite-plugin@3.0.0-next.50',
+          '@wsagency/radix2solid-primitives@0.1.0-rc.3', '@wsagency/radix2solid-icons@0.1.0-rc.3',
+          '@wsagency/radix2solid-icons-extra@0.1.0-rc.3', '@wsagency/radix2solid-themes@0.1.0-rc.3',
+          '@wsagency/radix2solid-charts@0.1.0-rc.3'
+        ]) assert(workspace.includes(exception), `${archive}: missing exact age exception ${exception}`);
         assert.doesNotMatch(workspace, /minimumReleaseAge:|playwright|^packages:/m, `${archive}: workspace must not relax the global age gate or carry host-only entries`);
+        assert.match(workspace, /^ {2}'@wsagency\/radix2solid-primitives': "0\.1\.0-rc\.3"$/m, `${archive}: Themes' transitive Primitives dependency must be pinned to the published version`);
         const manifest: { dependencies: Record<string, string>; devDependencies: Record<string, string> } = JSON.parse(await readFile(resolve(project, 'package.json'), 'utf8'));
         assert.equal(manifest.devDependencies['@solidjs/vite-plugin'], '3.0.0-next.50', `${archive}: plugin must match the RC15 tuple`);
         const products = archive.startsWith('charts-') ? ['primitives', 'icons', 'themes', 'charts']
           : archive.startsWith('icons-extra-') ? ['primitives', 'icons', 'themes', 'icons-extra'] : ['primitives', 'icons', 'themes'];
         assert.deepEqual(Object.keys(manifest.dependencies).filter(name => name.startsWith('@wsagency/')).sort(), products.map(name => `@wsagency/radix2solid-${name}`).sort(), `${archive}: unexpected dependencies`);
         for (const name of ['solid-js', '@solidjs/web']) assert.equal(manifest.dependencies[name], '2.0.0-rc.15', `${archive}: ${name} must match the RC15 tuple`);
-        for (const name of products) {
-          const spec = manifest.dependencies[`@wsagency/radix2solid-${name}`];
-          assert.match(spec, new RegExp(`^file:\\./vendor/wsagency-radix2solid-${name}-0\\.1\\.0-rc\\.3\\.tgz$`), `${archive}: ${name} tarball name`);
-          await readFile(resolve(project, spec.slice('file:'.length)));
-        }
+        for (const name of products) assert.equal(manifest.dependencies[`@wsagency/radix2solid-${name}`], '0.1.0-rc.3', `${archive}: ${name} must use the exact published version`);
+        assert(!(await readdir(project)).includes('vendor'), `${archive}: sandbox must not vendor package tarballs`);
         for (const file of products.flatMap(name => name === 'charts' ? ['LICENSE-charts', 'NOTICE-charts'] : [`LICENSE-${name}`])) await readFile(resolve(project, file));
-        assert.match(workspace, /^ {2}'@wsagency\/radix2solid-primitives': "file:\.\/vendor\/wsagency-radix2solid-primitives-0\.1\.0-rc\.3\.tgz"$/m, `${archive}: themes' transitive primitives must be overridden to the bundled tarball`);
         await exec('pnpm', ['install', '--no-frozen-lockfile']);
         await exec('pnpm', ['build']);
         for (const name of products) {
           const installed = JSON.parse(await readFile(resolve(project, `node_modules/@wsagency/radix2solid-${name}/package.json`), 'utf8'));
-          assert.equal(installed.version, '0.1.0-rc.3', `${archive}: installed ${name} candidate version`);
+          assert.equal(installed.version, '0.1.0-rc.3', `${archive}: installed ${name} published version`);
         }
-        // The installed lock must resolve one coherent tuple and the local primitives tarball.
+        // The installed lock must resolve one coherent tuple and exactly one physical Primitives package.
         const lock = await readFile(resolve(project, 'pnpm-lock.yaml'), 'utf8');
         const resolved = new Set([...lock.matchAll(/^ {2}'?((?:@solidjs\/(?:web|signals|compiler|babel-plugin|vite-plugin))|solid-js)@([^(':\s]+)/gm)].map(match => `${match[1]}@${match[2]}`));
         assert.deepEqual([...resolved].sort(), ['@solidjs/babel-plugin@2.0.0-rc.15', '@solidjs/compiler@2.0.0-rc.15', '@solidjs/signals@2.0.0-rc.15', '@solidjs/vite-plugin@3.0.0-next.50', '@solidjs/web@2.0.0-rc.15', 'solid-js@2.0.0-rc.15'], `${archive}: incoherent Solid tuple`);
-        assert.match(lock, /'@wsagency\/radix2solid-primitives': file:(?:\.\/)?vendor\/wsagency-radix2solid-primitives-[^\s]+\.tgz/, `${archive}: themes must resolve primitives from the bundled tarball`);
-        console.log(`PASS ${archive}: isolated install, coherent RC15 tuple and build`);
+        assert(lock.includes('@wsagency/radix2solid-primitives@0.1.0-rc.3'), `${archive}: lockfile must contain the exact Primitives registry release`);
+        const rootRequire = createRequire(resolve(project, 'package.json'));
+        const themesRequire = createRequire(resolve(project, 'node_modules/@wsagency/radix2solid-themes/package.json'));
+        assert.equal(await realpath(rootRequire.resolve('@wsagency/radix2solid-primitives')), await realpath(themesRequire.resolve('@wsagency/radix2solid-primitives')), `${archive}: Themes must resolve the same published Primitives package`);
+        console.log(`PASS ${archive}: isolated registry install, coherent RC15 tuple and build`);
         const family = representatives[archive];
         if (family) await checkRuntime(project, family, log);
       } catch (error) {

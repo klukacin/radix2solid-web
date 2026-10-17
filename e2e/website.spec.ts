@@ -611,20 +611,19 @@ test('next suite Charts remeasures auto axis when actual local fonts finish load
   }
 });
 
-test('published package installation remains distinct from next suite local candidates', async ({ page, context, browserName, request }) => {
+test('published rc.3 package guides pin npm versions and link the registry release', async ({ page, context, browserName, request }) => {
   test.skip(browserName !== 'chromium', 'Native clipboard read permission is supported by Chromium.');
   await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin });
-  for (const [name, path, manager] of [
-    ['primitives', '/primitives/docs/overview/getting-started', 'npm install'],
-    ['themes', '/themes/docs/overview/getting-started', 'pnpm add'],
-    ['icons', '/icons', 'pnpm add'],
-    ['charts', '/charts/docs/overview/getting-started', 'pnpm add'],
-    ['icons-extra', '/icons', 'pnpm add'],
+  for (const [name, path, command] of [
+    ['primitives', '/primitives/docs/overview/getting-started', 'pnpm add -E @wsagency/radix2solid-primitives@0.1.0-rc.3'],
+    ['themes', '/themes/docs/overview/getting-started', 'pnpm add -E @wsagency/radix2solid-primitives@0.1.0-rc.3 @wsagency/radix2solid-themes@0.1.0-rc.3'],
+    ['icons', '/icons', 'pnpm add -E @wsagency/radix2solid-icons@0.1.0-rc.3'],
+    ['charts', '/charts/docs/overview/getting-started', 'pnpm add -E @wsagency/radix2solid-charts@0.1.0-rc.3'],
+    ['icons-extra', '/icons#extra-installation', 'pnpm add -E @wsagency/radix2solid-icons-extra@0.1.0-rc.3'],
   ]) {
-    const manifest = JSON.parse(readFileSync(new URL(`../.library/packages/${name}/package.json`, import.meta.url), 'utf8'));
-    const archive = `wsagency-radix2solid-${name}-${manifest.version}.tgz`;
-    const archives = name === 'themes' ? `./wsagency-radix2solid-primitives-${manifest.version}.tgz ./${archive}` : `./${archive}`;
-    const command = `${manager} ${archives}`;
+    const args = command.slice('pnpm add '.length);
+    const npmCommand = `npm install ${args}`;
+    const npmUrl = `https://www.npmjs.com/package/@wsagency/radix2solid-${name}/v/0.1.0-rc.3`;
     await page.goto(`${origin}${path}`);
     if (name === 'themes') await page.getByRole('tab', { name: 'pnpm', exact: true }).click();
     const code = page.locator('pre').filter({ hasText: command }).filter({ visible: true }).first();
@@ -638,24 +637,32 @@ test('published package installation remains distinct from next suite local cand
       for (const [tab, verb] of [['npm', 'install'], ['yarn', 'add'], ['bun', 'add']]) {
         await page.getByRole('tab', { name: tab, exact: true }).click();
         const panel = page.getByRole('tabpanel').filter({ visible: true });
-        const expected = `${tab} ${verb} ${archives}`;
+        const expected = `${tab} ${verb} ${args}`;
         await expect(panel.locator('pre')).toHaveText(expected);
         await panel.getByRole('button', { name: 'Copy code to clipboard', exact: true }).click();
         await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe(expected);
       }
+      await page.getByRole('tab', { name: 'npm', exact: true }).click();
     }
-    await expect(page.locator(`a[href="/packages/${archive}"]`).first()).toBeVisible();
-    expect((await request.get(`${origin}/packages/${archive}`)).ok()).toBe(true);
+    await expect(page.locator('pre').filter({ hasText: npmCommand }).filter({ visible: true }).first()).toHaveText(npmCommand);
+    await expect(page.locator(`a[href="${npmUrl}"]`).first()).toBeVisible();
+    await expect(page.locator('body')).toContainText(/published on npm as 0\.1\.0-rc\.3.*release candidate.*dist-tag.*next/i);
+    await expect(page.locator('a[href^="/packages/"]')).toHaveCount(0);
+    await expect(page.locator('body')).not.toContainText('@latest');
     if (name === 'icons') {
-      const input = page.getByRole('textbox', { name: 'Install downloaded native icons candidate', exact: true });
+      const input = page.getByRole('textbox', { name: 'Install native icons package from npm', exact: true });
       await expect(input).toHaveValue(command);
       await input.click();
       expect(await input.evaluate(node => (node as HTMLInputElement).selectionEnd! - (node as HTMLInputElement).selectionStart!)).toBe(command.length);
     }
-    const markdown = await (await request.get(`${origin}${path}.md`)).text();
-    expect(markdown).toContain(name === 'themes' ? `npm install ${archives}` : command);
-    expect(markdown).toContain(`/packages/${archive}`);
-    expect(markdown).not.toContain(`-E ${manifest.name}@${manifest.version}`);
+    const markdown = await (await request.get(`${origin}${path.split('#')[0]}.md`)).text();
+    if (name !== 'themes') expect(markdown).toContain(command);
+    expect(markdown).toContain(npmCommand);
+    expect(markdown).toContain(npmUrl);
+    expect(markdown).toContain('release candidate, dist-tag');
+    expect(markdown).not.toContain('/packages/wsagency-radix2solid-');
+    expect(markdown).not.toContain('.tgz');
+    expect(markdown).not.toContain('@latest');
   }
 });
 
@@ -1489,8 +1496,10 @@ test('charts landing hydrates one chart per container, switches chart type and s
   const families = page.locator('a[href^="/charts/docs/components/"]').filter({ has: page.locator('.recharts-wrapper') });
   await expect(families).toHaveCount(12);
   for (const family of await families.all()) await expect(family.locator('.recharts-wrapper > svg.recharts-surface')).toHaveCount(1);
-  const download = page.getByRole('link', { name: 'Download candidate', exact: true });
-  expect((await request.get(`${origin}${await download.getAttribute('href')}`)).status()).toBe(200);
+  await expect(page.getByRole('link', { name: 'View on npm', exact: true })).toHaveAttribute('href', 'https://www.npmjs.com/package/@wsagency/radix2solid-charts/v/0.1.0-rc.3');
+  await expect(page.locator('body')).toContainText('Charts is published on npm as');
+  await expect(page.locator('body')).toContainText('pnpm add -E @wsagency/radix2solid-charts@0.1.0-rc.3');
+  await expect(page.locator('a[href^="/packages/"]')).toHaveCount(0);
   const notice = await (await request.get(`${origin}/NOTICE.txt`)).text();
   for (const text of ['Copyright (c) 2026 Thomas Guehenneux', 'Copyright (c) 2015-present recharts', '--- d3-scale@', '--- d3-shape@', '--- internmap@', '--- solid-js@2.0.0-rc.15 ', '--- @floating-ui/dom@', 'Copyright (c) 2022 WorkOS']) expect(notice).toContain(text);
   await page.goto(`${origin}/charts/docs/overview/introduction`);

@@ -1,6 +1,8 @@
 # Changelog
 
 ## 0.0.0-local
+- Replace obsolete rc.3 source-candidate install instructions with exact-version npm commands and versioned npm links for all five published packages; preserve the full Solid RC15 setup and explain why `latest` must not be used for four packages.
+- Switch runnable sandboxes to exact published npm dependencies, retain the Solid RC15 overrides and exact release-age exceptions, and keep direct package archive outputs only for existing export/license checks rather than installation links.
 
 - Add next-suite `0.1.0-rc.3` candidate archive instructions without claiming npm publication; keep the full Solid RC15 tuple and local transitive Primitives override.
 - Add native Combobox, Command, Tree and Splitter API pages, styled Themes recipes, playground sections and three standalone styling variants each. The recipes compose Primitives rather than inventing Themes exports; controlled proposals, actions, form participation, focus and measured geometry remain observable.
